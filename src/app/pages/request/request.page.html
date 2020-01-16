@@ -11,7 +11,7 @@
   <ion-header [ngClass]="!isModal ? 'animated slideInRight' : ''">
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button (click)="goBack()" defaultHref></ion-back-button>
+        <ion-back-button color="primary" icon="md-arrow-back"  mode="md" (click)="goBack()" defaultHref></ion-back-button>
       </ion-buttons>
       <ion-title class="animated fadeIn">
         {{subPageTitle}}
