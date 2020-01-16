@@ -1,0 +1,58 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons class="mobile-only" slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-item class="no-inner-border-width">
+      <input type="file" accept="image/*" (change)="uploadImage($event)" #file style="display:none">
+      <ion-avatar class="image-center">
+        <img [src]="image" (click)="file.click()" alt="Edit your profile image.">
+      </ion-avatar>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-textarea spellcheck="true" [(ngModel)]="description" placeholder="Profile description..."></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Username</ion-label>
+      <ion-input [(ngModel)]="username" disabled></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input [(ngModel)]="email" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">First Name</ion-label>
+      <ion-input [(ngModel)]="first_name" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Last Name</ion-label>
+      <ion-input [(ngModel)]="last_name" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Phone</ion-label>
+      <ion-input [(ngModel)]="phone" type="text"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Birthday</ion-label>
+      <ion-datetime [(ngModel)]="birthday" placeholder="Select Birthday"></ion-datetime>
+    </ion-item>
+
+    <div class="ion-padding-top form-submit-button">
+      <ion-button expand="block" type="submit" (click)="updateProfileInfo()">Save Changes</ion-button>
+    </div>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,31 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Notification Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      NOTIFICATION PREFERENCES
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label> Email Notifications </ion-label>
+      <ion-note><ion-toggle color="primary" [(ngModel)]="email_notifications" (click)="updateSettings('email')"></ion-toggle></ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label> SMS Notifications </ion-label>
+      <ion-note><ion-toggle  [(ngModel)]="sms_notifications" (click)="updateSettings('sms')" color="primary"></ion-toggle></ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label> Push Notifications </ion-label>
+      <ion-note><ion-toggle  [(ngModel)]="push_notifications" (click)="updateSettings('push')" color="primary"></ion-toggle></ion-note>
+    </ion-item>
+  </ion-list>
+</ion-content>

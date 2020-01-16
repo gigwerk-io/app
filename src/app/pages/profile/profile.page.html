@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="mobile-only" slot="start">
+      <ion-back-button defaultHref></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="profile">
+      {{profile.user.user.first_name}} {{profile.user.user.last_name}}
+    </ion-title>
+    <ion-buttons slot="end" *ngIf="!isOwner" >
+      <ion-button (click)="startChat(profile.user.user.username)"
+                  class="nav-button">
+        <ion-icon name="chatbubbles"></ion-icon>
+      </ion-button>
+      <ion-button (click)="presentActionSheet()"
+                  class="nav-button">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="isOwner">
+      <ion-button routerLink="/app/chat"
+                  routerDirection="forward"
+                  class="nav-button">
+        <ion-icon name="chatbubbles"></ion-icon>
+      </ion-button>
+      <ion-button (click)="presentOwnerActionSheet()"
+                  class="nav-button">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="profile">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list style="margin-bottom: unset;">
+    <ion-toolbar padding-top class="web-only">
+      <ion-buttons slot="end" *ngIf="!isOwner" >
+        <ion-button (click)="startChat(profile.user.user.username)"
+                    class="nav-button">
+          <ion-icon name="chatbubbles"></ion-icon>
+        </ion-button>
+        <ion-button (click)="presentActionSheet()"
+                    class="nav-button">
+          <ion-icon name="more"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end" *ngIf="isOwner">
+        <ion-button routerLink="/app/chat"
+                    routerDirection="forward"
+                    class="nav-button">
+          <ion-icon name="chatbubbles"></ion-icon>
+        </ion-button>
+        <ion-button (click)="presentOwnerActionSheet()"
+                    class="nav-button">
+          <ion-icon name="more"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <div text-center padding-top>
+      <div margin-bottom class="img-container">
+        <img [src]="(profile.user.image) ? profile.user.image : '../../assets/img/user.png'"
+             (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
+             alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}">
+      </div>
+      <ion-note>
+        @{{profile.user.user.username}}
+        <img *ngIf="profile.user.user.role == Role.VERIFIED_FREELANCER"
+             class="badge"
+             src="../../../assets/img/verified.png" alt="This user is a Verified Freelancer">
+      </ion-note>
+      <p>
+        <ion-chip [color]="status.class">
+          <ion-label>{{status.text}}</ion-label>
+        </ion-chip>
+      </p>
+
+      <ng-template #star let-fill="fill">
+      <span class="star" [class.full]="fill === 100">
+        <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+      </span>
+      </ng-template>
+
+      <div padding-bottom *ngIf="rating">
+        <ngb-rating [(rate)]="rating" [starTemplate]="star" [readonly]="true" max="5"></ngb-rating>
+      </div>
+    </div>
+    <div text-center>
+      <section *ngIf="!isOwner">
+        <ion-button *ngIf="showFriendButton" size="small" style="font-size: 16px;" [disabled]="friendButton.disable" (click)="handleFriendButtonClick()">
+          <ion-icon slot="start" mode="md" [name]="friendButton.class"></ion-icon>
+          <p slot="end" *ngIf="!friendButton.disable; else invitationSent">Send Friend Invite</p>
+          <ng-template #invitationSent>
+            <p slot="end">Friend Invite Sent</p>
+          </ng-template>
+        </ion-button>
+      </section>
+      <section [ngClass]="profile.user.description ? 'ion-padding-top' : ''">
+        {{profile.user.description}}
+      </section>
+    </div>
+    <hr>
+  </ion-list>
+  <ion-toolbar *ngIf="profile.user.user.role === Role.VERIFIED_FREELANCER">
+    <ion-segment [(ngModel)]="taskFeed">
+      <ion-segment-button checked value="freelancer">Past Jobs</ion-segment-button>
+      <ion-segment-button value="customer">Past Tasks</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ng-container [ngSwitch]="taskFeed">
+    <ng-container *ngSwitchCase="'customer'">
+      <ng-container text-center *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
+        <ion-title color="medium" class="no-tasks">
+          No Tasks To Display
+        </ion-title>
+      </ng-container>
+
+      <ng-template #tasks>
+        <favr-marketplace-card *ngFor="let task of profile.user.user.main_marketplace"
+                               [mainMarketplaceTask]="task"
+        ></favr-marketplace-card>
+      </ng-template>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'freelancer'">
+      <ng-container text-center *ngIf="profile.user.past_jobs.length === 0; else tasks">
+        <ion-title color="medium" class="no-tasks">
+          No Past Jobs To Display
+        </ion-title>
+      </ng-container>
+
+      <ng-template #tasks>
+        <favr-marketplace-card *ngFor="let task of profile.user.past_jobs"
+                               [freelancerPastTask]="task"
+        ></favr-marketplace-card>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+
+</ion-content>

@@ -1,0 +1,330 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="mobile-only" slot="start">
+      <ion-back-button defaultHref></ion-back-button>
+    </ion-buttons>
+    <ion-title>Task Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentActionSheet()"
+                  class="nav-button">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list *ngIf="mainMarketplaceTask">
+    <ion-slides [pager]="true">
+      <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 1')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_one">
+        <img [src]="mainMarketplaceTask.image_one" alt="image one">
+      </ion-slide>
+
+      <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_two, 'Image 2')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_two">
+        <img [src]="mainMarketplaceTask.image_two" alt="image two">
+      </ion-slide>
+
+      <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 3')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_three">
+        <img [src]="mainMarketplaceTask.image_three" alt="image three">
+      </ion-slide>
+    </ion-slides>
+
+    <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{mainMarketplaceTask.customer.id}}">
+      <ion-avatar slot="start">
+        <img [src]="mainMarketplaceTask.customer.profile.image" alt="profile picture">
+      </ion-avatar>
+      {{mainMarketplaceTask.customer.first_name}} {{mainMarketplaceTask.customer.last_name}}
+      <div slot="end">
+        <div class="marketplace-card-price-area">
+          <div class="marketplace-card-price-tag">
+            {{mainMarketplaceTask.price | currency:'USD'}}
+          </div>
+        </div>
+      </div>
+    </ion-item>
+
+    <ion-item detail="false" lines="isNone">
+      <div slot="start">
+        <small>
+          <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else completedTime">
+            <div class="complete-by-time">Needs Complete by {{mainMarketplaceTask.isoFormat | date}}</div>
+          </ng-container>
+
+          <ng-template #completedTime>
+            <div class="complete-by-time">Completed on {{mainMarketplaceTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM d, yyyy'}}</div>
+          </ng-template>
+          <ion-note class="note posted-time">
+            Posted {{mainMarketplaceTask.postedFormat | date}}
+          </ion-note>
+        </small>
+      </div>
+      <div slot="end" class="marketplace-card-distance-away">
+        <ion-note *ngIf="mainMarketplaceTask.distance_away != undefined
+                        && ((mainMarketplaceTask.status != TaskStatus.COMPLETE
+                        && (isOwner || isFreelancer))
+                        || mainMarketplaceTask.status == TaskStatus.REQUESTED)">
+          {{mainMarketplaceTask.distance_away}} Miles
+        </ion-note>
+        <small *ngIf="mainMarketplaceTask.status == TaskStatus.COMPLETE">
+          <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+        </small>
+      </div>
+    </ion-item>
+
+    <ion-grid padding-start padding-end>
+
+      <ng-container *ngIf="mainMarketplaceTask.proposals">
+        <ion-row *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE || mainMarketplaceTask.status != TaskStatus.REQUESTED && isOwner" routerLink="/app/profile/{{mainMarketplaceTask.proposals[0].user_id}}" routerDirection="forward">
+          <ion-col size="3">
+            <ion-avatar>
+              <img [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : '../../../assets/img/user.png'" alt="profile picture">
+            </ion-avatar>
+          </ion-col>
+          <ion-col size="9" padding-top>
+            <ng-container *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE; else proposedBy">
+              <b>Completed By:</b>
+              <br>
+              {{mainMarketplaceTask.proposals[0].user.first_name}}
+            </ng-container>
+
+            <ng-template #proposedBy>
+              <b>{{mainMarketplaceTask.proposals[0].user.first_name}}</b>
+              <br>
+              {{(mainMarketplaceTask.status === TaskStatus.PENDING_APPROVAL) ? 'Has Accepted!' : 'is working this task.'}}
+            </ng-template>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+
+      <ion-row padding-bottom>
+        <ion-col *ngIf="mainMarketplaceTask.action === 2" class="ion-text-center">
+          <ion-button
+                      (click)="freelancerAcceptTask()"
+                      fill="outline"
+                      size="small"
+                      color="primary">
+            <ion-icon name="thumbs-up" slot="start"></ion-icon>
+            Accept
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 3 || mainMarketplaceTask.action === 5" class="ion-text-center">
+          <ion-button (click)="freelancerWithdrawTask()"
+                      fill="outline"
+                      size="small"
+                      color="primary">
+            <ion-icon name="thumbs-down" slot="start"></ion-icon>
+            Withdraw
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 5 || mainMarketplaceTask.action === 6" class="ion-text-center">
+          <ion-button fill="outline"
+                      size="small"
+                      color="primary"
+                      (click)="startChat(mainMarketplaceTask.customer.username)">
+            <ion-icon name="chatbubbles" slot="start"></ion-icon>
+            Contact
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 5" class="ion-text-center">
+          <ion-button (click)="freelancerArriveTask()"
+                      fill="outline"
+                      size="small"
+                      color="primary">
+            <ion-icon mode="md" name="hand" slot="start"></ion-icon>
+            Arrive
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 6" class="ion-text-center">
+          <ion-button (click)="completeTask(true)"
+                      fill="outline"
+                      size="small"
+                      color="primary">
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            Complete Task
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 1" class="ion-text-center">
+          <ion-button (click)="editTaskRequest(mainMarketplaceTask)" fill="outline" size="small" color="primary">
+            <ion-icon name="create" slot="start"></ion-icon>
+            Edit
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
+          <!--TODO: work on approval system instead of this work around-->
+          <ion-button (click)="customerApproveFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline" size="small" color="primary">
+            <ion-icon name="thumbs-up" slot="start"></ion-icon>
+            Approve
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
+          <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline" size="small" color="primary">
+            <ion-icon name="thumbs-down" slot="start"></ion-icon>
+            Reject
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 10" class="ion-text-center">
+          <ion-button (click)="completeTask(false)" fill="outline" size="small" color="primary">
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            Complete My Task
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="mainMarketplaceTask.action === 1 || mainMarketplaceTask.action === 7" class="ion-text-center">
+          <ion-button (click)="customerCancelTask()"
+                      fill="outline" size="small" color="primary">
+            <ion-icon name="close" mode="md" slot="start"></ion-icon>
+            Cancel
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/stopwatch.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Current Status:</b>
+          <br>
+          Task {{taskStatusDisplay}}
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Task Category:</b>
+          <br>
+          {{Categories[mainMarketplaceTask.category_id - 1].name}}
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/suitcase.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Task Description</b>
+          <br>
+          <div id="taskDescription" [innerHTML]="mainMarketplaceTask.description"></div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/bank.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Price:</b>
+          <br>
+          <ng-container *ngIf="isOwner; else notOwner">
+            <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else paid">
+              You pay
+            </ng-container>
+
+            <ng-template #paid>
+              You paid
+            </ng-template>
+
+            <div *ngIf="credit == 0; else creditAndPrice">
+              {{mainMarketplaceTask.price | currency:'USD'}}
+            </div>
+
+            <ng-template #creditAndPrice>
+              {{((mainMarketplaceTask.price > credit) ? (mainMarketplaceTask.price - credit | currency: 'USD') : 0 | currency: 'USD')}}
+            </ng-template>
+          </ng-container>
+
+          <ng-template #notOwner>
+            <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else earnedPrice">
+              They pay
+            </ng-container>
+            <ng-template #earnedPrice>
+              Paid
+            </ng-template>
+
+            {{mainMarketplaceTask.price | currency: 'USD'}}
+          </ng-template>
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/group.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Freelancer Count:</b>
+          <br>
+          {{mainMarketplaceTask.freelancer_accepted}} people accepted,
+          task needs {{mainMarketplaceTask.freelancer_count - mainMarketplaceTask.freelancer_accepted}} more
+        </ion-col>
+      </ion-row>
+
+      <ion-row *ngIf="mainMarketplaceTask.locations" padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/map.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Location:</b>
+          <br>
+          <div (click)="openLocation()" style="text-decoration: underline;">
+            {{mainMarketplaceTask.locations[0].street_address}},
+            {{mainMarketplaceTask.locations[0].city}},
+            {{mainMarketplaceTask.locations[0].state}},
+            {{mainMarketplaceTask.locations[0].zip}}
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/calendar.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+            <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else completedOn">
+              <b>Complete Before:</b>
+              <br>
+              {{mainMarketplaceTask.isoFormat | date: 'MMM d, yyyy h:mm a'}}
+            </ng-container>
+
+            <ng-template #completedOn>
+              <b>Completed On:</b>
+              <br>
+              {{mainMarketplaceTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM d, yyyy h:mm a'}}
+            </ng-template>
+        </ion-col>
+      </ion-row>
+
+      <ion-row padding-bottom>
+        <ion-col size="3">
+          <img src="../../../assets/img/tools.png" class="marketplace-detail-icons">
+        </ion-col>
+        <ion-col size="9">
+          <b>Intensity:</b>
+          <br>
+          <div *ngIf="mainMarketplaceTask.intensity === 'Easy'"
+               id="easy-button">Easy 👌
+          </div>
+          <div *ngIf="mainMarketplaceTask.intensity === 'Medium'"
+               id="medium-button">Medium 💪🏿
+          </div>
+          <div *ngIf="mainMarketplaceTask.intensity === 'Hard'"
+               id="hard-button">Hard 🔥
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-list>
+</ion-content>

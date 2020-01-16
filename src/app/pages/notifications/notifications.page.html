@@ -1,0 +1,54 @@
+<favr-page-header
+  pageTitle="Notifications"
+  [showSearchBar]="true"
+></favr-page-header>
+
+<ion-content>
+  <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button checked value="unread">
+      <ion-label>Unread</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="all">
+      <ion-label>All</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- List of Text Items -->
+  <ion-list>
+    <ion-item *ngFor="let notification of notifications; let i = index" [attr.data-index]="i" href (click)="view(i, notification)" [class]="notificationClass">
+      <ion-icon slot="start" name="notifications"></ion-icon>
+      <ion-label>
+        <h2>{{notification.type}}</h2>
+        <p>{{notification.message}}</p>
+      </ion-label>
+      <ion-note>
+        <small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+  <!--<ion-list class="read">-->
+    <!--<ion-card *ngFor="let notification of notifications; let i = index" [attr.data-index]="i">-->
+      <!--<ion-item-sliding>-->
+        <!--<ion-item [class]="notificationClass">-->
+          <!--<ion-icon name="person"></ion-icon>-->
+          <!--<ion-label>-->
+            <!--<h2>{{notification.type}}</h2>-->
+            <!--<p>{{notification.message}}</p>-->
+          <!--</ion-label>-->
+          <!--<ion-note>-->
+            <!--<small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>-->
+          <!--</ion-note>-->
+        <!--</ion-item>-->
+
+        <!--<ion-item-options side="start" *ngIf="readable">-->
+          <!--<ion-item-option (click)="markRead(notification.id, i)" color="danger">Mark As Read</ion-item-option>-->
+        <!--</ion-item-options>-->
+
+        <!--<ion-item-options side="end">-->
+          <!--<ion-item-option (click)="view(notification.action)" color="success">View</ion-item-option>-->
+        <!--</ion-item-options>-->
+      <!--</ion-item-sliding>-->
+    <!--</ion-card>-->
+  <!--</ion-list>-->
+</ion-content>

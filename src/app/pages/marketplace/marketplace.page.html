@@ -1,0 +1,38 @@
+<favr-page-header
+  pageTitle="Marketplace"
+  [showSearchBar]="true"
+  [filterInputs]="filterInputs"
+  [filterDefault]="filterDefault"
+  (filterOption)="setFilterOption($event)"
+>
+</favr-page-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-segment (ionChange)="segmentChanged($event.target.value)" [(ngModel)]="segment">
+    <ion-segment-button checked value="all">
+      <ion-label>Feed</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="me">
+      <ion-label>My Tasks</ion-label>
+    </ion-segment-button>
+    <ion-segment-button *ngIf="userRole === Role.VERIFIED_FREELANCER" value="jobs">
+      <ion-label>My Jobs</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ng-template [ngIf]="marketplaceTasks && segment != 'jobs'">
+    <div *ngIf="marketplaceTasks.length === 0" class="mobile-only center-request-task-button-area">
+      <ion-button class="request-task-button" (click)="openRequestPage()">
+        <ion-icon name="create" slot="start"></ion-icon>
+        Request a Task
+      </ion-button>
+    </div>
+  </ng-template>
+
+  <ng-container>
+    <favr-marketplace-card *ngFor="let task of marketplaceTasks" [mainMarketplaceTask]="task" (taskActionTaken)="doRefresh($event)"></favr-marketplace-card>
+  </ng-container>
+
+</ion-content>

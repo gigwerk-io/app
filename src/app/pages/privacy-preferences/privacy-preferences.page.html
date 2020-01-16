@@ -1,0 +1,40 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Privacy Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      PRIVACY PREFERENCES
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label> Default Scope </ion-label>
+      <ion-select #select [value]="scope" (ionChange)="scopeChange(select.value)" >
+        <ion-select-option>Public</ion-select-option>
+        <ion-select-option>Friends of Friends</ion-select-option>
+        <ion-select-option>Friends</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label> Display Description </ion-label>
+      <ion-note><ion-toggle [(ngModel)]="display_description" (click)="updateSettings('description')" color="primary"></ion-toggle></ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label> Display Rating  </ion-label>
+      <ion-note><ion-toggle [(ngModel)]="display_rating" (click)="updateSettings('rating')" color="primary"></ion-toggle></ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label> Display Receipts </ion-label>
+      <ion-note><ion-toggle [(ngModel)]="display_receipts" (click)="updateSettings('receipts')" color="primary"></ion-toggle></ion-note>
+    </ion-item>
+  </ion-list>
+</ion-content>

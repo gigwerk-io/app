@@ -1,0 +1,71 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Refer a Worker</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list margin-top padding-top>
+
+    <div style="text-align: center;">
+      <img src="../../../assets/img/bank.png" height="128" width="128" alt="Earn money">
+    </div>
+    <h2>
+      <ion-card-subtitle>Invite Friends</ion-card-subtitle>
+      <ion-card-title>Earn $5 Per Referral</ion-card-title>
+    </h2>
+    <ion-text>
+      Your referrals must complete the following steps when signing up:
+      <ol>
+        <li>Verify Account</li>
+        <li>Setup Bank Account</li>
+        <li>Add Profile Picture</li>
+        <li>Add Profile Description</li>
+      </ol>
+    </ion-text>
+
+    <ion-list *ngIf="!(remainingSteps.has_bank_account && remainingSteps.has_profile_photo && remainingSteps.has_profile_description)">
+      <ion-list-header>
+        You Must Complete These Steps Before Sharing:
+      </ion-list-header>
+
+      <ion-item routerLink="/app/connect-bank-account">
+        <ion-label>Setup Bank Account</ion-label>
+        <ion-icon color="success" *ngIf="remainingSteps.has_bank_account; else incompleteBank" name="checkmark-circle" slot="start"></ion-icon>
+        <ng-template #incompleteBank>
+          <ion-icon color="danger" name="radio-button-off" slot="start"></ion-icon>
+        </ng-template>
+      </ion-item>
+      <ion-item routerLink="/app/edit-profile">
+        <ion-label>Has Added Profile Picture</ion-label>
+        <ion-icon color="success" *ngIf="remainingSteps.has_profile_photo; else incompleteProfPhoto" name="checkmark-circle" slot="start"></ion-icon>
+        <ng-template #incompleteProfPhoto>
+          <ion-icon color="danger" name="radio-button-off" slot="start"></ion-icon>
+        </ng-template>
+      </ion-item>
+      <ion-item routerLink="/app/edit-profile">
+        <ion-label>Has Added Profile Description</ion-label>
+        <ion-icon color="success" *ngIf="remainingSteps.has_profile_description; else incompleteProfDescription" name="checkmark-circle" slot="start"></ion-icon>
+        <ng-template #incompleteProfDescription>
+          <ion-icon color="danger" name="radio-button-off" slot="start"></ion-icon>
+        </ng-template>
+      </ion-item>
+    </ion-list>
+
+    <ion-button expand="block" (click)="shareReferral()" [disabled]="!(remainingSteps.has_bank_account && remainingSteps.has_profile_photo && remainingSteps.has_profile_description)">
+      Share
+      <ion-icon slot="end" name="share-alt"></ion-icon>
+    </ion-button>
+    <ion-note>
+      <small>Note: Earn up to $1,000 cash from referrals.</small>
+    </ion-note>
+  </ion-list>
+
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "FAVR",
+  "type": "angular",
+  "integrations": {
+    "cordova": {}
+  }
+}

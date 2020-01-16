@@ -1,0 +1,14 @@
+<ion-grid>
+  <ion-row>
+    <ion-col *ngFor="let category of categories" size="6">
+      <button #categoryButton type="button" (click)="selectCategory(categoryButton, category)" class="category-button">
+        <ion-card padding class="category-card">
+          <ion-card-content class="category-card-content">
+            <img src="../../../assets/img/{{category.icon_image}}" class="category-icon">
+          </ion-card-content>
+          <ion-card-title class="category-title">{{category.name}}</ion-card-title>
+        </ion-card>
+      </button>
+    </ion-col>
+  </ion-row>
+</ion-grid>

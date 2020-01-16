@@ -1,0 +1,67 @@
+$iphoneSe: 323px;
+$iphone678: 375px;
+
+hr {
+  background: lightgrey;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.badge {
+  display: inline-flex;
+  height: 1em;
+  width: 1em;
+}
+
+.img-container {
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+  background-color: #1b1e21;
+  display: block;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  img {
+    height: 100px;
+    object-fit: cover;
+    object-position: 50% 50%;
+  }
+}
+
+.no-tasks {
+  @media screen and (max-width: $iphoneSe){
+    margin-top: 200px;
+  }
+
+  @media screen and (max-width: $iphone678){
+    margin-top: 150px;
+  }
+
+  @media screen and (min-width: 376px){
+    margin-top: 100px;
+  }
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  font-size: 2rem;
+  color: #353535;
+}
+
+.full {
+  color: gold;
+}
+
+.half {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: gold;
+}
+
+::ng-deep .sr-only {
+  display: none!important;
+}

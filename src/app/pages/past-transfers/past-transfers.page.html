@@ -1,0 +1,32 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Past Transfers</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      PAST TRANSFERS
+    </ion-list-header>
+
+    <ion-item *ngFor="let transfer of transfers" href (click)="goToJob(transfer.marketplace_id)" >
+      <ion-note slot="end"><small>{{transfer.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small></ion-note>
+      <ion-label>
+        <h2>${{transfer.amount.toFixed(2)}}</h2>
+        <p>{{transfer.marketplace.description}}</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item  *ngIf="isNone">
+      <ion-label>
+        Sorry, you have no payouts. :(
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+
+</ion-content>

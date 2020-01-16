@@ -1,0 +1,69 @@
+<ion-header class="page-header">
+  <ion-toolbar *ngIf="isModal" class="page-header">
+    <ion-buttons>
+      <ion-button (click)="closePage()">
+        close
+      </ion-button>
+    </ion-buttons>
+    <ion-title hidden>{{pageTitle}}</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="showBackButton"
+               class="mobile-only">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="search-area">
+    <ion-row class="page-title-header">
+      <ion-col *ngIf="pageTitle" class="page-title-area">
+        <h2 class="page-title">
+          <ng-container *ngIf="pageTitle === 'Marketplace'; else title">
+            <img src="../../../../assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
+          </ng-container>
+          <ng-template #title>
+            {{pageTitle}}
+          </ng-template>
+        </h2>
+      </ion-col>
+      <ion-col>
+        <ion-buttons class="page-header-buttons mobile-only">
+          <ion-button *ngIf="showProfile"
+                      (click)="navigateToProfile()" routerDirection="forward"
+                      class="mobile-only">
+            <ion-avatar class="page-title-header-profile">
+              <img [src]="profileImage ? profileImage : '../../../../assets/img/user.png'" alt="profile picture">
+            </ion-avatar>
+          </ion-button>
+
+          <ion-button *ngIf="pageTitle == 'Marketplace'
+                             || pageTitle == 'Friends'
+                             || pageTitle == 'Notifications'
+                             || pageTitle == 'Settings'"
+                      (click)="openSearchModal()"
+                      class="nav-button">
+            <ion-icon name="search"></ion-icon>
+          </ion-button>
+
+          <ion-button *ngIf="pageTitle == 'Marketplace'
+                             || pageTitle == 'Friends'
+                             || pageTitle == 'Notifications'
+                             || pageTitle == 'Settings'"
+                      (click)="navigateToChat()"
+                      class="nav-button">
+            <ion-icon name="chatbubbles"></ion-icon>
+          </ion-button>
+
+          <!--<ion-button (click)="presentFilterOptions()"-->
+                      <!--*ngIf="pageTitle == 'Marketplace'"-->
+                      <!--class="nav-button">-->
+            <!--<ion-icon name="funnel" size="medium"></ion-icon>-->
+          <!--</ion-button>-->
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+    <ion-progress-bar *ngIf="progress" [value]="progress" [ngClass]="progress == 1 ? 'green-progress' : ''"></ion-progress-bar>
+    <!--<ion-searchbar *ngIf="showSearchBar" class="web-only" (keyup.enter)="onKeyEnter($event)" placeholder="Search"></ion-searchbar>-->
+  </ion-toolbar>
+</ion-header>

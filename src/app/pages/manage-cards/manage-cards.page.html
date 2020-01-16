@@ -1,0 +1,65 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Manage Cards</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      Manage Payment Methods
+    </ion-list-header>
+    <ion-item routerLink="/app/set-up-payments">
+      <ion-icon slot="start" name="add"></ion-icon>
+      <ion-label>Add a Payment Method</ion-label>
+    </ion-item>
+
+
+  </ion-list>
+
+  <ion-list class="ion-padding" *ngIf="card">
+    <ion-list-header>
+      SAVED CARDS
+    </ion-list-header>
+    <ion-item *ngIf="card.user.card_id != null">
+      <ng-container [ngSwitch]="card.user.type">
+        <ng-template ngSwitchDefault>
+          <ion-icon slot="start" name="card"></ion-icon>
+        </ng-template>
+
+        <ng-container *ngSwitchCase="'Visa'">
+          <ion-avatar slot="start" style="background: #fff;">
+            <img src="../../../assets/img/visa.png" height="32" width="32" alt="visa">
+          </ion-avatar>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'MasterCard'">
+          <ion-avatar slot="start" style="background: #fff;">
+            <img src="../../../assets/img/mastercard.png" height="32" width="32" alt="mastercard">
+          </ion-avatar>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'American Express'">
+          <ion-avatar slot="start" style="background: #fff;">
+            <img src="../../../assets/img/american-express.png" height="32" width="32" alt="amex">
+          </ion-avatar>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Discover'">
+          <ion-avatar slot="start" style="background: #fff;">
+            <img src="../../../assets/img/discover.png" height="32" width="32" alt="discover">
+          </ion-avatar>
+        </ng-container>
+      </ng-container>
+
+      <ion-label>
+        <h3>{{card.user.type}}</h3>
+        <p>Card Ending with {{card.user.last4}}</p>
+      </ion-label>
+    </ion-item>
+
+  </ion-list>
+</ion-content>

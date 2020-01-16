@@ -1,0 +1,79 @@
+.search-categories-area {
+  --padding-top: 0;
+  .search-categories {
+    text-align: left;
+  }
+}
+
+.swiper-container {
+  overflow: unset;
+}
+
+ion-slide {
+  height: available;
+  display: block;
+  text-align: left;
+}
+
+ckeditor {
+  ::ng-deep {
+    color: #000 !important;
+  }
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.inactive {
+  opacity: 0.5;
+}
+
+.camera-button {
+  --background: deepskyblue;
+}
+
+.price-proposal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  h1 {
+    color: green;
+    margin-bottom: 20px;
+  }
+}
+
+.photo-gallery {
+  max-height: 200px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.remove-attached-image-button {
+  font-size: xx-large;
+  position: absolute;
+  top: 1rem;
+  right: 2rem;
+}
+
+.sub-page {
+  min-height: 100%;
+}
+
+::ng-deep request {
+  ::ng-deep ion-card {
+    max-width: 182.5px;
+  }
+}
+
+ion-textarea {
+  --background: rgb(245, 245, 245);
+}
+
+.green-progress {
+  --progress-background: var(--ion-color-success);
+}
+
+.form-submit-button {
+  left: 0;
+  bottom: 25%;
+  right: 0;
+}

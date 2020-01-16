@@ -1,0 +1,53 @@
+<favr-page-header
+  [pageTitle]="'Friends'"
+  [showSearchBar]="true"
+  (handleSearch)="handleSearch($event)"
+>
+</favr-page-header>
+
+<ion-content>
+  <!--<div>-->
+    <!--<ion-select class="filter" placeholder="Select One">-->
+      <!--<ion-select-option value="f">Female</ion-select-option>-->
+      <!--<ion-select-option value="m">Male</ion-select-option>-->
+    <!--</ion-select>-->
+  <!--</div>-->
+
+
+  <!-- Default Segment -->
+  <!-- Icon end -->
+  <ion-segment (ionChange)="segmentChanged($event)">
+    <ion-segment-button checked value="friends">
+      <ion-label>Friend List</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="recommended">
+      <ion-label>Discover</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="new">
+      <ion-label>Friend Requests</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- List of Text Items -->
+  <ion-list>
+    <ion-item [detail]="(btnClass == 'arrow-forward')" *ngFor="let user of users; let i = index;" [attr.data-index]="i">
+      <ion-avatar slot="start" (click)="goToUserProfile(user.id)">
+        <ion-img [src]="user.profile.image"></ion-img>
+      </ion-avatar>
+      <ion-label (click)="goToUserProfile(user.id)">
+        {{user.name}}
+        <br>
+        <ion-note>@{{user.username}}</ion-note>
+      </ion-label>
+      <ion-button *ngIf="btnClass != 'arrow-forward'"
+                  (click)="handleClick(user, i)"
+                  [ngClass]="(btnClass === 'checkmark') ? 'checkmark-btn nav-button' : 'nav-button'">
+        <ion-icon [mode]="(btnClass === 'person-add' || btnClass === 'checkmark') ? 'md' : ''" [name]="btnClass"></ion-icon>
+      </ion-button>
+      <ion-button class="nav-button" *ngIf="secondButton" (click)="rejectFriendRequest(user.id)">
+        <ion-icon mode="md" name="close"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+</ion-content>

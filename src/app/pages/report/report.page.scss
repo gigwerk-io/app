@@ -1,0 +1,10 @@
+ion-textarea {
+  --background: rgb(245, 245, 245);
+  ::ng-deep .native-textarea {
+    height: 10rem;
+  }
+}
+
+ion-list {
+  margin-top: 20%;
+}

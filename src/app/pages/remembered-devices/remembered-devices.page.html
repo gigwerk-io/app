@@ -1,0 +1,23 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Device Sessions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      ACTIVE SESSIONS
+      <ion-button class="kill-all-btn" size="small" (click)="killAll()">Kill All</ion-button>
+    </ion-list-header>
+    <ion-item *ngFor="let session of sessions">
+      <ion-icon name="phone-portrait" class="icon"></ion-icon>
+      <ion-label>
+        <h3>{{session.user_agent}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

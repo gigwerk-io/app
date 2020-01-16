@@ -1,0 +1,93 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/saved-locations"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Location</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      ADD LOCATION
+    </ion-list-header>
+
+    <ion-item>
+      <ion-label position="stacked">What is your street address?<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input [(ngModel)]="street" placeholder="123 Main Street"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">What is your city?<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input [(ngModel)]="city" placeholder="Rochester"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">What is your state?<ion-text color="danger">*</ion-text></ion-label>
+      <ion-select [(ngModel)]="state">
+        <!--<ion-select-option value="AL">Alabama</ion-select-option>-->
+        <!--<ion-select-option value="AK">Alaska</ion-select-option>-->
+        <!--<ion-select-option value="AZ">Arizona</ion-select-option>-->
+        <!--<ion-select-option value="AR">Arkansas</ion-select-option>-->
+        <!--<ion-select-option value="CA">California</ion-select-option>-->
+        <!--<ion-select-option value="CO">Colorado</ion-select-option>-->
+        <!--<ion-select-option value="CT">Connecticut</ion-select-option>-->
+        <!--<ion-select-option value="DE">Delaware</ion-select-option>-->
+        <!--<ion-select-option value="DC">District Of Columbia</ion-select-option>-->
+        <!--<ion-select-option value="FL">Florida</ion-select-option>-->
+        <!--<ion-select-option value="GA">Georgia</ion-select-option>-->
+        <!--<ion-select-option value="HI">Hawaii</ion-select-option>-->
+        <!--<ion-select-option value="ID">Idaho</ion-select-option>-->
+        <!--<ion-select-option value="IL">Illinois</ion-select-option>-->
+        <!--<ion-select-option value="IN">Indiana</ion-select-option>-->
+        <!--<ion-select-option value="IA">Iowa</ion-select-option>-->
+        <!--<ion-select-option value="KS">Kansas</ion-select-option>-->
+        <!--<ion-select-option value="KY">Kentucky</ion-select-option>-->
+        <!--<ion-select-option value="LA">Louisiana</ion-select-option>-->
+        <!--<ion-select-option value="ME">Maine</ion-select-option>-->
+        <!--<ion-select-option value="MD">Maryland</ion-select-option>-->
+        <!--<ion-select-option value="MA">Massachusetts</ion-select-option>-->
+        <!--<ion-select-option value="MI">Michigan</ion-select-option>-->
+        <ion-select-option value="MN" selected>Minnesota</ion-select-option>
+        <!--<ion-select-option value="MS">Mississippi</ion-select-option>-->
+        <!--<ion-select-option value="MO">Missouri</ion-select-option>-->
+        <!--<ion-select-option value="MT">Montana</ion-select-option>-->
+        <!--<ion-select-option value="NE">Nebraska</ion-select-option>-->
+        <!--<ion-select-option value="NV">Nevada</ion-select-option>-->
+        <!--<ion-select-option value="NH">New Hampshire</ion-select-option>-->
+        <!--<ion-select-option value="NJ">New Jersey</ion-select-option>-->
+        <!--<ion-select-option value="NM">New Mexico</ion-select-option>-->
+        <!--<ion-select-option value="NY">New York</ion-select-option>-->
+        <!--<ion-select-option value="NC">North Carolina</ion-select-option>-->
+        <ion-select-option value="ND">North Dakota</ion-select-option>
+        <!--<ion-select-option value="OH">Ohio</ion-select-option>-->
+        <!--<ion-select-option value="OK">Oklahoma</ion-select-option>-->
+        <!--<ion-select-option value="OR">Oregon</ion-select-option>-->
+        <!--<ion-select-option value="PA">Pennsylvania</ion-select-option>-->
+        <!--<ion-select-option value="RI">Rhode Island</ion-select-option>-->
+        <!--<ion-select-option value="SC">South Carolina</ion-select-option>-->
+        <ion-select-option value="SD">South Dakota</ion-select-option>
+        <!--<ion-select-option value="TN">Tennessee</ion-select-option>-->
+        <!--<ion-select-option value="TX">Texas</ion-select-option>-->
+        <!--<ion-select-option value="UT">Utah</ion-select-option>-->
+        <!--<ion-select-option value="VT">Vermont</ion-select-option>-->
+        <!--<ion-select-option value="VA">Virginia</ion-select-option>-->
+        <!--<ion-select-option value="WA">Washington</ion-select-option>-->
+        <!--<ion-select-option value="WV">West Virginia</ion-select-option>-->
+        <ion-select-option value="WI">Wisconsin</ion-select-option>
+        <!--<ion-select-option value="WY">Wyoming</ion-select-option>-->
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">What is your zip code?<ion-text color="danger">*</ion-text></ion-label>
+      <ion-input [(ngModel)]="zip" placeholder="55901"></ion-input>
+    </ion-item>
+
+    <div class="ion-padding-top form-submit-button">
+      <ion-button (click)="submitForm()" expand="block" type="submit">Submit</ion-button>
+    </div>
+
+  </ion-list>
+</ion-content>

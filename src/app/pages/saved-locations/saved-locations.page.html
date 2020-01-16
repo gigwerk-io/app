@@ -1,0 +1,38 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Saved Location</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      ADD LOCATION
+    </ion-list-header>
+    <ion-item routerLink="/app/add-location">
+      <ion-icon slot="start" name="add"></ion-icon>
+      <ion-label>Add a Location Preference</ion-label>
+    </ion-item>
+
+
+  </ion-list>
+
+  <ion-list class="ion-padding">
+    <ion-list-header>
+      SAVED LOCATIONS
+    </ion-list-header>
+    <ion-item *ngFor="let location of locations" (click)="presentActionSheet(location.id)">
+      <ion-icon *ngIf="location.default" slot="end" name="checkmark"></ion-icon>
+      <ion-label>
+        <h3>{{location.street_address}}</h3>
+        <p>{{location.city}}, {{location.state}} {{location.zip}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

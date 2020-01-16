@@ -1,0 +1,43 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Select Your City</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let city of cities" style="border-radius: 2rem!important;">
+      <ion-item style="padding-right: 0!important;">
+        <h2>
+          {{city.city}}, {{city.state}}
+        </h2>
+      </ion-item>
+
+      <ion-slides>
+        <ion-slide style="max-height: 200px;overflow-y: hidden;overflow-x: hidden;">
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="assets/img/{{city.image}}">
+        </ion-slide>
+      </ion-slides>
+
+      <ion-card-content>
+        <p>{{city.description}}</p>
+      </ion-card-content>
+
+      <ion-row padding>
+        <ion-col text-center>
+          <ion-button  *ngIf="current == city.id" color="success" expand="block" shape="round" disabled>
+            <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
+            Selected
+          </ion-button>
+          <ion-button  *ngIf="current != city.id" color="success" expand="block" shape="round" (click)="selectCity(city)">
+            <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
+            Select City
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-list>
+</ion-content>

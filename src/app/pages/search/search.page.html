@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <form action=".">
+      <ion-searchbar [(ngModel)]="query"
+                     (ngModelChange)="onSearchInputChange($event)"
+                     [ngModelOptions]="{standalone: true}"
+                     name="search"
+                     class="searchbar"
+                     placeholder="Search People"
+                     autocomplete
+                     autocorrect
+                     animated>
+      </ion-searchbar>
+    </form>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeSearchPage()">
+        Cancel
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="users; else noSearch">
+    <ion-item href *ngFor="let user of users; let i = index;" [attr.data-index]="i" (click)="goToUserProfile(user.id)">
+      <ion-avatar slot="start">
+        <ion-img [src]="user.profile.image"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        {{user.name}}
+        <br>
+        <ion-note>@{{user.username}}</ion-note>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+  <ng-template #noSearch>
+    <ion-title>
+      <img src="../../../assets/img/binoculars.png" alt="No users found.">
+    </ion-title>
+  </ng-template>
+  <ion-title *ngIf="query_length == 0 && query_length != undefined">
+    <ion-note class="ion-text-center">No users found.</ion-note>
+  </ion-title>
+</ion-content>

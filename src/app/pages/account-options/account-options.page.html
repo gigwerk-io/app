@@ -1,0 +1,32 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Account Options</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      TEMPORARY OPTION
+    </ion-list-header>
+
+    <ion-item href (click)="deactivateAccount()">
+      <ion-icon slot="start" name="alert" color="primary"></ion-icon>
+      <ion-label color="primary">Deactivate My Account</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      PERMANENT OPTION
+    </ion-list-header>
+
+    <ion-item href (click)="deleteAccount()">
+      <ion-icon slot="start" name="nuclear" color="primary"></ion-icon>
+      <ion-label color="primary">Delete My Account</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

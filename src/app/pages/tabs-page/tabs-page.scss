@@ -1,0 +1,13 @@
+.tabbar {
+  justify-content: center;
+}
+
+.tab-button {
+  max-width: 200px;
+}
+
+::ng-deep ion-icon.icon-button {
+  background: var(--ion-color-primary-tint)!important;
+  color: white;
+  border-radius: 50%!important;
+}

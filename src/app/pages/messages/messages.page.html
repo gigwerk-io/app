@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons class="mobile-only" slot="start">
+      <ion-back-button defaultHref></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{toUser}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="presentActionSheet()" class="nav-button">
+        <ion-icon name="more"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-split-pane contentId="menu-content">
+  <!--  our side menu  -->
+  <ion-menu contentId="menu-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item *ngFor="let room of rooms" (click)="goToChatRoom(room.pusher_id)">
+          <ion-avatar slot="start">
+            <img src="{{getUserProfileImage(room.members)}}">
+          </ion-avatar>
+          <ion-label>
+            <h2>{{getUserName(room.members)}}</h2>
+            <p>{{getLastMessage(room)}}</p>
+          </ion-label>
+          <ion-note>
+            <small> {{room.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
+          </ion-note>
+          <ion-badge color="primary" slot="end" *ngIf="room.unread > 0">{{room.unread}}</ion-badge>
+        </ion-item>
+
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <!-- the main content -->
+  <ion-content margin-top padding-top margin-bottom padding-bottom padding-start padding-end #chatDisplay id="menu-content" class="message-wrap">
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+    <br>
+    <br>
+    <div *ngFor="let message of messages; let last = last"
+         class="message"
+         [class.left]=" message.sender_id != user_id"
+         [class.right]=" message.sender_id == user_id">
+      <img class="user-img" [src]="message.sender.profile.image" alt="avatar"
+           [routerLink]="'/app/profile/' + message.sender_id" routerDirection="forward">
+      <!--<ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>-->
+      <div class="msg-detail">
+        <div class="msg-info">
+          <p>{{message.isoFormat | amFromUtc | amLocal |  amTimeAgo:true}} ago</p>
+        </div>
+        <div class="msg-content">
+        <span class="triangle"
+              [class.left]=" message.sender_id != user_id"
+              [class.right]=" message.sender_id == user_id"></span>
+          <p class="line-breaker ">{{message.text}}</p>
+        </div>
+      </div>
+
+      {{last && !didScrollToBottomOnInit ? scrollToBottomOnInit() : ''}}
+    </div>
+    <br>
+    <br>
+  </ion-content>
+</ion-split-pane>
+
+<ion-footer no-border style="padding-left: 10px;">
+  <div class="input-wrap">
+    <ion-textarea placeholder="Text Message"
+                  #chatBox
+                  [(ngModel)]="pendingMessage"
+                  (focusin)="onFocus()"
+                  required
+                  autocapitalize
+                  autoGrow
+                  clearOnEdit="true"
+    ></ion-textarea>
+    <ion-button class="send-button" [disabled]="!pendingMessage" (click)="sendMessage()">
+      <ion-spinner *ngIf="sending" name="crescent"></ion-spinner>
+      <ion-icon mode="md" size="large" *ngIf="!sending" name="send"></ion-icon>
+    </ion-button>
+  </div>
+</ion-footer>

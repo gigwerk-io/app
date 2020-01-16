@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "946221753747",
+    "firebase_url": "https://favr-ionic.firebaseio.com",
+    "project_id": "favr-ionic",
+    "storage_bucket": "favr-ionic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946221753747:android:f505ee541cc0c5a3b03466",
+        "android_client_info": {
+          "package_name": "com.favrofficial.favr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "946221753747-9nfl2p61vrnjqck9trl9ds0c1sgqfgpr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW-mzxYboHe0qGn7HMIexVrscZhTnsJwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "946221753747-9nfl2p61vrnjqck9trl9ds0c1sgqfgpr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

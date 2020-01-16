@@ -1,0 +1,58 @@
+.page-title-header-profile {
+  float: right;
+  height: 32px;
+  width: 32px;
+}
+
+.green-progress {
+  --progress-background: var(--ion-color-success);
+}
+
+.nav-button {
+  background-color: var(--ion-color-primary-tint);
+  color: white;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+}
+
+.page-header-buttons {
+  flex-direction: row-reverse;
+}
+
+.page-title {
+  font-weight: 800;
+  margin: 0;
+  padding-top: 4px;
+  padding-bottom: 0;
+}
+
+.search-area {
+  --padding-bottom: 0;
+}
+
+.page-title-area {
+  padding-left: 0;
+  margin: 0 0 0 12px;
+}
+
+.page-title.md {
+  margin: 0;
+}
+
+.page-title-header-profile.md {
+  margin-right: 0;
+}
+
+.favr-logo {
+  margin-top: 5px;
+  height: 21px;
+}
+
+@media(min-width: 612px) {
+  .page-header {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+  }
+}

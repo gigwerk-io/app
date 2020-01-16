@@ -1,0 +1,32 @@
+.active {
+  color: var(--ion-color-primary);
+  ion-icon {
+    color: var(--ion-color-primary);
+  }
+}
+
+.logo {
+  background: transparent;
+}
+
+.menu-profile {
+  vertical-align: middle;
+  min-height: fit-content!important;
+  --min-height: 140px!important;
+}
+
+.profile-image {
+  height: 80px;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.side-menu {
+  display: none;
+}
+
+@media(min-width: 500px) {
+  .side-menu {
+    display: unset;
+  }
+}

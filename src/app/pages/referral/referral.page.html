@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/welcome"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Claim Your Bonus</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row justify-content-center align-items-center text-center>
+      <ion-card class="referral-card">
+        <img class="user-img" [src]="image" />
+        <ion-card-header>
+          <ion-card-subtitle>Earn $5 Now!</ion-card-subtitle>
+          <ion-card-title>{{name}}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          You have been invited by {{name}} to sign up for FAVR as a worker in {{location}}.
+          <br><br>
+          Complete our sign up process and we will transfer $5 to your account immediately!
+
+          <br><br>
+          <small>Once submitted, you will receive an email shortly for further steps.</small>
+        </ion-card-content>
+        <form #referralForm="ngForm">
+          <ion-list lines="full" class="ion-no-margin ion-no-padding">
+            <ion-item>
+              <ion-label position="stacked">Your Email <ion-text color="danger">*</ion-text></ion-label>
+              <ion-input type="email" placeholder="example@gmail.com" #email="ngModel" [(ngModel)]="newReferral.email" name="email" required autofocus></ion-input>
+            </ion-item>
+          </ion-list>
+
+          <ion-text color="danger">
+            <p [hidden]="email.valid || submitted == false" class="ion-padding-start">
+              Email is required
+            </p>
+          </ion-text>
+
+          <div class="ion-padding">
+            <ion-button expand="block" type="submit" class="ion-no-margin" (click)="submitReferral(referralForm)" >Download & Claim</ion-button>
+          </div>
+        </form>
+        <ion-card-content>
+          <small>
+            You must be new to FAVR and in an eligible market to qualify.
+            Cannot be combined with other offers. Subject to FAVR's Terms of Service.
+
+          </small>
+        </ion-card-content>
+      </ion-card>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

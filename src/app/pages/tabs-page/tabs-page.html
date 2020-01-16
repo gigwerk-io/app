@@ -1,0 +1,32 @@
+<ion-tabs>
+  <ion-tab-bar *ngIf="tabSlot === 'bottom'" slot="bottom">
+
+    <ion-tab-button tab="marketplace">
+      <ion-icon mode="md" name="home"></ion-icon>
+      <ion-label>Marketplace</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="friends">
+      <ion-icon name="contacts"></ion-icon>
+      <ion-label>Friends</ion-label>
+      <ion-badge *ngIf="friendCount > 0" color="danger">{{friendCount}}</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button (click)="openRequestPage()">
+      <ion-icon name="add-circle-outline" class="icon-button"></ion-icon>
+      <ion-label>Request</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="notifications">
+      <ion-icon name="notifications"></ion-icon>
+      <ion-label>Notifications</ion-label>
+      <ion-badge *ngIf="notificationCount > 0" color="danger">{{notificationCount}}</ion-badge>
+    </ion-tab-button>
+
+    <ion-tab-button tab="settings">
+      <ion-icon name="settings"></ion-icon>
+      <ion-label>Settings</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+</ion-tabs>

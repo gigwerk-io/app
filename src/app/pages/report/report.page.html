@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeReportPage()" slot="start">
+        close
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Report {{type === 'User' ? extra.user.user.first_name : 'Task'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="ion-padding">
+    <div style="text-align: center;">
+      <img src="../../../assets/img/flag.png" alt="Report an issue.">
+    </div>
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-textarea spellcheck="true" [(ngModel)]="description" placeholder="Please say more about the issue..."></ion-textarea>
+    </ion-item>
+
+    <div class="ion-padding-top form-submit-button">
+      <ion-button expand="block" type="submit" [disabled]="!description" (click)="onSubmitReport()">Submit Report</ion-button>
+    </div>
+  </ion-list>
+</ion-content>

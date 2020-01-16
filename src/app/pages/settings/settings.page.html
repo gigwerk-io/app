@@ -1,0 +1,195 @@
+<favr-page-header
+  pageTitle="Settings"
+></favr-page-header>
+
+<ion-content>
+  <!-- PREFERENCES SECTION -->
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      PREFERENCES
+    </ion-list-header>
+
+    <ion-item routerLink="/app/edit-profile">
+      <ion-icon slot="start" name="contact"></ion-icon>
+      <ion-label> Edit Profile</ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/notification-preferences">
+      <ion-icon slot="start" name="notifications-outline"></ion-icon>
+      <ion-label> Notifications </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/privacy-preferences">
+      <ion-icon slot="start" name="eye"></ion-icon>
+      <ion-label> Privacy </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/saved-locations">
+      <ion-icon slot="start" name="home"></ion-icon>
+      <ion-label> Location </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/select-city">
+      <ion-icon slot="start" name="pin"></ion-icon>
+      <ion-label> Select City </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon slot="start" name="moon"></ion-icon>
+      Dark Mode
+      <ion-toggle slot="end" color="primary" [(ngModel)]="darkMode" [checked]="darkMode" (ionChange)="setDarkMode()"></ion-toggle>
+    </ion-item>
+  </ion-list>
+
+  <!--SECURITY SECTION-->
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      SECURITY
+    </ion-list-header>
+
+    <ion-item routerLink="/app/reset-password">
+      <ion-icon slot="start" name="lock"></ion-icon>
+      <ion-label> Reset Password</ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/account-options">
+      <ion-icon slot="start" name="nuclear" color="primary"></ion-icon>
+      <ion-label color="primary"> Account Options </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/remembered-devices">
+      <ion-icon slot="start" name="phone-portrait"></ion-icon>
+      <ion-label> Remembered Devices </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--PAYMENTS SECTION-->
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      PAYMENTS
+    </ion-list-header>
+
+    <ion-item routerLink="/app/manage-cards">
+      <ion-icon slot="start" name="card"></ion-icon>
+      <ion-label> Manage Cards</ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/set-up-payments">
+      <ion-icon slot="start" name="cash"></ion-icon>
+      <ion-label> Add Payment Method </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/past-payments">
+      <ion-icon slot="start" name="paper"></ion-icon>
+      <ion-label> Payment History </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--TRANSFERS SECTION (if freelancer)-->
+  <ion-list class="ion-padding-start" *ngIf="isFreelancer">
+    <ion-list-header>
+      TRANSFERS
+    </ion-list-header>
+
+    <ion-item routerLink="/app/connect-bank-account">
+      <ion-icon slot="start" name="card"></ion-icon>
+      <!-- Dont show this if they belong to an organization.-->
+      <ion-label> Connect Bank Account </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/current-balance">
+      <ion-icon slot="start" name="logo-usd"></ion-icon>
+      <ion-label> Current Balance </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/past-transfers">
+      <ion-icon slot="start" name="paper"></ion-icon>
+      <ion-label> Payout History </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--CREDIT SECTION (show if not part of organization.)-->
+  <ion-list class="ion-padding-start" *ngIf="seeCredit">
+    <ion-list-header>
+      CREDIT
+    </ion-list-header>
+
+    <ion-item routerLink="/app/credit-amount">
+      <ion-icon slot="start" name="card"></ion-icon>
+      <ion-label> Current Credit Amount </ion-label>
+    </ion-item>
+
+    <ion-item routerLink="/app/redeem-code">
+      <ion-icon slot="start" name="barcode"></ion-icon>
+      <ion-label> Redeem Code </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--Support Section-->
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      SUPPORT
+    </ion-list-header>
+
+    <ion-item href (click)="openSupport()">
+      <ion-icon slot="start" class="help-icon" name="help"></ion-icon>
+      <ion-label> Help </ion-label>
+    </ion-item>
+
+  </ion-list>
+
+  <!--Share Section-->
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      Invite Friends
+    </ion-list-header>
+
+    <ion-item routerLink="/app/refer-a-customer">
+      <ion-icon slot="start" name="ribbon"></ion-icon>
+      <ion-label>Refer a Customer (Get $10)</ion-label>
+    </ion-item>
+    <ion-item *ngIf="isFreelancer" routerLink="/app/refer-a-worker">
+      <ion-icon slot="start" name="cash"></ion-icon>
+      <ion-label>Refer a Worker (Get $5)</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!--LEGAL SECTION-->
+  <ion-list class="ion-padding-start">
+    <ion-list-header>
+      LEGAL
+    </ion-list-header>
+
+    <ion-item href (click)="openTerms()">
+      <ion-icon slot="start" name="document"></ion-icon>
+      <ion-label> Terms of Service </ion-label>
+    </ion-item>
+
+    <ion-item href (click)="openPrivacy()">
+      <ion-icon slot="start" name="megaphone"></ion-icon>
+      <ion-label> Privacy Policy </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list class="ion-padding-start">
+    <ion-item href (click)="onLogout()">
+      <ion-icon slot="start" name="exit" color="primary"></ion-icon>
+      <ion-label color="primary">Sign Out</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-footer style="background: transparent;">
+    <ion-row>
+      <ion-col padding-start text-left>
+        <ion-note>
+          &copy;{{COPY_YEAR}} FAVR Inc.
+        </ion-note>
+      </ion-col>
+      <ion-col padding-end text-right>
+        <ion-note>
+          v{{VERSION}}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+  </ion-footer>
+</ion-content>

@@ -1,0 +1,32 @@
+<ion-header no-border>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color='primary' (click)="startApp()" [hidden]="!showSkip">Skip</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-slides #slides (ionSlideWillChange)="onSlideChangeStart($event)" pager="false">
+    <ion-slide>
+      <h2 class="slide-title">
+        What is
+        <b>FAVR</b>
+      </h2>
+      <p>
+        Favr is an on-demand peer to peer platform that allows users to request a wide variety of jobs such as grocery pickup, seasonal, assembly or home improvement jobs at your own set price.
+      </p>
+      <img src="assets/img/previews/img-1.png" class="slide-image" />
+    </ion-slide>
+
+    <ion-slide>
+      <h2 class="slide-title">Get Started</h2>
+      <ion-button fill="clear" (click)="startApp()">
+        Continue
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
+      <br>
+      <img src="assets/img/previews/img-8.png" class="slide-image" />
+    </ion-slide>
+  </ion-slides>
+</ion-content>

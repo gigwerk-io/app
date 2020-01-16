@@ -1,0 +1,33 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/app/tabs/settings"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Refer a Friend</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list margin-top padding-top>
+    <div style="text-align: center;">
+      <img src="../../../assets/img/bank.png" height="128" width="128" alt="Earn money">
+    </div>
+    <h2>
+      <ion-card-subtitle>Invite Friends</ion-card-subtitle>
+      <ion-card-title>Earn $10 Per Referral</ion-card-title>
+    </h2>
+    <ul>
+      <li>Have your friend setup an account with FAVR.</li>
+      <li>Both of you will receive $10 to use; on their first task requested.</li>
+    </ul>
+    <ion-button expand="block" (click)="shareReferral()">
+      Share
+      <ion-icon slot="end" name="share-alt"></ion-icon>
+    </ion-button>
+    <ion-note>
+      <small>
+        Note: valid for first 30 days. Earn up to $500 in credit for referrals.
+      </small>
+    </ion-note>
+  </ion-list>
+</ion-content>

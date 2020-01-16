@@ -1,0 +1,30 @@
+ion-col {
+  text-align: center;
+}
+
+.active {
+  .category-card {
+    border-color: var(--ion-color-primary)!important;
+    box-shadow: 0 4px 16px var(--ion-color-primary)!important;
+  }
+}
+
+.category-button {
+  padding: 4px;
+  background: transparent;
+  .category-card {
+    min-width: 100%;
+    margin: 0;
+    border: 2px solid;
+    .category-card-content {
+      text-align: center;
+      .category-icon {
+        width: available;
+      }
+    }
+    .category-title {
+      font-size: x-small;
+      font-weight: bolder;
+    }
+  }
+}
