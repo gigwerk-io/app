@@ -9,10 +9,7 @@
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-button class="back-button" float-left (click)="goBack()">
-          <ion-icon no-margin no-padding size="large" name="arrow-back"></ion-icon>
-          <div style="margin-left: -5px;">Back</div>
-        </ion-button>
+        <ion-back-button color="primary" icon="md-arrow-back"  mode="md" (click)="goBack()" defaultHref="/signup"></ion-back-button>
       </ion-buttons>
       <ion-title class="animated fadeIn">
         {{subPageTitle}}
