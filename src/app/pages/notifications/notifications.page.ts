@@ -43,8 +43,10 @@ export class NotificationsPage implements OnInit {
 
   getNewNotifications() {
     this.notificationService.getNewNotifications().subscribe(res => {
-      this.notifications = res.notifications;
-      this.changeRef.detectChanges();
+      setTimeout(() => {
+        this.notifications = res.notifications;
+        this.changeRef.detectChanges();
+      }, 2000);
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {
@@ -61,8 +63,10 @@ export class NotificationsPage implements OnInit {
 
   getAllNotifications() {
     this.notificationService.getAllNotifications().subscribe(res => {
-      this.notifications = res.notifications;
-      this.changeRef.detectChanges();
+      setTimeout(() => {
+        this.notifications = res.notifications;
+        this.changeRef.detectChanges();
+      }, 2000);
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {

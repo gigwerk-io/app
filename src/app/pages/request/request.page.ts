@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
-  ActionSheetController,
+  ActionSheetController, AlertController,
   Events,
   IonContent,
   IonSlides, LoadingController,
@@ -94,7 +94,8 @@ export class RequestPage implements OnInit, OnDestroy {
               public platform: Platform,
               private favrService: FavrDataService,
               private financeService: FinanceService,
-              private loadingCtrl: LoadingController) {
+              private loadingCtrl: LoadingController,
+              private alertCtrl: AlertController) {
     this.favrService.getCategories().subscribe(res => {
       this.categories = res.categories;
     });
@@ -134,6 +135,28 @@ export class RequestPage implements OnInit, OnDestroy {
     this.financeService.getCreditBalance().then(res => {
       this.credit = parseInt(res.credit.toString().replace('$', ''), 10);
     });
+  }
+
+  async alertConfirmClose() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      // tslint:disable-next-line:max-line-length
+      message: 'You are about to <strong>close</strong> the request process while in the middle of your task request. Your request will <strong>NOT be saved</strong>.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes, close',
+          handler: () => {
+            this.closeRequestPage();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async closeRequestPage(): Promise<boolean> {

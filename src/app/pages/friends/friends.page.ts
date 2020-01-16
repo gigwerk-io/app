@@ -38,7 +38,7 @@ export class FriendsPage implements OnInit {
     this.secondButton = false;
     this.clickType = 'search';
     this.friendService.searchUsers(query).subscribe(res => {
-      this.users = res;
+      setTimeout(() => this.users = res, 2000);
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {
@@ -87,8 +87,10 @@ export class FriendsPage implements OnInit {
     this.btnClass = 'person-add';
     this.secondButton = false;
     this.friendService.getRecommendedFriends().subscribe(res => {
-      this.users = res;
-      this.changeRef.detectChanges();
+      setTimeout(() => {
+        this.users = res;
+        this.changeRef.detectChanges();
+      }, 2000);
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {
@@ -107,8 +109,10 @@ export class FriendsPage implements OnInit {
     this.btnClass = 'chatbubbles';
     this.secondButton = false;
     this.friendService.getMyFriends().subscribe(res => {
-      this.users = res;
-      this.changeRef.detectChanges();
+      setTimeout(() => {
+        this.users = res;
+        this.changeRef.detectChanges();
+      }, 2000);
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {
@@ -127,8 +131,10 @@ export class FriendsPage implements OnInit {
     this.btnClass = 'checkmark';
     this.secondButton = true;
     this.friendService.getFriendRequests().subscribe(res => {
-      this.users = res;
-      this.changeRef.detectChanges();
+      setTimeout(() => {
+        this.users = res;
+        this.changeRef.detectChanges();
+      }, 2000);
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {

@@ -31,6 +31,7 @@ export interface User {
 }
 
 export interface PastJob {
+  price: number;
   approved: number;
   arrived_at: number;
   complete_at: number;

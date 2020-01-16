@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 
-import {Events, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
+import {Config, Events, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
 
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -44,12 +44,18 @@ export class AppComponent implements OnInit {
     private toastCtrl: ToastController,
     private screenOrientation: ScreenOrientation,
     public tabsPage: TabsPage,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private config: Config
   ) {
     this.initializeApp();
   }
 
   async ngOnInit() {
+    if (this.platform.is('desktop')) {
+      this.config.set('navAnimation', null);
+      this.config.set('animated', false);
+    }
+
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
         if (profile) {

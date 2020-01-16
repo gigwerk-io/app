@@ -60,15 +60,15 @@
     </ion-toolbar>
     <div text-center padding-top>
       <div margin-bottom class="img-container">
-        <img [src]="(profile.user.image) ? profile.user.image : '../../assets/img/user.png'"
+        <ion-img [src]="(profile.user.image) ? profile.user.image : '../../assets/img/user.png'"
              (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
-             alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}">
+                 alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></ion-img>
       </div>
       <ion-note>
         @{{profile.user.user.username}}
-        <img *ngIf="profile.user.user.role == Role.VERIFIED_FREELANCER"
+        <ion-img *ngIf="profile.user.user.role == Role.VERIFIED_FREELANCER"
              class="badge"
-             src="../../../assets/img/verified.png" alt="This user is a Verified Freelancer">
+             src="../../../assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
       </ion-note>
       <p>
         <ion-chip [color]="status.class">

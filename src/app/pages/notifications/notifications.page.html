@@ -14,7 +14,7 @@
   </ion-segment>
 
   <!-- List of Text Items -->
-  <ion-list>
+  <ion-list *ngIf="notifications; else skeletonNotifications">
     <ion-item *ngFor="let notification of notifications; let i = index" [attr.data-index]="i" href (click)="view(i, notification)" [class]="notificationClass">
       <ion-icon slot="start" name="notifications"></ion-icon>
       <ion-label>
@@ -26,6 +26,24 @@
       </ion-note>
     </ion-item>
   </ion-list>
+
+  <ng-template #skeletonNotifications>
+    <ion-list>
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 9]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 70%;"></ion-skeleton-text>
+          </h2>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 
   <!--<ion-list class="read">-->
     <!--<ion-card *ngFor="let notification of notifications; let i = index" [attr.data-index]="i">-->
