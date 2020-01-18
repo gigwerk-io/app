@@ -10,6 +10,8 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test --watch=false",
+    "android": "ionic cordova run android",
+    "ios": "ionic cordova run ios",
     "lint": "ng lint"
   },
   "repository": {

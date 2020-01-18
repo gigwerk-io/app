@@ -43,10 +43,8 @@ export class NotificationsPage implements OnInit {
 
   getNewNotifications() {
     this.notificationService.getNewNotifications().subscribe(res => {
-      setTimeout(() => {
-        this.notifications = res.notifications;
-        this.changeRef.detectChanges();
-      }, 2000);
+      this.notifications = res.notifications;
+      this.changeRef.detectChanges();
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {
@@ -63,10 +61,8 @@ export class NotificationsPage implements OnInit {
 
   getAllNotifications() {
     this.notificationService.getAllNotifications().subscribe(res => {
-      setTimeout(() => {
-        this.notifications = res.notifications;
-        this.changeRef.detectChanges();
-      }, 2000);
+      this.notifications = res.notifications;
+      this.changeRef.detectChanges();
     }, error => {
       if (error.status === 401) {
         this.authService.isValidToken().subscribe(res => {
@@ -100,10 +96,8 @@ export class NotificationsPage implements OnInit {
 
   view(index, notification: Notification) {
     this.router.navigate([notification.action.page, notification.action.params]);
-    setTimeout(() => {
-      this.notifications.splice(index, 1);
-      this.notificationService.markNotificationAsRead(notification.id).subscribe();
-    }, 1000);
+    this.notifications.splice(index, 1);
+    this.notificationService.markNotificationAsRead(notification.id).subscribe();
   }
 
   async presentToast(message) {
