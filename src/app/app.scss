@@ -261,3 +261,11 @@ ion-textarea.md {
 ion-modal.transparent-modal {
   --background: transparent!important;
 }
+
+@media(min-width: 612px) {
+  .marketplace-card {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 600px;
+  }
+}

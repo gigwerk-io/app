@@ -4,14 +4,14 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 export const environment = {
   production: false,
-  apiUrl: 'https://lumen.askfavr.com',
+  apiUrl: 'https://api.askfavr.test',
   pusherId: '3e1e4ea4e682c0c4bad7',
   stripeKey: 'pk_test_WRhN4BKmkqctL2nrjCPJCTXi',
   googleAnalyticsId: 'UA-122971401-1',
   intercomId: 'yvoar9nd',
   gcmKey: 'BBzQ8VDNcr9JDe706ocnMMKZ5FnshUOi6ylHcsvzlkpJfLsEQiTG31XToH2LfoEDylahzcgUqyWbkSEtlhxU-jg',
   origin: 'https://dev-m.askfavr.com',
-  version: '2.0.2'
+  version: '2.0.3'
 };
 
 /*

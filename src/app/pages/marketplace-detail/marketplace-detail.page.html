@@ -17,7 +17,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list *ngIf="mainMarketplaceTask">
+  <ion-list *ngIf="mainMarketplaceTask; else skeletonList">
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 1')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_one">
         <img [src]="mainMarketplaceTask.image_one" alt="image one">
@@ -327,4 +327,28 @@
       </ion-row>
     </ion-grid>
   </ion-list>
+
+  <ng-template #skeletonList>
+    <ion-list>
+      <ion-slides pager="true">
+        <ion-slide class="marketplace-slide-image">
+          <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
+        </ion-slide>
+      </ion-slides>
+
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 9]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 70%;"></ion-skeleton-text>
+          </h2>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 </ion-content>

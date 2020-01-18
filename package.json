@@ -1,15 +1,17 @@
 {
   "name": "favr-frontend",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "ios, android and web\n",
   "author": "FAVR Team <contact@askfavr.com>",
-  "license": "Apache-2.0",
+  "license": "Closed Source",
   "scripts": {
     "ng": "ng",
     "analyze": "ng build --prod --stats-json && webpack-bundle-analyzer www/stats-es5.json",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test --watch=false",
+    "android": "ionic cordova run android",
+    "ios": "ionic cordova run ios",
     "lint": "ng lint"
   },
   "repository": {

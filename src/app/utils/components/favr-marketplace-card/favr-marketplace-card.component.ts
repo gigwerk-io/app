@@ -20,6 +20,9 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   @Input() mainMarketplaceTask: MainMarketplaceTask;
   @Input() freelancerPastTask: PastJob;
   @Output() taskActionTaken: EventEmitter<string> = new EventEmitter();
+
+  mainMarketTask: MainMarketplaceTask;
+  pastJob: PastJob;
   TaskStatus = TaskStatus;
 
   constructor(private photoViewer: PhotoViewer,
@@ -51,7 +54,12 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    setTimeout(() => {
+      this.mainMarketTask = this.mainMarketplaceTask;
+      this.pastJob = this.freelancerPastTask;
+    }, 2000);
+  }
 
   ngOnDestroy(): void {
     this.events.unsubscribe('task-action');

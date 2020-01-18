@@ -96,10 +96,8 @@ export class NotificationsPage implements OnInit {
 
   view(index, notification: Notification) {
     this.router.navigate([notification.action.page, notification.action.params]);
-    setTimeout(() => {
-      this.notifications.splice(index, 1);
-      this.notificationService.markNotificationAsRead(notification.id).subscribe();
-    }, 1000);
+    this.notifications.splice(index, 1);
+    this.notificationService.markNotificationAsRead(notification.id).subscribe();
   }
 
   async presentToast(message) {
