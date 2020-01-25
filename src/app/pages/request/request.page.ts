@@ -96,9 +96,6 @@ export class RequestPage implements OnInit, OnDestroy {
               private financeService: FinanceService,
               private loadingCtrl: LoadingController,
               private alertCtrl: AlertController) {
-    this.favrService.getCategories().subscribe(res => {
-      this.categories = res.categories;
-    });
     this.events.subscribe('task-edit', (taskRequest: MainMarketplaceTask) => {
       if (taskRequest) {
         this.isTaskEdit = true;
@@ -125,6 +122,7 @@ export class RequestPage implements OnInit, OnDestroy {
     this.isMobileOnly = this.platform.is('android') || this.platform.is('ios');
     this.getLocations();
     this.getCreditBalance();
+    this.getCategories();
   }
 
   ngOnDestroy(): void {
@@ -135,6 +133,10 @@ export class RequestPage implements OnInit, OnDestroy {
     this.financeService.getCreditBalance().then(res => {
       this.credit = parseInt(res.credit.toString().replace('$', ''), 10);
     });
+  }
+
+  getCategories() {
+    this.favrService.getCategories().toPromise().then(res => this.categories = res.categories);
   }
 
   async alertConfirmClose() {
