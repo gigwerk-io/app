@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="md-arrow-back" mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title>Task Details</ion-title>
     <ion-buttons slot="end">
@@ -20,21 +20,32 @@
   <ion-list *ngIf="mainMarketplaceTask; else skeletonList">
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 1')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_one">
-        <img [src]="mainMarketplaceTask.image_one" alt="image one">
+        <ion-img *ngIf="!noImage1; else noImageOne" [src]="mainMarketplaceTask.image_one" (ionError)="noImage1 = true" alt="image one"></ion-img>
+        <ng-template #noImageOne>
+          <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
+        </ng-template>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_two, 'Image 2')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_two">
-        <img [src]="mainMarketplaceTask.image_two" alt="image two">
+        <ion-img *ngIf="!noImage2; else noImageTwo" [src]="mainMarketplaceTask.image_two" (ionError)="noImage2 = true" alt="image two"></ion-img>
+        <ng-template #noImageTwo>
+          <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
+        </ng-template>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 3')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_three">
-        <img [src]="mainMarketplaceTask.image_three" alt="image three">
+        <ion-img *ngIf="!noImage3; else noImageThree" [src]="mainMarketplaceTask.image_three" (ionError)="noImage3 = true" alt="image three"></ion-img>
+        <ng-template #noImageThree>
+          <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
+        </ng-template>
       </ion-slide>
     </ion-slides>
 
     <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{mainMarketplaceTask.customer.id}}">
       <ion-avatar slot="start">
-        <img [src]="mainMarketplaceTask.customer.profile.image" alt="profile picture">
+        <ion-img
+          [src]="mainMarketplaceTask.customer.profile.image ? mainMarketplaceTask.customer.profile.image : './assets/img/user.png'"
+          (ionError)="mainMarketplaceTask.customer.profile.image = undefined" alt="profile picture"></ion-img>
       </ion-avatar>
       {{mainMarketplaceTask.customer.first_name}} {{mainMarketplaceTask.customer.last_name}}
       <div slot="end">
@@ -54,7 +65,8 @@
           </ng-container>
 
           <ng-template #completedTime>
-            <div class="complete-by-time">Completed on {{mainMarketplaceTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM d, yyyy'}}</div>
+            <div class="complete-by-time">Completed
+              on {{mainMarketplaceTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM d, yyyy'}}</div>
           </ng-template>
           <ion-note class="note posted-time">
             Posted {{mainMarketplaceTask.postedFormat | date}}
@@ -77,10 +89,14 @@
     <ion-grid padding-start padding-end>
 
       <ng-container *ngIf="mainMarketplaceTask.proposals">
-        <ion-row *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE || mainMarketplaceTask.status != TaskStatus.REQUESTED && isOwner" routerLink="/app/profile/{{mainMarketplaceTask.proposals[0].user_id}}" routerDirection="forward">
+        <ion-row
+          *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE || mainMarketplaceTask.status != TaskStatus.REQUESTED && isOwner"
+          routerLink="/app/profile/{{mainMarketplaceTask.proposals[0].user_id}}" routerDirection="forward">
           <ion-col size="3">
             <ion-avatar>
-              <img [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : '../../../assets/img/user.png'" alt="profile picture">
+              <img
+                [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : '../../../assets/img/user.png'"
+                alt="profile picture">
             </ion-avatar>
           </ion-col>
           <ion-col size="9" padding-top>
@@ -102,10 +118,10 @@
       <ion-row padding-bottom>
         <ion-col *ngIf="mainMarketplaceTask.action === 2" class="ion-text-center">
           <ion-button
-                      (click)="freelancerAcceptTask()"
-                      fill="outline"
-                      size="small"
-                      color="primary">
+            (click)="freelancerAcceptTask()"
+            fill="outline"
+            size="small"
+            color="primary">
             <ion-icon name="thumbs-up" slot="start"></ion-icon>
             Accept
           </ion-button>
@@ -160,14 +176,16 @@
 
         <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
           <!--TODO: work on approval system instead of this work around-->
-          <ion-button (click)="customerApproveFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline" size="small" color="primary">
+          <ion-button (click)="customerApproveFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
+                      size="small" color="primary">
             <ion-icon name="thumbs-up" slot="start"></ion-icon>
             Approve
           </ion-button>
         </ion-col>
 
         <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
-          <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline" size="small" color="primary">
+          <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
+                      size="small" color="primary">
             <ion-icon name="thumbs-down" slot="start"></ion-icon>
             Reject
           </ion-button>
@@ -202,7 +220,8 @@
 
       <ion-row padding-bottom>
         <ion-col size="3">
-          <img src="../../../assets/img/{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}" class="marketplace-detail-icons">
+          <img src="../../../assets/img/{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}"
+               class="marketplace-detail-icons">
         </ion-col>
         <ion-col size="9">
           <b>Task Category:</b>
@@ -293,17 +312,17 @@
           <img src="../../../assets/img/calendar.png" class="marketplace-detail-icons">
         </ion-col>
         <ion-col size="9">
-            <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else completedOn">
-              <b>Complete Before:</b>
-              <br>
-              {{mainMarketplaceTask.isoFormat | date: 'MMM d, yyyy h:mm a'}}
-            </ng-container>
+          <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else completedOn">
+            <b>Complete Before:</b>
+            <br>
+            {{mainMarketplaceTask.isoFormat | date: 'MMM d, yyyy h:mm a'}}
+          </ng-container>
 
-            <ng-template #completedOn>
-              <b>Completed On:</b>
-              <br>
-              {{mainMarketplaceTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM d, yyyy h:mm a'}}
-            </ng-template>
+          <ng-template #completedOn>
+            <b>Completed On:</b>
+            <br>
+            {{mainMarketplaceTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM d, yyyy h:mm a'}}
+          </ng-template>
         </ion-col>
       </ion-row>
 

@@ -34,6 +34,9 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   Categories;
   TaskStatus = TaskStatus;
   credit: number;
+  noImage1 = false;
+  noImage2 = false;
+  noImage3 = false;
 
   constructor(private modalCtrl: ModalController,
               private loadingCtrl: LoadingController,

@@ -14,7 +14,10 @@
   <ion-list>
     <ion-item *ngFor="let room of rooms" (click)="goToChatRoom(room.pusher_id)">
       <ion-avatar slot="start">
-        <img src="{{getUserProfileImage(room.members)}}">
+        <ion-img *ngIf="!noImage; else defaultProfileImage" src="{{getUserProfileImage(room.members)}}" (ionError)="noImage = true" alt="Profile image"></ion-img>
+        <ng-template #defaultProfileImage>
+          <ion-img src="./assets/img/user.png" alt="Profile image"></ion-img>
+        </ng-template>
       </ion-avatar>
       <ion-label>
         <h2>{{getUserName(room.members)}}</h2>

@@ -3,7 +3,7 @@
     <ion-buttons>
       <ion-button href="https://askfavr.com" target="_blank">
         <ion-avatar style="--border-radius: none">
-          <img src="../assets/brand/favicon.ico" alt="favr logo">
+          <ion-img src="../assets/brand/favicon.ico" alt="favr logo"></ion-img>
         </ion-avatar>
       </ion-button>
     </ion-buttons>
@@ -44,7 +44,7 @@
       <!--</ion-button>-->
 
       <ion-avatar slot="end" routerLink="app/profile/{{profileId}}" style="height: 32px;width: 32px;cursor: pointer">
-        <img [src]="profileImage ? profileImage : '../assets/img/user.png'" alt="profile picture">
+        <ion-img [src]="profileImage ? profileImage : '../assets/img/user.png'" alt="profile picture" (ionError)="profileImage = undefined"></ion-img>
       </ion-avatar>
     </ion-buttons>
   </ion-tab-bar>

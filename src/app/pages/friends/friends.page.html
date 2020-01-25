@@ -32,7 +32,7 @@
   <ion-list *ngIf="users; else skeletonFriends">
     <ion-item [detail]="(btnClass == 'arrow-forward')" *ngFor="let user of users; let i = index;" [attr.data-index]="i">
       <ion-avatar slot="start" (click)="goToUserProfile(user.id)">
-        <ion-img [src]="user.profile.image" alt="profile image"></ion-img>
+        <ion-img [src]="!noImage ? user.profile.image : './assets/img/user.png'" alt="profile image" (ionError)="noImage = true"></ion-img>
       </ion-avatar>
       <ion-label (click)="goToUserProfile(user.id)">
         {{user.name}}

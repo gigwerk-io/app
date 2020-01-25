@@ -19,6 +19,8 @@ export class FriendsPage implements OnInit {
   btnClass: string;
   secondButton = false;
   clickType = 'friends';
+  noImage = false;
+
   constructor(private friendService: FriendsService,
               private chatService: ChatService,
               private router: Router,

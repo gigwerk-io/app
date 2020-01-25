@@ -24,6 +24,10 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   mainMarketTask: MainMarketplaceTask;
   pastJob: PastJob;
   TaskStatus = TaskStatus;
+  profileImgLoaded = false;
+  noImage1 = false;
+  noImage2 = false;
+  noImage3 = false;
 
   constructor(private photoViewer: PhotoViewer,
               private loadingCtrl: LoadingController,
