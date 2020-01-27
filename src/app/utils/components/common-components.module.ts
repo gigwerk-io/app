@@ -8,11 +8,13 @@ import {RouterModule} from '@angular/router';
 import {FavrCategoryCardButtonsComponent} from './favr-category-card-buttons/favr-category-card-buttons.component';
 import {MomentModule} from 'ngx-moment';
 import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
+import {ImagePreloaderDirective} from '../directives/image-preloader.directive';
 
 const COMPONENTS = [
   FavrCategoryCardButtonsComponent,
   FavrMarketplaceCardComponent,
-  FavrPageHeaderComponent
+  FavrPageHeaderComponent,
+  ImagePreloaderDirective,
 ];
 
 const MODULES = [
@@ -21,7 +23,7 @@ const MODULES = [
   IonicModule,
   MomentModule,
   RouterModule,
-  NgbRatingModule
+  NgbRatingModule,
 ];
 
 @NgModule({

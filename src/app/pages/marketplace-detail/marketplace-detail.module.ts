@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { MarketplaceDetailPage } from './marketplace-detail.page';
 import {MomentModule} from 'ngx-moment';
+import {CommonComponentsModule} from '../../utils/components/common-components.module';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
+    CommonComponentsModule,
     CommonModule,
     FormsModule,
     IonicModule,

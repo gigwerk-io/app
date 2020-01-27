@@ -3,29 +3,17 @@
   <ion-slides [pager]="true">
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 1')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_one">
-      <ion-img *ngIf="!noImage1; else noImageOne" [src]="mainMarketTask.image_one" (ionError)="noImage1 = true"
-               alt="image one"></ion-img>
-      <ng-template #noImageOne>
-        <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
-      </ng-template>
+      <ion-img [appImagePreloader]="mainMarketTask.image_one" alt="Task image one"></ion-img>
     </ion-slide>
 
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_two, 'Image 2')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_two">
-      <ion-img *ngIf="!noImage2; else noImageTwo" [src]="mainMarketTask.image_two" (ionError)="noImage2 = true"
-               alt="image two"></ion-img>
-      <ng-template #noImageTwo>
-        <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
-      </ng-template>
+      <ion-img [appImagePreloader]="mainMarketTask.image_two" alt="Task image two"></ion-img>
     </ion-slide>
 
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 3')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_three">
-      <ion-img *ngIf="!noImage3; else noImageThree" [src]="mainMarketTask.image_three" (ionError)="noImage3 = true"
-               alt="image three"></ion-img>
-      <ng-template #noImageThree>
-        <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
-      </ng-template>
+      <ion-img [appImagePreloader]="mainMarketTask.image_three" alt="Task image three"></ion-img>
     </ion-slide>
   </ion-slides>
 
@@ -164,16 +152,15 @@
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 1')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_one">
-        <ion-img *ngIf="!noImage1; else noImageOne" [src]="pastJob.marketplace.image_one" (ionError)="noImage1 = true"
+        <ion-img  [src]="pastJob.marketplace.image_one" (ionImgDidLoad)="noImage1 = false"
+                  [hidden]="noImage1"
                  alt="image one"></ion-img>
-        <ng-template #noImageOne>
-          <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
-        </ng-template>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_two, 'Image 2')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_two">
-        <ion-img *ngIf="!noImage2; else noImageTwo" [src]="pastJob.marketplace.image_two" (ionError)="noImage2 = true"
+        <ion-img [src]="pastJob.marketplace.image_two" (ionImgDidLoad)="noImage2 = false"
+                 [hidden]="noImage2"
                  alt="image two"></ion-img>
         <ng-template #noImageTwo>
           <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
@@ -182,8 +169,9 @@
 
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 3')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_three">
-        <ion-img *ngIf="!noImage3; else noImageThree" [src]="pastJob.marketplace.image_three"
-                 (ionError)="noImage3 = true" alt="image three"></ion-img>
+        <ion-img [src]="pastJob.marketplace.image_three" (ionImgDidLoad)="noImage3 = false"
+                 [hidden]="noImage3"
+                 alt="image three"></ion-img>
         <ng-template #noImageThree>
           <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
         </ng-template>
