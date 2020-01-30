@@ -6,7 +6,7 @@
           <ion-card-content class="category-card-content">
             <ion-img *ngIf="!imageNotLoaded; else loadingCategory" src="{{category.icon_image}}" class="category-icon" (ionError)="imageNotLoaded = true"></ion-img>
             <ng-template #loadingCategory>
-              <ion-skeleton-text animated style="height: 100px;width: 100px"></ion-skeleton-text>
+              <ion-skeleton-text animated style="height: 70px;width: 70px"></ion-skeleton-text>
             </ng-template>
           </ion-card-content>
           <ion-card-title class="category-title">{{category.name}}</ion-card-title>
