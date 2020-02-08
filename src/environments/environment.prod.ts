@@ -7,4 +7,5 @@ export const environment = {
   intercomId: 'yvoar9nd',
   gcmKey: 'BBzQ8VDNcr9JDe706ocnMMKZ5FnshUOi6ylHcsvzlkpJfLsEQiTG31XToH2LfoEDylahzcgUqyWbkSEtlhxU-jg',
   origin: 'https://dev-m.askfavr.com',
+  version: '2.0.3',
 };
