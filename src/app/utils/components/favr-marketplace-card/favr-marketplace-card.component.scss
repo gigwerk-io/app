@@ -52,7 +52,7 @@ ion-card-header {
   flex-direction: column;
   margin-left: 0;
   margin-right: 0;
-  @media (min-width: 350px) {
+  @media (max-width: 450px) {
     margin-left: 16px!important;
     margin-right: 16px!important;
   }
