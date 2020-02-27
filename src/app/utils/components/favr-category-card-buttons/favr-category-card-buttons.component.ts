@@ -11,6 +11,7 @@ export class FavrCategoryCardButtonsComponent implements OnInit {
   @Output() selectedCategory: EventEmitter<MainCategory> = new EventEmitter();
 
   private _currentActive: HTMLButtonElement;
+  imageNotLoaded = false;
 
   constructor() { }
 

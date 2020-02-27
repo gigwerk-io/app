@@ -60,8 +60,9 @@
     </ion-toolbar>
     <div text-center padding-top>
       <div margin-bottom class="img-container">
-        <ion-img [src]="(profile.user.image) ? profile.user.image : '../../assets/img/user.png'"
-             (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
+        <ion-img [src]="(profile.user.image) ? profile.user.image : './assets/img/user.png'"
+                 (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
+                 (ionError)="profile.user.image = undefined"
                  alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></ion-img>
       </div>
       <ion-note>

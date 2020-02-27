@@ -23,9 +23,6 @@
 <ion-content>
   <ion-list *ngIf="users; else noSearch">
     <ion-item href *ngFor="let user of users; let i = index;" [attr.data-index]="i" (click)="goToUserProfile(user.id)">
-      <ion-avatar slot="start">
-        <ion-img [src]="user.profile.image"></ion-img>
-      </ion-avatar>
       <ion-label>
         {{user.name}}
         <br>

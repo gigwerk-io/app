@@ -28,6 +28,7 @@ export class MessagesPage implements OnInit {
   sending = false;
   didScrollToBottomOnInit = false;
   rooms: Room[];
+  noImage = false;
 
   constructor(private activatedRoute: ActivatedRoute,
               private chatService: ChatService,

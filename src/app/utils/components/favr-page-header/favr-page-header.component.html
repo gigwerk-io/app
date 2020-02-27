@@ -20,7 +20,7 @@
       <ion-col *ngIf="pageTitle" class="page-title-area">
         <h2 class="page-title">
           <ng-container *ngIf="pageTitle === 'Marketplace'; else title">
-            <img src="../../../../assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
+            <img src="./assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
           </ng-container>
           <ng-template #title>
             {{pageTitle}}
@@ -33,7 +33,7 @@
                       (click)="navigateToProfile()" routerDirection="forward"
                       class="mobile-only">
             <ion-avatar class="page-title-header-profile">
-              <img [src]="profileImage ? profileImage : '../../../../assets/img/user.png'" alt="profile picture">
+              <ion-img [src]="profileImage ? profileImage : '../../../../assets/img/user.png'" alt="profile picture" (ionError)="profileImage = undefined"></ion-img>
             </ion-avatar>
           </ion-button>
 

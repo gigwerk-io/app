@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
+  noImage = false;
   rooms: Room[];
   user_id: Number;
   constructor(private roomService: ChatService, private storage: Storage, private router: Router) { }

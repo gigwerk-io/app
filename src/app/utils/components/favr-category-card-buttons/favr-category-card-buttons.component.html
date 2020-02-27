@@ -4,7 +4,10 @@
       <button #categoryButton type="button" (click)="selectCategory(categoryButton, category)" class="category-button">
         <ion-card padding class="category-card">
           <ion-card-content class="category-card-content">
-            <img src="../../../assets/img/{{category.icon_image}}" class="category-icon">
+            <ion-img *ngIf="!imageNotLoaded; else loadingCategory" src="{{category.icon_image}}" class="category-icon" (ionError)="imageNotLoaded = true"></ion-img>
+            <ng-template #loadingCategory>
+              <ion-skeleton-text animated style="height: 70px;width: 70px"></ion-skeleton-text>
+            </ng-template>
           </ion-card-content>
           <ion-card-title class="category-title">{{category.name}}</ion-card-title>
         </ion-card>
