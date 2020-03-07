@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ChatService} from '../../utils/services/chat.service';
 import {Room} from '../../utils/interfaces/chat/room';
@@ -35,7 +35,8 @@ export class MessagesPage implements OnInit {
               private storage: Storage,
               private pusher: PusherServiceProvider,
               private actionSheetCtrl: ActionSheetController,
-              private router: Router
+              private router: Router,
+              private changeRef: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -129,12 +130,17 @@ export class MessagesPage implements OnInit {
       this.room = res;
       this.messages = this.room.messages;
       this.toUser = this.getToUser();
+      this.changeRef.detectChanges();
       const channel = this.pusher.init(this.uuid);
-      console.log('Pusher: ' + channel);
       channel.bind('new-message', data => {
-        this.messages.push(data.message);
+        this.changeRef.detectChanges();
+        const message = {
+          sender_id: data.sender.id,
+          text: data.message,
+          sender: data.sender
+        };
+        this.messages.push(message);
         this.scrollToBottomOnInit();
-        // console.log(data);
         this.sending = false;
       });
     });
@@ -145,6 +151,7 @@ export class MessagesPage implements OnInit {
     this.sending = true;
     this.chatService.sendMessage(this.uuid, this.pendingMessage);
     this.pendingMessage = '';
+    this.changeRef.detectChanges();
   }
 
   scrollToBottomOnInit() {
