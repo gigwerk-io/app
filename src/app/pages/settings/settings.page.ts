@@ -1,10 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AuthService} from '../../utils/services/auth.service';
-import { Storage } from '@ionic/storage';
-import {INTERCOM_ID, Role, StorageKeys} from '../../providers/constants';
+import {Storage} from '@ionic/storage';
+import {Role, StorageKeys} from '../../providers/constants';
 import {AuthorizationToken} from '../../utils/interfaces/user-options';
 import {ActionSheetController, NavController, Platform} from '@ionic/angular';
-import {Intercom as WebIntercom} from 'ng-intercom';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {environment} from 'environments/environment';
@@ -17,7 +16,6 @@ import {environment} from 'environments/environment';
 export class SettingsPage implements OnInit {
 
   seeCredit: boolean;
-  intercomActive = false;
   darkMode = true;
   isFreelancer: boolean;
   COPY_YEAR = (new Date()).getFullYear();
@@ -27,7 +25,6 @@ export class SettingsPage implements OnInit {
               private storage: Storage,
               private  navCtrl: NavController,
               private platform: Platform,
-              private webIntercom: WebIntercom,
               private iab: InAppBrowser,
               private statusBar: StatusBar,
               private changeRef: ChangeDetectorRef,
@@ -58,32 +55,14 @@ export class SettingsPage implements OnInit {
         };
         this.authService.logout(authHeaders)
           .subscribe(res => {
-            // console.log(res);
+            this.storage.remove(StorageKeys.ACCESS_TOKEN);
+            this.storage.remove(StorageKeys.PROFILE);
             this.navCtrl.navigateRoot('/welcome');
+          }, error => {
+            this.storage.remove(StorageKeys.ACCESS_TOKEN);
+            this.storage.remove(StorageKeys.PROFILE);
           });
       });
-  }
-
-  openSupport() {
-    this.storage.get(StorageKeys.PROFILE).then(profile => {
-      this.intercomActive = true;
-      this.webIntercom.boot({
-        app_id: INTERCOM_ID,
-        email: profile.user.email,
-        name: profile.user.first_name + ' ' + profile.user.last_name,
-        // Supports all optional configuration.
-        widget: {
-          'activator': '#intercom'
-        }
-      });
-      this.webIntercom.show();
-    });
-  }
-
-  ionViewDidLeave() {
-    if (this.intercomActive) {
-      this.webIntercom.shutdown();
-    }
   }
 
   openTerms() {
