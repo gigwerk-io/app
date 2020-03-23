@@ -2,14 +2,12 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 
-import {Config, Events, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
+import {Config, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
 
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { Storage } from '@ionic/storage';
-
-import { UserData } from './providers/user-data';
 import {StorageKeys} from './providers/constants';
 import {toggleDarkTheme} from './pages/settings/settings.page';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
@@ -32,14 +30,12 @@ export class AppComponent implements OnInit {
   profileImage: string;
 
   constructor(
-    private events: Events,
     private menu: MenuController,
     private platform: Platform,
     public router: Router,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private storage: Storage,
-    private userData: UserData,
     private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
     private screenOrientation: ScreenOrientation,
@@ -66,9 +62,16 @@ export class AppComponent implements OnInit {
     this.swUpdate.available.subscribe(async res => {
       const toast = await this.toastCtrl.create({
         message: 'Update available!',
-        showCloseButton: true,
         position: 'bottom',
-        closeButtonText: `Reload`
+        buttons: [
+          {
+            text: 'Reload',
+            role: 'cancel',
+            handler: () => {
+              this.initializeApp();
+            }
+          }
+        ]
       });
 
       await toast.present();
@@ -110,10 +113,10 @@ export class AppComponent implements OnInit {
   async openSearchModal() {
     const modal = await this.modalCtrl.create({
       component: SearchPage,
-      componentProps: {'isModal': true},
+      componentProps: {isModal: true},
       cssClass: 'transparent-modal',
-      enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
-      leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
+      // enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
+      // leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
     });
 
     modal.present();

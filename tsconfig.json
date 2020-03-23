@@ -1,5 +1,11 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "types/*"
+      ]
+    },
     "downlevelIteration": true,
     "importHelpers": true,
     "module": "esnext",

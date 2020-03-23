@@ -1,13 +1,14 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MainMarketplaceTask} from '../../interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {Events, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {ChatService} from '../../services/chat.service';
 import {MarketplaceService} from '../../services/marketplace.service';
 import {TaskActions, TaskStatus} from '../../../providers/constants';
 import {PastJob} from '../../interfaces/user';
 import {RequestPage} from '../../../pages/request/request.page';
+import {Events} from '../../services/events';
 
 @Component({
   selector: 'favr-marketplace-card',
@@ -84,11 +85,16 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
       this.marketplaceService.getSingleMainMarketplaceRequest(this.mainMarketplaceTask.id)
@@ -101,11 +107,16 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   async errorMessage(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'danger',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
@@ -151,7 +162,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   async customerEditTask(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
-      componentProps: {'isModal': true}
+      componentProps: {isModal: true}
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({

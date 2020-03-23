@@ -6,7 +6,7 @@ import {AuthorizationToken} from '../../utils/interfaces/user-options';
 import {ActionSheetController, NavController, Platform} from '@ionic/angular';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {environment} from 'environments/environment';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'settings',

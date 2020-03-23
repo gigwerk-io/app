@@ -42,7 +42,12 @@ export class ForgotPasswordPage implements OnInit {
       position: 'top',
       duration: 3000,
       color: color,
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

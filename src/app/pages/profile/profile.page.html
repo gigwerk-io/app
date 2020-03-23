@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="profile">
       {{profile.user.user.first_name}} {{profile.user.user.last_name}}
@@ -13,7 +13,7 @@
       </ion-button>
       <ion-button (click)="presentActionSheet()"
                   class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end" *ngIf="isOwner">
@@ -24,7 +24,7 @@
       </ion-button>
       <ion-button (click)="presentOwnerActionSheet()"
                   class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -43,7 +43,7 @@
         </ion-button>
         <ion-button (click)="presentActionSheet()"
                     class="nav-button">
-          <ion-icon name="more"></ion-icon>
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end" *ngIf="isOwner">
@@ -54,7 +54,7 @@
         </ion-button>
         <ion-button (click)="presentOwnerActionSheet()"
                     class="nav-button">
-          <ion-icon name="more"></ion-icon>
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
         </ion-button>
       </ion-buttons>
     </ion-toolbar>

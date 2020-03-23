@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Account Options</ion-title>
   </ion-toolbar>
@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      TEMPORARY OPTION
+      <ion-label>TEMPORARY OPTION</ion-label>
     </ion-list-header>
 
     <ion-item href (click)="deactivateAccount()">
@@ -21,7 +21,7 @@
 
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      PERMANENT OPTION
+      <ion-label>PERMANENT OPTION</ion-label>
     </ion-list-header>
 
     <ion-item href (click)="deleteAccount()">

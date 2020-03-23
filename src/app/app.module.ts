@@ -40,9 +40,7 @@ import {MarketplacePageModule} from './pages/marketplace/marketplace.module';
     CreditCardDirectivesModule,
     FormsModule,
     HttpClientModule,
-    IonicModule.forRoot({
-      mode: 'ios'
-    }),
+    IonicModule.forRoot(),
     IntercomModule.forRoot({
       appId: 'yvoar9nd', // from your Intercom config
       updateOnRouterChange: true // will automatically run `update` on router event changes. Default: `false`

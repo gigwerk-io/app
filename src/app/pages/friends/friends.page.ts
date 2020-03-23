@@ -20,6 +20,7 @@ export class FriendsPage implements OnInit {
   secondButton = false;
   clickType = 'friends';
   noImage = false;
+  segment = 'friends';
 
   constructor(private friendService: FriendsService,
               private chatService: ChatService,
@@ -75,11 +76,16 @@ export class FriendsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

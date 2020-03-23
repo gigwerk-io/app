@@ -8,7 +8,6 @@ import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {AuthService} from '../../utils/services/auth.service';
 import {Router} from '@angular/router';
-import {ProfileRouteResponse, User} from '../../utils/interfaces/user';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
 
@@ -76,7 +75,12 @@ export class MarketplacePage implements OnInit, OnDestroy {
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

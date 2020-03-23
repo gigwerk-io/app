@@ -16,8 +16,8 @@
 
   <!-- Default Segment -->
   <!-- Icon end -->
-  <ion-segment (ionChange)="segmentChanged($event)">
-    <ion-segment-button checked value="friends">
+  <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment">
+    <ion-segment-button value="friends">
       <ion-label>Friend List</ion-label>
     </ion-segment-button>
     <ion-segment-button value="recommended">

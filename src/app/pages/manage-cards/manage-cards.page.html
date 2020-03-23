@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Manage Cards</ion-title>
   </ion-toolbar>
@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list class="ion-padding">
     <ion-list-header>
-      Manage Payment Methods
+      <ion-label>Manage Payment Methods</ion-label>
     </ion-list-header>
     <ion-item routerLink="/app/set-up-payments">
       <ion-icon slot="start" name="add"></ion-icon>
@@ -22,7 +22,7 @@
 
   <ion-list class="ion-padding" *ngIf="card">
     <ion-list-header>
-      SAVED CARDS
+      <ion-label>SAVED CARDS</ion-label>
     </ion-list-header>
     <ion-item *ngIf="card.user.card_id != null">
       <ng-container [ngSwitch]="card.user.type">

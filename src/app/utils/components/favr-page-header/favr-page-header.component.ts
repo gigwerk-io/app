@@ -76,8 +76,8 @@ export class FavrPageHeaderComponent implements OnInit {
       component: SearchPage,
       componentProps: {'isModal': true},
       cssClass: 'transparent-modal',
-      enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
-      leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
+      // enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
+      // leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
     });
 
     modal.present();

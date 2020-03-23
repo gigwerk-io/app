@@ -19,6 +19,8 @@ export class NotificationsPage implements OnInit {
   clickType = 'unread';
   notificationClass = '';
   readable = true;
+  segment = 'unread';
+
   constructor(private notificationService: NotificationService,
               private router: Router,
               private changeRef: ChangeDetectorRef,
@@ -106,7 +108,12 @@ export class NotificationsPage implements OnInit {
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

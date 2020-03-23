@@ -5,7 +5,7 @@ import {Room} from '../../utils/interfaces/chat/room';
 import {StorageKeys} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
-import {ActionSheetController, Events, IonContent, IonTextarea} from '@ionic/angular';
+import {ActionSheetController, IonContent, IonTextarea} from '@ionic/angular';
 
 
 @Component({
@@ -20,7 +20,7 @@ export class MessagesPage implements OnInit {
   @ViewChild('chatBox') textarea: IonTextarea;
 
   room: Room;
-  user_id: Number;
+  userId: number;
   messages: any; // TODO create types
   toUser: string;
   uuid: string;
@@ -48,7 +48,7 @@ export class MessagesPage implements OnInit {
     });
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
-        this.user_id = profile.user_id;
+        this.userId = profile.user_id;
       });
     window.addEventListener('keyboardDidShow', (event) => {
       // console.log('Keyboard opened');
@@ -72,13 +72,13 @@ export class MessagesPage implements OnInit {
     if (members) {
       // tslint:disable-next-line
       for(let member of members) {
-        if (member.id !== this.user_id) {
+        if (member.id !== this.userId) {
           return member.profile.image;
         }
       }
     } else {
       for (const member of this.room.members) {
-        if (member.id !== this.user_id) {
+        if (member.id !== this.userId) {
           return member.profile.image;
         }
       }
@@ -88,7 +88,7 @@ export class MessagesPage implements OnInit {
   public getUserName(members) {
     // tslint:disable-next-line
     for(let member of members) {
-      if (member.id !== this.user_id) {
+      if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
     }
@@ -110,7 +110,7 @@ export class MessagesPage implements OnInit {
     const members = this.room.members;
     // tslint:disable-next-line
     for(let member of members) {
-      if (member.id !== this.user_id) {
+      if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
     }
@@ -119,7 +119,7 @@ export class MessagesPage implements OnInit {
   goToUserProfile() {
     const members = this.room.members;
     for (const member of members) {
-      if (member.id !== this.user_id) {
+      if (member.id !== this.userId) {
         this.router.navigate(['/app/profile', member.id]);
       }
     }

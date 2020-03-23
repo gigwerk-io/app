@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Stripe } from '@ionic-native/stripe/ngx';
 import {STRIPE_PUBLIC} from '../../providers/constants';
 import {FinanceService} from '../../utils/services/finance.service';
-import {AlertController, Events, LoadingController, ToastController} from '@ionic/angular';
+import {AlertController, LoadingController, ToastController} from '@ionic/angular';
 import {FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CreditCardValidator } from 'angular-cc-library';
 import {Validators} from '@angular/forms';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Router} from '@angular/router';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'set-up-payments',
@@ -37,9 +38,9 @@ export class SetUpPaymentsPage implements OnInit {
   ngOnInit() {
     this.stripe.setPublishableKey(STRIPE_PUBLIC);
     this.form = this.fb.group({
-      creditCard: ['', [<any>CreditCardValidator.validateCCNumber]],
-      expirationDate: ['', [<any>CreditCardValidator.validateExpDate]],
-      cvc: ['', [<any>Validators.required, <any>Validators.minLength(3), <any>Validators.maxLength(4)]]
+      creditCard: ['', [CreditCardValidator.validateCCNumber as any]],
+      expirationDate: ['', [CreditCardValidator.validateExpDate as any]],
+      cvc: ['', [Validators.required as any, Validators.minLength(3) as any, Validators.maxLength(4) as any]]
     });
   }
 
@@ -80,11 +81,16 @@ export class SetUpPaymentsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => toast.present());
   }
 

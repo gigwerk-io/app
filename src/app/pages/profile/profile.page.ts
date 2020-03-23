@@ -222,7 +222,12 @@ export class ProfilePage implements OnInit, OnDestroy {
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(t => {
       t.present();
     });

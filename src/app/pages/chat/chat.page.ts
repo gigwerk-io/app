@@ -13,7 +13,7 @@ import {Router} from '@angular/router';
 export class ChatPage implements OnInit {
   noImage = false;
   rooms: Room[];
-  user_id: Number;
+  user_id: number;
   constructor(private roomService: ChatService, private storage: Storage, private router: Router) { }
 
   ngOnInit() {

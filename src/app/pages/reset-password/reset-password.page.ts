@@ -43,7 +43,12 @@ export class ResetPasswordPage implements OnInit {
       position: 'top',
       duration: 2500,
       color: color,
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title>{{toUser}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="presentActionSheet()" class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -52,8 +52,8 @@
     <br>
     <div *ngFor="let message of messages; let last = last"
          class="message"
-         [class.left]=" message.sender_id != user_id"
-         [class.right]=" message.sender_id == user_id">
+         [class.left]=" message.sender_id != userId"
+         [class.right]=" message.sender_id == userId">
       <img class="user-img" [src]="message.sender.profile.image" alt="avatar"
            [routerLink]="'/app/profile/' + message.sender_id" routerDirection="forward">
       <!--<ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>-->
@@ -63,8 +63,8 @@
         </div>
         <div class="msg-content">
         <span class="triangle"
-              [class.left]=" message.sender_id != user_id"
-              [class.right]=" message.sender_id == user_id"></span>
+              [class.left]=" message.sender_id != userId"
+              [class.right]=" message.sender_id == userId"></span>
           <p class="line-breaker ">{{message.text}}</p>
         </div>
       </div>

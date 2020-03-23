@@ -7,7 +7,7 @@ import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Storage} from '@ionic/storage';
 import {Role, StorageKeys, TaskActions, TaskStatus} from '../../providers/constants';
 import {ChatService} from '../../utils/services/chat.service';
-import {Events} from '@ionic/angular';
+import {Events} from '../../utils/services/events';
 import {CompleteTaskPage} from '../complete-task/complete-task.page';
 import {LaunchNavigator, LaunchNavigatorOptions} from '@ionic-native/launch-navigator/ngx';
 import {ReportPage} from '../report/report.page';
@@ -141,11 +141,16 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
       this.marketplaceService.getSingleMainMarketplaceRequest(this.mainMarketplaceTask.id)
@@ -193,7 +198,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async completeTask(isFreelancer: boolean) {
     const modal = await this.modalCtrl.create({
       component: CompleteTaskPage,
-      componentProps: {'taskID': this.mainMarketplaceTask.id, 'isFreelancer': isFreelancer},
+      componentProps: {taskID: this.mainMarketplaceTask.id, isFreelancer},
     });
 
     modal.present();
@@ -262,7 +267,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async editTaskRequest(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
-      componentProps: {'isModal': true}
+      componentProps: {isModal: true}
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({
@@ -295,9 +300,9 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
       + this.mainMarketplaceTask.locations[0].state + ', '
       + this.mainMarketplaceTask.locations[0].zip;
 
-    const options: LaunchNavigatorOptions = {};
+   const options: LaunchNavigatorOptions = {};
 
-    this.launchNavigator.navigate(locationAddress, options)
+   this.launchNavigator.navigate(locationAddress, options)
       .then(success => {})
       .catch(error => window.open('https://maps.google.com/?q=' + locationAddress));
   }

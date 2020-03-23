@@ -1,7 +1,6 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
   ActionSheetController, AlertController,
-  Events,
   IonContent,
   IonSlides, LoadingController,
   ModalController,
@@ -24,6 +23,7 @@ import {TaskActions} from '../../providers/constants';
 import {FavrDataService} from '../../utils/services/favr-data.service';
 import {PageStack} from '../signup/signup';
 import {FinanceService} from '../../utils/services/finance.service';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'request',
@@ -278,11 +278,16 @@ export class RequestPage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
@@ -342,7 +347,7 @@ export class RequestPage implements OnInit, OnDestroy {
         this.subPageTitle = 'Set Price';
         break;
     }
-    this.pageStack.push({pageTitle: this.subPageTitle, page: page});
+    this.pageStack.push({pageTitle: this.subPageTitle, page});
     this.subPage = page;
     this.backPage = this.pageStack[this.pageStack.length - 2].page;
   }
@@ -371,8 +376,8 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_one = (<FileReader>e.target).result;
-          this.taskRequest.image_one = (<FileReader>e.target).result.toString().split(',')[1];
+          this.taskImages.image_one = (e.target as FileReader).result;
+          this.taskRequest.image_one = (e.target as FileReader).result.toString().split(',')[1];
         };
         reader.readAsDataURL(event.target.files[0]);
       }
@@ -381,8 +386,8 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_two = (<FileReader>e.target).result;
-          this.taskRequest.image_two = (<FileReader>e.target).result.toString().split(',')[1];
+          this.taskImages.image_two = (e.target as FileReader).result;
+          this.taskRequest.image_two = (e.target as FileReader).result.toString().split(',')[1];
         };
         reader.readAsDataURL(event.target.files[1]);
       }
@@ -391,8 +396,8 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_three = (<FileReader>e.target).result;
-          this.taskRequest.image_three = (<FileReader>e.target).result.toString().split(',')[1];
+          this.taskImages.image_three = (e.target as FileReader).result;
+          this.taskRequest.image_three = (e.target as FileReader).result.toString().split(',')[1];
         };
         reader.readAsDataURL(event.target.files[2]);
       }

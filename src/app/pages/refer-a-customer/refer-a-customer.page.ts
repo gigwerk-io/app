@@ -55,7 +55,12 @@ export class ReferACustomerPage implements OnInit {
       position: 'bottom',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => toast.present());
   }
 }
