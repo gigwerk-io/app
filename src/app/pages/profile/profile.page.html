@@ -58,8 +58,8 @@
         </ion-button>
       </ion-buttons>
     </ion-toolbar>
-    <div text-center padding-top>
-      <div margin-bottom class="img-container">
+    <div class="ion-text-center ion-padding-top">
+      <div class="ion-margin-bottom img-container">
         <ion-img [src]="(profile.user.image) ? profile.user.image : './assets/img/user.png'"
                  (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
                  (ionError)="profile.user.image = undefined"
@@ -83,11 +83,11 @@
       </span>
       </ng-template>
 
-      <div padding-bottom *ngIf="rating">
+      <div class="ion-padding-bottom" *ngIf="rating">
         <ngb-rating [(rate)]="rating" [starTemplate]="star" [readonly]="true" max="5"></ngb-rating>
       </div>
     </div>
-    <div text-center>
+    <div class="ion-text-center">
       <section *ngIf="!isOwner">
         <ion-button *ngIf="showFriendButton" size="small" style="font-size: 16px;" [disabled]="friendButton.disable" (click)="handleFriendButtonClick()">
           <ion-icon slot="start" mode="md" [name]="friendButton.class"></ion-icon>
@@ -111,7 +111,7 @@
   </ion-toolbar>
   <ng-container [ngSwitch]="taskFeed">
     <ng-container *ngSwitchCase="'customer'">
-      <ng-container text-center *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
+      <ng-container class="ion-text-center" *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
         <ion-title color="medium" class="no-tasks">
           No Tasks To Display
         </ion-title>
@@ -125,7 +125,7 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'freelancer'">
-      <ng-container text-center *ngIf="profile.user.past_jobs.length === 0; else tasks">
+      <ng-container class="ion-text-center" *ngIf="profile.user.past_jobs.length === 0; else tasks">
         <ion-title color="medium" class="no-tasks">
           No Past Jobs To Display
         </ion-title>

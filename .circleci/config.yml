@@ -39,7 +39,7 @@ jobs:
       - checkout
       - restore_cache: *restore-cache-src
       - run: npm install
-      - run: sudo npm install -g ionic cordova
+      - run: sudo npm install -g @ionic/cli cordova
       - run: ionic -v
       - run: ionic cordova platform add browser
       - run: ionic cordova build browser --prod

@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list class="ion-padding">
     <ion-list-header>
-      <ion-label>Manage Payment Methods</ion-label>
+      <h5 class="text-bold">Manage Payment Methods</h5>
     </ion-list-header>
     <ion-item routerLink="/app/set-up-payments">
       <ion-icon slot="start" name="add"></ion-icon>
@@ -22,7 +22,7 @@
 
   <ion-list class="ion-padding" *ngIf="card">
     <ion-list-header>
-      <ion-label>SAVED CARDS</ion-label>
+      <h5 class="text-bold">SAVED CARDS</h5>
     </ion-list-header>
     <ion-item *ngIf="card.user.card_id != null">
       <ng-container [ngSwitch]="card.user.type">

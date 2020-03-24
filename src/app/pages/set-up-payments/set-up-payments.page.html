@@ -9,12 +9,8 @@
 
 
 <ion-content>
-  <form #paymentForm="ngForm" (ngSubmit)="onSubmit(paymentForm)" [formGroup]="form" novalidate>
+  <form #paymentForm ngForm="ngForm" (ngSubmit)="onSubmit(paymentForm)" [formGroup]="form" novalidate>
     <ion-list class="ion-padding">
-      <ion-list-header>
-        ADD PAYMENT METHOD
-      </ion-list-header>
-
       <ion-item>
         <ion-label position="stacked">Card Number<ion-text color="danger">*</ion-text></ion-label>
         <ion-input id="cc-number" formControlName="creditCard" type="tel" autocomplete="cc-number" ccNumber [maxlength]="19" class="ion-input" required></ion-input>

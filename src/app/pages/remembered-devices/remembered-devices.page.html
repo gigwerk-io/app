@@ -10,7 +10,9 @@
 <ion-content>
   <ion-list class="ion-padding">
     <ion-list-header>
-      ACTIVE SESSIONS
+      <h5 class="text-bold">
+        ACTIVE SESSIONS
+      </h5>
       <ion-button class="kill-all-btn" size="small" (click)="killAll()">Kill All</ion-button>
     </ion-list-header>
     <ion-item *ngFor="let session of sessions">

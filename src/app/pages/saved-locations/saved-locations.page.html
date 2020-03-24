@@ -13,7 +13,7 @@
   </ion-refresher>
   <ion-list class="ion-padding">
     <ion-list-header>
-      ADD LOCATION
+      <h5 class="text-bold">ADD LOCATION</h5>
     </ion-list-header>
     <ion-item routerLink="/app/add-location">
       <ion-icon slot="start" name="add"></ion-icon>
@@ -25,7 +25,7 @@
 
   <ion-list class="ion-padding">
     <ion-list-header>
-      SAVED LOCATIONS
+      <h5 class="text-bold">SAVED LOCATIONS</h5>
     </ion-list-header>
     <ion-item *ngFor="let location of locations" (click)="presentActionSheet(location.id)">
       <ion-icon *ngIf="location.default" slot="end" name="checkmark"></ion-icon>
