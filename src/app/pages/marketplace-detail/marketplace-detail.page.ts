@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActionSheetController, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {ActionSheetController, IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -15,12 +15,13 @@ import {FavrDataService} from '../../utils/services/favr-data.service';
 import {RequestPage} from '../request/request.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 
 @Component({
   selector: 'marketplace-detail',
   templateUrl: './marketplace-detail.page.html',
   styleUrls: ['./marketplace-detail.page.scss'],
-  providers: [PhotoViewer, LaunchNavigator]
+  providers: [PhotoViewer, LaunchNavigator, IonRouterOutlet]
 })
 export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
@@ -31,7 +32,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   isOwner: boolean;
   isFreelancer: boolean;
   userRole: string;
-  Categories;
+  Categories: MainCategory[];
   TaskStatus = TaskStatus;
   credit: number;
 
@@ -50,7 +51,8 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private launchNavigator: LaunchNavigator,
               private favrService: FavrDataService,
               private financeService: FinanceService,
-              private geolocation: Geolocation) {
+              private geolocation: Geolocation,
+              private routerOutlet: IonRouterOutlet) {
     this.favrService.getCategories().subscribe(res => {
       this.Categories = res.categories;
     });
@@ -122,7 +124,9 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
           setTimeout(async () => {
             const reportUserModal = await this.modalCtrl.create({
               component: ReportPage,
-              componentProps: {type: 'Task', extra: this.mainMarketplaceTask}
+              componentProps: {type: 'Task', extra: this.mainMarketplaceTask},
+              swipeToClose: true,
+              presentingElement: this.routerOutlet.nativeEl
             });
 
             reportUserModal.present();
@@ -267,7 +271,9 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async editTaskRequest(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
-      componentProps: {isModal: true}
+      componentProps: {isModal: true},
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({

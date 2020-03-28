@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RequestPage} from '../request/request.page';
-import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {Storage} from '@ionic/storage';
@@ -29,6 +29,7 @@ export class TabsPage implements OnInit {
               private toastController: ToastController,
               private storage: Storage,
               private router: Router,
+              private routerOutlet: IonRouterOutlet,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     if (window.innerWidth >= 1025) {
       this.tabSlot = 'top';
@@ -80,15 +81,15 @@ export class TabsPage implements OnInit {
         if (!res) {
           const modal = await this.modalCtrl.create({
             component: CustomerTutorialPage,
-            componentProps: {'isModal': true}
+            componentProps: {isModal: true}
           });
 
-          const loadingRequestPage = await this.loadingCtrl.create({
+          const loadingCustomerTutorialPage = await this.loadingCtrl.create({
             message: 'Please wait...',
             translucent: true
           });
 
-          await loadingRequestPage.present();
+          await loadingCustomerTutorialPage.present();
 
           modal.onDidDismiss().then(async () => {
             const loadingMarketplacePage = await this.loadingCtrl.create({
@@ -103,13 +104,15 @@ export class TabsPage implements OnInit {
           await modal.present()
             .then(() => {
 
-              return loadingRequestPage.dismiss();
+              return loadingCustomerTutorialPage.dismiss();
             });
           await Promise.resolve(false);
         } else {
           const modal = await this.modalCtrl.create({
             component: RequestPage,
-            componentProps: {'isModal': true}
+            componentProps: {isModal: true},
+            swipeToClose: true,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
           const loadingRequestPage = await this.loadingCtrl.create({
@@ -146,7 +149,7 @@ export class TabsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 4000,
       color: 'dark',

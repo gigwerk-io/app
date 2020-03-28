@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
-import {AlertController, ModalController, NavController, Platform} from '@ionic/angular';
+import {AlertController, IonRouterOutlet, ModalController, NavController, Platform} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../../providers/constants';
 import {popInAnimation} from '../../animations/enter.animation';
@@ -11,6 +11,7 @@ import {ProfileService} from '../../services/profile.service';
   selector: 'favr-page-header',
   templateUrl: './favr-page-header.component.html',
   styleUrls: ['./favr-page-header.component.scss'],
+  providers: [IonRouterOutlet]
 })
 export class FavrPageHeaderComponent implements OnInit {
 
@@ -36,7 +37,7 @@ export class FavrPageHeaderComponent implements OnInit {
               private navCtrl: NavController,
               private profileService: ProfileService,
               private storage: Storage,
-              private platform: Platform) { }
+              private routerOutlet: IonRouterOutlet) { }
 
   ngOnInit() {
     this.storage.get(StorageKeys.PROFILE)
@@ -74,7 +75,9 @@ export class FavrPageHeaderComponent implements OnInit {
   async openSearchModal() {
     const modal = await this.modalCtrl.create({
       component: SearchPage,
-      componentProps: {'isModal': true},
+      componentProps: {isModal: true},
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.parentOutlet.nativeEl,
       cssClass: 'transparent-modal',
       // enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
       // leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined

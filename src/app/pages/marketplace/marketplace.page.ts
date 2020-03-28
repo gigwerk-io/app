@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
-import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {RequestPage} from '../request/request.page';
 import {Role, StorageKeys} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
@@ -35,7 +35,8 @@ export class MarketplacePage implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private router: Router,
               private toastController: ToastController,
-              private geolocation: Geolocation) { }
+              private geolocation: Geolocation,
+              private routerOutlet: IonRouterOutlet) { }
 
   ngOnInit() {
     this.segmentChanged(this.segment);
@@ -71,7 +72,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
@@ -151,7 +152,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
   async openCustomerTutorial() {
     const modal = await this.modalCtrl.create({
       component: CustomerTutorialPage,
-      componentProps: {'isModal': true}
+      componentProps: {isModal: true}
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({
@@ -176,7 +177,9 @@ export class MarketplacePage implements OnInit, OnDestroy {
         } else {
           const modal = await this.modalCtrl.create({
             component: RequestPage,
-            componentProps: {'isModal': true}
+            componentProps: {isModal: true},
+            swipeToClose: true,
+            presentingElement: this.routerOutlet.parentOutlet.nativeEl
           });
 
           const loadingRequestPage = await this.loadingCtrl.create({

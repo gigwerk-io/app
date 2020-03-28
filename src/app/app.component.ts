@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 
-import {Config, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
+import {Config, IonRouterOutlet, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
 
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -22,7 +22,7 @@ import {CustomerTutorialPage} from './pages/customer-tutorial/customer-tutorial.
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [ScreenOrientation, TabsPage, RequestPage, SearchPage, CustomerTutorialPage],
+  providers: [ScreenOrientation, TabsPage, IonRouterOutlet, SearchPage, CustomerTutorialPage],
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
