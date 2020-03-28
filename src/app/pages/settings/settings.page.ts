@@ -131,6 +131,7 @@ export class SettingsPage implements OnInit {
         this.statusBar.backgroundColorByHexString('#222428');
         break;
       case false:
+        this.statusBar.backgroundColorByHexString('#fff');
         this.statusBar.styleDefault();
         break;
     }

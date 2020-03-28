@@ -98,6 +98,7 @@ export class AppComponent implements OnInit {
               this.statusBar.backgroundColorByHexString('#222428');
               toggleDarkTheme(prefersDark);
             } else {
+              this.statusBar.backgroundColorByHexString('#fff');
               this.statusBar.styleDefault();
               toggleDarkTheme(false);
             }
