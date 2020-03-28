@@ -272,7 +272,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
       componentProps: {isModal: true},
-      swipeToClose: true,
+      swipeToClose: false,
       presentingElement: this.routerOutlet.nativeEl
     });
 

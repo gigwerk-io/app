@@ -111,7 +111,7 @@ export class TabsPage implements OnInit {
           const modal = await this.modalCtrl.create({
             component: RequestPage,
             componentProps: {isModal: true},
-            swipeToClose: true,
+            swipeToClose: false,
             presentingElement: this.routerOutlet.nativeEl
           });
 
