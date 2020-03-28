@@ -131,7 +131,7 @@ export class SettingsPage implements OnInit {
         this.statusBar.backgroundColorByHexString('#222428');
         break;
       case false:
-        this.statusBar.backgroundColorByHexString('#ff6500');
+        this.statusBar.styleDefault();
         break;
     }
     this.storage.set(StorageKeys.THEME_PREFERENCE, this.darkMode)
