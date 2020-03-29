@@ -3,17 +3,17 @@
   <ion-slides [pager]="true">
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 1')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_one">
-      <ion-img [appImagePreloader]="mainMarketTask.image_one" alt="Task image one"></ion-img>
+      <favr-img [src]="mainMarketTask.image_one" alt="Task image one"></favr-img>
     </ion-slide>
 
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_two, 'Image 2')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_two">
-      <ion-img [appImagePreloader]="mainMarketTask.image_two" alt="Task image two"></ion-img>
+      <favr-img [src]="mainMarketTask.image_two" alt="Task image two"></favr-img>
     </ion-slide>
 
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 3')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_three">
-      <ion-img [appImagePreloader]="mainMarketTask.image_three" alt="Task image three"></ion-img>
+      <favr-img [src]="mainMarketTask.image_three" alt="Task image three"></favr-img>
     </ion-slide>
   </ion-slides>
 
@@ -21,9 +21,10 @@
     <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{mainMarketTask.customer.id}}"
               routerDirection="forward">
       <ion-avatar slot="start">
-        <ion-img
-          [src]="(profileImgLoaded) ? mainMarketTask.customer.profile.image : './assets/img/user.png'"
-          (ionError)="profileImgLoaded = false" alt="profile picture"></ion-img>
+        <favr-img
+          [src]="mainMarketTask.customer.profile.image"
+          [spinnerSrc]="'./assets/img/user.png'"
+          alt="profile picture"></favr-img>
       </ion-avatar>
       {{mainMarketTask.customer.first_name}} {{mainMarketTask.customer.last_name}}
       <div slot="end">
@@ -153,17 +154,17 @@
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 1')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_one">
-        <ion-img [appImagePreloader]="pastJob.marketplace.image_one" alt="Task image one"></ion-img>
+        <favr-img [src]="pastJob.marketplace.image_one" alt="Task image one"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_two, 'Image 2')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_two">
-        <ion-img [appImagePreloader]="pastJob.marketplace.image_two" alt="Task image two"></ion-img>
+        <favr-img [src]="pastJob.marketplace.image_two" alt="Task image two"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 3')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_three">
-        <ion-img [appImagePreloader]="pastJob.marketplace.image_three" alt="Task image three"></ion-img>
+        <favr-img [src]="pastJob.marketplace.image_three" alt="Task image three"></favr-img>
       </ion-slide>
     </ion-slides>
 
@@ -171,9 +172,10 @@
       <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{pastJob.marketplace.customer.id}}"
                 routerDirection="forward">
         <ion-avatar slot="start">
-          <ion-img
-            [src]="(pastJob.marketplace.customer.profile.image) ? pastJob.marketplace.customer.profile.image : '../../../../assets/img/user.png'"
-            (ionError)="pastJob.marketplace.customer.profile.image = undefined" alt="profile picture"></ion-img>
+          <favr-img
+            [src]="pastJob.marketplace.customer.profile.image"
+            [spinnerSrc]="'./assets/img/user.png'"
+            alt="profile picture"></favr-img>
         </ion-avatar>
         {{pastJob.marketplace.customer.first_name}} {{pastJob.marketplace.customer.last_name}}
         <div slot="end">
