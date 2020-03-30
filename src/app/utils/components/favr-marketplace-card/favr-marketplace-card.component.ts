@@ -123,7 +123,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).subscribe(res => {
+    this.chatService.startChat(username).then(res => {
       this.router.navigate(['/app/room', res.id]);
     }, error => {
       this.presentToast(error.error.message);

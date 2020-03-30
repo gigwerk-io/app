@@ -22,7 +22,7 @@
 
 <ion-content>
   <ion-list *ngIf="users; else noSearch">
-    <ion-item *ngFor="let user of users; let i = index;" [attr.data-index]="i" (click)="isChat ? goToChatRoom(): goToUserProfile(user.id)">
+    <ion-item *ngFor="let user of users; let i = index;" [attr.data-index]="i" (click)="isChat ? goToChatRoom(user): goToUserProfile(user.id)">
       <ion-avatar slot="start">
         <favr-img [src]="user.profile.image" spinnerSrc="assets/img/user.png" imgClass="rounded-circle" loaderClass="rounded-circle"></favr-img>
       </ion-avatar>

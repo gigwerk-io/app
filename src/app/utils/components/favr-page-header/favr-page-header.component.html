@@ -31,9 +31,15 @@
         <ion-buttons class="page-header-buttons mobile-only">
           <ion-button *ngIf="showProfile"
                       (click)="navigateToProfile()" routerDirection="forward"
-                      class="mobile-only">
+                      class="nav-button">
             <ion-avatar class="page-title-header-profile">
-              <ion-img [src]="profileImage ? profileImage : '../../../../assets/img/user.png'" alt="profile picture" (ionError)="profileImage = undefined"></ion-img>
+              <favr-img [src]="profileImage"
+                        spinnerSrc="assets/img/user.png"
+                        imgClass="rounded-circle"
+                        loaderClass="rounded-circle"
+                        class="page-title-header-profile"
+                        alt="profile picture">
+              </favr-img>
             </ion-avatar>
           </ion-button>
 

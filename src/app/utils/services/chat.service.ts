@@ -62,9 +62,8 @@ export class ChatService {
     );
   }
 
-  public startChat(username) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public startChat(username): Promise<CreateChatResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -74,7 +73,6 @@ export class ChatService {
           return this.http.get<CreateChatResponse>(`${API_ADDRESS}/chat/${username}`, authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 }

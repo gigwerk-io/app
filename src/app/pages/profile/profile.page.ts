@@ -179,7 +179,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).subscribe(res => {
+    this.chatService.startChat(username).then(res => {
       this.router.navigate(['/app/room', res.id]);
     });
   }

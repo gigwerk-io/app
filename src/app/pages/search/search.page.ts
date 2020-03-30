@@ -1,11 +1,13 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {IonSearchbar, ModalController} from '@ionic/angular';
+import {IonSearchbar, ModalController, ToastController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
 import {Subject, BehaviorSubject, Subscription} from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {User} from '../../utils/interfaces/user';
 import {EventsService} from '../../utils/services/events.service';
+import {ChatService} from '../../utils/services/chat.service';
+import {Searchable} from '../../utils/interfaces/searchable';
 
 @Component({
   selector: 'search',
@@ -16,7 +18,7 @@ export class SearchPage implements OnInit, OnDestroy {
 
   @Input() isChat = false;
 
-  users: User[];
+  users: Searchable[];
   query;
   queryLength = undefined;
 
@@ -28,14 +30,16 @@ export class SearchPage implements OnInit, OnDestroy {
 
   constructor(private modalCtrl: ModalController,
               private friendService: FriendsService,
-              private router: Router) { }
+              private router: Router,
+              private toastCtrl: ToastController,
+              private chatService: ChatService) { }
 
   ngOnInit() {
     setTimeout(() => this.searchBar.setFocus(), 350);
     this.setupSearchDebouncer();
     if (this.isChat) {
       this.friendService.getMyFriends()
-        .then(res => this.users = res);
+        .then(res => (res.length > 0) ? this.users = res : undefined);
     }
   }
 
@@ -80,7 +84,52 @@ export class SearchPage implements OnInit, OnDestroy {
     });
   }
 
-  goToChatRoom() {
-    console.log(this.isChat);
+  async presentToast(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'dark',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
+
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
+
+  startChat(username) {
+    this.chatService.startChat(username)
+      .then(res => {
+        this.router.navigate(['/app/room', res.id]);
+      })
+      .catch(error => {
+      this.errorMessage(error.message);
+    });
+  }
+
+  goToChatRoom(user: Searchable) {
+    this.closeSearchPage();
+    this.startChat(user.username);
   }
 }
