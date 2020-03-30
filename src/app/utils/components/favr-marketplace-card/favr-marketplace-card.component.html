@@ -67,7 +67,7 @@
   </ion-card-header>
 
   <ion-card-content>
-    <div id="taskDescription" [innerHTML]="mainMarketTask.description"></div>
+    <div id="taskDescription" [innerHTML]="mainMarketplaceTask.description.length > 100 ? mainMarketTask.description.slice(0, 100) + '...' : mainMarketplaceTask.description"></div>
   </ion-card-content>
 
   <!--task actions-->

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {API_ADDRESS, StorageKeys} from '../../providers/constants';
@@ -12,7 +12,8 @@ import {UpdateResponse, Settings, MyLocationsResponse, CurrentCityResponse} from
 export class PreferencesService {
 
   constructor(private httpClient: HttpClient,
-              private storage: Storage) { }
+              private storage: Storage) {
+  }
 
   public updateNotificationPreferences(body) {
     return from(
@@ -64,16 +65,16 @@ export class PreferencesService {
 
   public addLocation(body): Promise<UpdateResponse> {
     return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/locations`, body, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+      .then(token => {
+        const authHeader: AuthorizationToken = {
+          headers: {
+            Authorization: (token) ? token : ''
+          }
+        };
+        return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/locations`, body, authHeader)
+          .toPromise()
+          .then((res: UpdateResponse) => res);
+      });
   }
 
   public getMyLocations() {
@@ -101,7 +102,7 @@ export class PreferencesService {
               Authorization: (token) ? token : ''
             }
           };
-          return this.httpClient.put<UpdateResponse>(`${API_ADDRESS}/location/${id}`, null , authHeader)
+          return this.httpClient.put<UpdateResponse>(`${API_ADDRESS}/location/${id}`, null, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
         })
@@ -140,25 +141,22 @@ export class PreferencesService {
     );
   }
 
-  public selectCity(id) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/select-city`, {city_id: id}, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        })
-    );
+  public selectCity(id): Promise<UpdateResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
+      .then(token => {
+        const authHeader: AuthorizationToken = {
+          headers: {
+            Authorization: (token) ? token : ''
+          }
+        };
+        return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/select-city`, {city_id: id}, authHeader)
+          .toPromise()
+          .then((res: UpdateResponse) => res);
+      });
   }
 
-  public currentCity() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public currentCity(): Promise<CurrentCityResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -168,7 +166,6 @@ export class PreferencesService {
           return this.httpClient.get<CurrentCityResponse>(`${API_ADDRESS}/current-city`, authHeader)
             .toPromise()
             .then((res: CurrentCityResponse) => res);
-        })
-    );
+        });
   }
 }

@@ -136,7 +136,7 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getCategories() {
-    this.favrService.getCategories().toPromise().then(res => this.categories = res.categories);
+    this.favrService.getCategories().then(res => this.categories = res.categories);
   }
 
   async alertConfirmClose() {

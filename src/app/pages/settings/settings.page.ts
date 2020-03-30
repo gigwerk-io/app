@@ -54,11 +54,12 @@ export class SettingsPage implements OnInit {
           }
         };
         this.authService.logout(authHeaders)
-          .subscribe(res => {
+          .then(res => {
             this.storage.remove(StorageKeys.ACCESS_TOKEN);
             this.storage.remove(StorageKeys.PROFILE);
             this.navCtrl.navigateRoot('/welcome');
-          }, error => {
+          })
+          .catch(error => {
             this.storage.remove(StorageKeys.ACCESS_TOKEN);
             this.storage.remove(StorageKeys.PROFILE);
           });
@@ -120,7 +121,7 @@ export class SettingsPage implements OnInit {
     }
     const actionSheet = await this.actionSheetController.create({
       header: 'Earn $5 For Each Friend You Invite To FAVR!',
-      buttons: buttons
+      buttons
     });
     await actionSheet.present();
   }

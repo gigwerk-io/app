@@ -53,7 +53,7 @@ export class TabsPage implements OnInit {
 
   getBadges() {
     setTimeout(() => {
-      this.notificationService.getBadgeCount().subscribe(res => {
+      this.notificationService.getBadgeCount().then(res => {
         this.notificationCount = res.notifications;
         this.friendCount = res.friends;
         // Listen To Pusher User Channel

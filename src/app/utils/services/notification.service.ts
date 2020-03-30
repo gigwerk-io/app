@@ -16,9 +16,8 @@ export class NotificationService {
               private storage: Storage
   ) { }
 
-  public getBadgeCount() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getBadgeCount(): Promise<Badge> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -28,8 +27,7 @@ export class NotificationService {
           return this.httpClient.get<Badge>(`${API_ADDRESS}/badges`, authHeader)
             .toPromise()
             .then((res: Badge) => res);
-        })
-    );
+        });
   }
 
   public getNewNotifications(): Promise<NotificationsResponse> {
@@ -75,8 +73,7 @@ export class NotificationService {
   }
 
   public saveFCMToken(body) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -86,13 +83,11 @@ export class NotificationService {
           return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/fcm_token`, body, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 
   public saveAPNToken(body) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -102,7 +97,6 @@ export class NotificationService {
           return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/apn_token`, body, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 }

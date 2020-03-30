@@ -1,35 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Storage } from '@ionic/storage';
 import {AuthResponse, SignOutResponse, ValidateTokenResponse} from '../interfaces/auth/auth-response';
 import {AuthorizationToken, UserOptions, UserRegistrationOptions} from '../interfaces/user-options';
 import {API_ADDRESS, StorageKeys} from '../../providers/constants';
-import {from} from 'rxjs/index';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  authSubject  =  new  BehaviorSubject(false);
+  authSubject = new BehaviorSubject(false);
 
-  constructor(private  httpClient:  HttpClient,
-              private  storage:  Storage) { }
+  constructor(private httpClient: HttpClient,
+              private storage: Storage) { }
 
-  register(user: UserRegistrationOptions): Observable<AuthResponse> {
+  register(user: UserRegistrationOptions): Promise<AuthResponse> {
     return this.httpClient.post<AuthResponse>(`${API_ADDRESS}/register`, user).pipe(
-      tap(async (res:  AuthResponse ) => {
+      tap(async (res: AuthResponse ) => {
 
         if (res) {
           await this.storage.set(StorageKeys.ACCESS_TOKEN, res.token);
           this.authSubject.next(true);
         }
       })
-    );
+    ).toPromise();
   }
 
-  login(user: UserOptions): Observable<AuthResponse> {
+  login(user: UserOptions): Promise<AuthResponse> {
     return this.httpClient.post<AuthResponse>(`${API_ADDRESS}/login`, user).pipe(
       tap(async (res: AuthResponse) => {
         if (res) {
@@ -38,10 +37,10 @@ export class AuthService {
           this.authSubject.next(true);
         }
       })
-    );
+    ).toPromise();
   }
 
-  logout(token: AuthorizationToken): Observable<SignOutResponse> {
+  logout(token: AuthorizationToken): Promise<SignOutResponse> {
     return this.httpClient.get<SignOutResponse>(`${API_ADDRESS}/logout`, token).pipe(
       tap(async (res: SignOutResponse) => {
         if (res) {
@@ -50,7 +49,7 @@ export class AuthService {
           this.authSubject.next(false);
         }
       })
-    );
+    ).toPromise();
   }
 
   isLoggedIn() {
@@ -71,7 +70,7 @@ export class AuthService {
         });
   }
 
-  forgotPassword(email): Observable<SignOutResponse> {
-    return this.httpClient.post<SignOutResponse>(`${API_ADDRESS}/forgot-password`, {email: email});
+  forgotPassword(email): Promise<SignOutResponse> {
+    return this.httpClient.post<SignOutResponse>(`${API_ADDRESS}/forgot-password`, {email}).toPromise();
   }
 }

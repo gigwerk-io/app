@@ -13,19 +13,15 @@ export class FavrDataService {
 
   /**
    * Get the available FAVR categories.
-   *
-   * @returns {Observable<Object> | Observable<any>}
    */
-  public getCategories() {
-    return this.httpClient.get<CategoryResponse>(`${API_ADDRESS}/categories`);
+  public getCategories(): Promise<CategoryResponse> {
+    return this.httpClient.get<CategoryResponse>(`${API_ADDRESS}/categories`).toPromise();
   }
 
   /**
-   *Get the cities FAVR is available in.
-   *
-   * @returns {Observable<CitiesResponse>}
+   * Get the cities FAVR is available in.
    */
-  public getCities() {
-    return this.httpClient.get<CitiesResponse>(`${API_ADDRESS}/cities`);
+  public getCities(): Promise<CitiesResponse> {
+    return this.httpClient.get<CitiesResponse>(`${API_ADDRESS}/cities`).toPromise();
   }
 }

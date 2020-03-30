@@ -24,7 +24,7 @@
     <form #signupForm="ngForm" novalidate>
       <ion-list *ngSwitchCase="'signup-index'">
         <ion-item (click)="openSubPage('personal-info')">
-          <ion-icon slot="start" name="contact"></ion-icon>
+          <ion-icon slot="start" name="person-circle"></ion-icon>
           Personal Information
           <div slot="end" *ngIf="signup.first_name
                           && signup.last_name
@@ -38,7 +38,7 @@
         </ion-item>
 
         <ion-item (click)="openSubPage('set-up-password')">
-          <ion-icon slot="start" name="lock"></ion-icon>
+          <ion-icon slot="start" name="lock-closed"></ion-icon>
           Set Up Password
           <div slot="end" *ngIf="signup.password
                           && signup.confirm_password
@@ -68,8 +68,8 @@
           </ion-button>
         </div>
 
-        <div padding>
-          <div margin-top text-center>
+        <div class="ion-padding-top">
+          <div class="ion-margin-top ion-text-center">
             <a class="hyperlink" routerLink="/login">Already Have An Account?</a>
           </div>
         </div>
@@ -267,8 +267,8 @@
             <p>{{city.description}}</p>
           </ion-card-content>
 
-          <ion-row padding>
-            <ion-col text-center>
+          <ion-row class="ion-padding-top">
+            <ion-col class="ion-text-center">
               <ion-button  *ngIf="signup.city_id == city.id" color="success" expand="block" shape="round" disabled>
                 <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
                 Selected

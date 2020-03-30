@@ -4,7 +4,7 @@ import {ProfileRouteResponse} from '../../utils/interfaces/user';
 import {ProfileService} from '../../utils/services/profile.service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {Storage} from '@ionic/storage';
-import {ActionSheetController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {ActionSheetController, IonRouterOutlet, ModalController, NavController, ToastController} from '@ionic/angular';
 import {ChatService} from '../../utils/services/chat.service';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Role, StorageKeys} from '../../providers/constants';
@@ -17,7 +17,7 @@ import {ReportPage} from '../report/report.page';
   selector: 'profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  providers: [PhotoViewer]
+  providers: [PhotoViewer, IonRouterOutlet]
 })
 export class ProfilePage implements OnInit, OnDestroy {
 
@@ -43,7 +43,8 @@ export class ProfilePage implements OnInit, OnDestroy {
               private actionSheetCtrl: ActionSheetController,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
-              private authService: AuthService) {}
+              private authService: AuthService,
+              private routerOutlet: IonRouterOutlet) {}
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(data => {
@@ -137,10 +138,12 @@ export class ProfilePage implements OnInit, OnDestroy {
         setTimeout(async () => {
           const reportUserModal = await this.modalCtrl.create({
             component: ReportPage,
-            componentProps: {type: 'User', extra: this.profile}
+            componentProps: {type: 'User', extra: this.profile},
+            swipeToClose: true,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
-          reportUserModal.present();
+          await reportUserModal.present();
         }, 0);
       }
     }, {
@@ -157,10 +160,12 @@ export class ProfilePage implements OnInit, OnDestroy {
         setTimeout(async () => {
           const reportUserModal = await this.modalCtrl.create({
             component: ReportPage,
-            componentProps: {type: 'User', extra: this.profile}
+            componentProps: {type: 'User', extra: this.profile},
+            swipeToClose: true,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
-          reportUserModal.present();
+          await reportUserModal.present();
         }, 0);
       }
     }, {

@@ -53,7 +53,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private financeService: FinanceService,
               private geolocation: Geolocation,
               private routerOutlet: IonRouterOutlet) {
-    this.favrService.getCategories().subscribe(res => {
+    this.favrService.getCategories().then(res => {
       this.Categories = res.categories;
     });
     this.events.subscribe('task-action', (action) => {
@@ -129,7 +129,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               presentingElement: this.routerOutlet.nativeEl
             });
 
-            reportUserModal.present();
+            await reportUserModal.present();
           }, 0);
         }
       }, {
@@ -168,9 +168,11 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).then(res => {
-      this.router.navigate(['/app/room', res.id]);
-    }, error => {
+    this.chatService.startChat(username)
+      .then(res => {
+        this.router.navigate(['/app/room', res.id]);
+      })
+      .catch(error => {
       this.presentToast(error.error.message);
     });
   }
@@ -203,9 +205,11 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: CompleteTaskPage,
       componentProps: {taskID: this.mainMarketplaceTask.id, isFreelancer},
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl
     });
 
-    modal.present();
+    await modal.present();
   }
 
   async customerCancelTask() {

@@ -36,7 +36,7 @@ export class LoginPage {
     this.submitted = true;
     if (form.valid) {
       this.authService.login(this.login)
-        .subscribe(() => {
+        .then(() => {
           this.navCtrl.navigateRoot('/app/tabs/marketplace').then(res => {
             // to check if we have permission
             try {
@@ -53,7 +53,7 @@ export class LoginPage {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
@@ -86,22 +86,20 @@ export class LoginPage {
     };
     if (!(this.platform.is('pwa') && this.platform.is('ios'))) {
       const pushObject: PushObject = this.push.init(options);
-      pushObject.on('registration').subscribe((data: any) => {
+      pushObject.on('registration').toPromise().then((data: any) => {
         // console.log('Token: ' + data.registrationId);
         if (this.platform.is('ios')) {
-          this.notficationService.saveAPNToken({'device_token': data.registrationId}).subscribe(res => {
+          this.notficationService.saveAPNToken({device_token: data.registrationId}).then(res => {
             // console.log(res);
           });
         } else if (this.platform.is('android')) {
-          this.notficationService.saveFCMToken({'device_token': data.registrationId}).subscribe(res => {
+          this.notficationService.saveFCMToken({device_token: data.registrationId}).then(res => {
             // console.log(res);
           });
         }
-      }, error1 => {
-        // console.log(error1);
       });
 
-      pushObject.on('notification').subscribe((data: any) => {
+      pushObject.on('notification').toPromise().then((data: any) => {
         // console.log(data);
         this.badge.increase(1);
         if (!data.additionalData.foreground) {
@@ -111,7 +109,7 @@ export class LoginPage {
         }
       });
 
-      pushObject.on('error').subscribe(error => console.warn(error));
+      pushObject.on('error').toPromise().catch(error => console.warn(error));
     }
   }
 }

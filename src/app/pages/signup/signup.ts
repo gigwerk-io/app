@@ -70,7 +70,7 @@ export class SignupPage {
     private favrService: FavrDataService,
     private phonePipe: PhonePipe
   ) {
-    this.favrService.getCities().subscribe(res => {
+    this.favrService.getCities().then(res => {
       this.cities = res.cities;
     });
   }
@@ -80,13 +80,14 @@ export class SignupPage {
 
     if (form.valid) {
       this.authService.register(this.signup)
-        .subscribe(() => {
-          this.authService.login({username: this.signup.username, password: this.signup.password}).subscribe(() => {
+        .then(() => {
+          this.authService.login({username: this.signup.username, password: this.signup.password}).then(() => {
             this.navCtrl.navigateRoot('/app/tabs/marketplace').then(() => {
               this.initPushNotification();
             });
           });
-          }, error => {
+        })
+        .catch(error => {
           this.presentToast(error.error.message);
         });
     }
@@ -94,7 +95,7 @@ export class SignupPage {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
@@ -147,22 +148,20 @@ export class SignupPage {
     };
     if (!(this.platform.is('pwa') && this.platform.is('ios'))) {
       const pushObject: PushObject = this.push.init(options);
-      pushObject.on('registration').subscribe((data: any) => {
+      pushObject.on('registration').toPromise().then((data: any) => {
         // console.log('Token: ' + data.registrationId);
         if (this.platform.is('ios')) {
-          this.notificationService.saveAPNToken({'device_token': data.registrationId}).subscribe(res => {
+          this.notificationService.saveAPNToken({device_token: data.registrationId}).then(res => {
             // console.log(res);
           });
         } else if (this.platform.is('android')) {
-          this.notificationService.saveFCMToken({'device_token': data.registrationId}).subscribe(res => {
+          this.notificationService.saveFCMToken({device_token: data.registrationId}).then(res => {
             // console.log(res);
           });
         }
-      }, error1 => {
-        // console.log(error1);
       });
 
-      pushObject.on('notification').subscribe((data: any) => {
+      pushObject.on('notification').toPromise().then((data: any) => {
         // console.log(data);
         if (!data.additionalData.foreground) {
           if (data.custom !== undefined) {
@@ -171,7 +170,7 @@ export class SignupPage {
         }
       });
 
-      pushObject.on('error').subscribe(error => console.warn(error));
+      pushObject.on('error').toPromise().then(error => console.warn(error));
     }
   }
 
@@ -197,7 +196,7 @@ export class SignupPage {
         this.subPageTitle = 'Select City';
         break;
     }
-    this.pageStack.push({pageTitle: this.subPageTitle, page: page});
+    this.pageStack.push({pageTitle: this.subPageTitle, page});
     this.subPage = page;
   }
 }
