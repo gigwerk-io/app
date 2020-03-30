@@ -16,7 +16,7 @@ export class CurrentBalancePage implements OnInit {
   }
 
   getBalance() {
-    this.financeService.getFreelancerBalance().subscribe(res => {
+    this.financeService.getFreelancerBalance().then(res => {
       this.balance = res.balance;
     });
   }

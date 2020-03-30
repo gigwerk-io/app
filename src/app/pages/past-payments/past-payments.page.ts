@@ -19,7 +19,7 @@ export class PastPaymentsPage implements OnInit {
   }
 
   getPayments() {
-    this.financeService.getPayments().subscribe(res => {
+    this.financeService.getPayments().then(res => {
       this.payments = res.payments;
       if (res.payments.length === 0) {
         this.isNone = true;

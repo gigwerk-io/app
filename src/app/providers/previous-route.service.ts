@@ -11,7 +11,7 @@ export class PreviousRouteService {
 
   constructor(private router: Router) {
     this.currentUrl = this.router.url;
-    router.events.subscribe(event => {
+    router.events.toPromise().then(event => {
       if (event instanceof NavigationEnd) {
         this.previousUrl = (this.currentUrl !== event.url) ? this.currentUrl : '/app/tabs/marketplace';
         this.currentUrl = event.url;

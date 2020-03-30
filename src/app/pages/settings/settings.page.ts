@@ -71,7 +71,8 @@ export class SettingsPage implements OnInit {
 
   openTerms() {
     if (this.platform.is('ios') || this.platform.is('android')) {
-      this.iab.create('https://app.termly.io/document/terms-of-use-for-online-marketplace/ccc0e79c-9dbe-4198-9203-95382505f3d6');
+      const browser = this.iab.create('https://app.termly.io/document/terms-of-use-for-online-marketplace/ccc0e79c-9dbe-4198-9203-95382505f3d6');
+      browser.show();
     } else {
       window.open('https://app.termly.io/document/terms-of-use-for-online-marketplace/ccc0e79c-9dbe-4198-9203-95382505f3d6');
     }
@@ -79,7 +80,8 @@ export class SettingsPage implements OnInit {
 
   openPrivacy() {
     if (this.platform.is('ios') || this.platform.is('android')) {
-      this.iab.create('https://app.termly.io/document/privacy-policy/f48f5cbe-6359-43b5-804f-4d8b82429fe6');
+      const browser = this.iab.create('https://app.termly.io/document/privacy-policy/f48f5cbe-6359-43b5-804f-4d8b82429fe6');
+      browser.show();
     } else {
       window.open('https://app.termly.io/document/privacy-policy/f48f5cbe-6359-43b5-804f-4d8b82429fe6');
     }

@@ -63,7 +63,7 @@ export class SetUpPaymentsPage implements OnInit {
     };
     this.stripe.createCardToken(card).then(token => {
       const body = {stripeToken: token.id};
-      this.financeService.saveCreditCard(body).subscribe(res => {
+      this.financeService.saveCreditCard(body).then(res => {
         if (this.task) {
           this.marketplaceService.createMainMarketplaceRequest(this.task)
             .then(resp => this.presentToast(resp));
