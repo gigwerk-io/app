@@ -4,7 +4,7 @@
 ></favr-page-header>
 
 <ion-content>
-  <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment">
+  <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="segment">
     <ion-segment-button value="unread">
       <ion-label>Unread</ion-label>
     </ion-segment-button>
@@ -14,22 +14,29 @@
   </ion-segment>
 
   <!-- List of Text Items -->
-  <ion-list *ngIf="notifications; else skeletonNotifications">
-    <ion-item *ngFor="let notification of notifications; let i = index" [attr.data-index]="i" href (click)="view(i, notification)" [class]="notificationClass">
-      <ion-icon slot="start" name="notifications"></ion-icon>
-      <ion-label>
-        <h2>{{notification.type}}</h2>
-        <p>{{notification.message}}</p>
-      </ion-label>
-      <ion-note>
-        <small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
-      </ion-note>
-    </ion-item>
-  </ion-list>
+  <ng-container *ngIf="notifications; else skeletonNotifications">
+    <ion-list *ngIf="notifications.length > 0; else noNotifications">
+      <ion-item *ngFor="let notification of notifications; let i = index" [attr.data-index]="i" (click)="view(i, notification)" [class]="notificationClass">
+        <ion-icon slot="start" name="notifications"></ion-icon>
+        <ion-label>
+          <h2>{{notification.type}}</h2>
+          <p>{{notification.message}}</p>
+        </ion-label>
+        <ion-note>
+          <small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
+        </ion-note>
+      </ion-item>
+    </ion-list>
+    <ng-template #noNotifications>
+      <ion-title>
+        <img src="assets/img/monkey-face.png" alt="Nothing to see here">
+      </ion-title>
+    </ng-template>
+  </ng-container>
 
   <ng-template #skeletonNotifications>
     <ion-list>
-      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 9]">
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
         <ion-avatar slot="start">
           <ion-skeleton-text animated></ion-skeleton-text>
         </ion-avatar>

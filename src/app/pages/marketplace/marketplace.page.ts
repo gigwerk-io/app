@@ -14,7 +14,8 @@ import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page'
 @Component({
   selector: 'marketplace',
   templateUrl: './marketplace.page.html',
-  styleUrls: ['./marketplace.page.scss']
+  styleUrls: ['./marketplace.page.scss'],
+  providers: [IonRouterOutlet]
 })
 export class MarketplacePage implements OnInit, OnDestroy {
 
@@ -39,7 +40,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
               private routerOutlet: IonRouterOutlet) { }
 
   ngOnInit() {
-    this.segmentChanged(this.segment);
+    this.segmentChanged();
     this.storage.get(StorageKeys.PROFILE)
       .then(prof => this.userRole = prof.user.role);
   }
@@ -58,7 +59,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.changeRef.detectChanges();
       }, error => {
         if (error.status === 401) {
-          this.authService.isValidToken().subscribe(res => {
+          this.authService.isValidToken().then(res => {
             if (!res.response) {
               this.presentToast('You have been logged out.');
               this.storage.remove(StorageKeys.PROFILE);
@@ -94,7 +95,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.changeRef.detectChanges();
       }, error => {
         if (error.status === 401) {
-          this.authService.isValidToken().subscribe(res => {
+          this.authService.isValidToken().then(res => {
             if (!res.response) {
               this.presentToast('You have been logged out.');
               this.storage.remove(StorageKeys.PROFILE);
@@ -113,7 +114,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.changeRef.detectChanges();
       }, error => {
         if (error.status === 401) {
-          this.authService.isValidToken().subscribe(res => {
+          this.authService.isValidToken().then(res => {
             if (!res.response) {
               this.presentToast('You have been logged out.');
               this.storage.remove(StorageKeys.PROFILE);
@@ -125,8 +126,8 @@ export class MarketplacePage implements OnInit, OnDestroy {
       });
   }
 
-  segmentChanged(value) {
-    switch (value) {
+  segmentChanged() {
+    switch (this.segment) {
       case 'all':
         this.segment = 'all';
         this.geolocation.getCurrentPosition().then(res => {
@@ -178,7 +179,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
           const modal = await this.modalCtrl.create({
             component: RequestPage,
             componentProps: {isModal: true},
-            swipeToClose: true,
+            swipeToClose: false,
             presentingElement: this.routerOutlet.parentOutlet.nativeEl
           });
 

@@ -32,9 +32,8 @@ export class NotificationService {
     );
   }
 
-  public getNewNotifications() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getNewNotifications(): Promise<NotificationsResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -44,13 +43,11 @@ export class NotificationService {
           return this.httpClient.get<NotificationsResponse>(`${API_ADDRESS}/notifications/new`, authHeader)
             .toPromise()
             .then((res: NotificationsResponse) => res);
-        })
-    );
+        });
   }
 
-  public getAllNotifications() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getAllNotifications(): Promise<NotificationsResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -60,13 +57,11 @@ export class NotificationService {
           return this.httpClient.get<NotificationsResponse>(`${API_ADDRESS}/notifications/all`, authHeader)
             .toPromise()
             .then((res: NotificationsResponse) => res);
-        })
-    );
+        });
   }
 
-  public markNotificationAsRead(id) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public markNotificationAsRead(id): Promise<void> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -75,9 +70,8 @@ export class NotificationService {
           };
           return this.httpClient.get(`${API_ADDRESS}/notification/${id}`, authHeader)
             .toPromise()
-            .then((res) => res);
-        })
-    );
+            .then();
+        });
   }
 
   public saveFCMToken(body) {

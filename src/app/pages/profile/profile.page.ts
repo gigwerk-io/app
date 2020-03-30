@@ -70,7 +70,7 @@ export class ProfilePage implements OnInit, OnDestroy {
             });
         }, error => {
           if (error.status === 401) {
-            this.authService.isValidToken().subscribe(res => {
+            this.authService.isValidToken().then(res => {
               if (!res.response) {
                 this.presentToast('You have been logged out.');
                 this.storage.clear();

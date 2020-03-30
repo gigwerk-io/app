@@ -13,8 +13,6 @@ import {IonRouterOutlet, ModalController} from '@ionic/angular';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-
-  noImage = false;
   rooms: Room[];
   userId: number;
 

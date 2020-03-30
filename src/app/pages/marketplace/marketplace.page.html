@@ -10,7 +10,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment">
+  <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="segment">
     <ion-segment-button value="all">
       <ion-label>Feed</ion-label>
     </ion-segment-button>

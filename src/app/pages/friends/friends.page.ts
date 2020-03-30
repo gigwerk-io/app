@@ -33,18 +33,20 @@ export class FriendsPage implements OnInit {
   ) { }
 
   ngOnInit() {
-
+    this.segmentChanged();
   }
 
   handleSearch(query) {
     this.btnClass = 'arrow-forward';
     this.secondButton = false;
     this.clickType = 'search';
-    this.friendService.searchUsers(query).subscribe(res => {
-      this.users = res;
-    }, error => {
+    this.friendService.searchUsers(query)
+      .then(res => {
+        this.users = res;
+      })
+      .catch(error => {
       if (error.status === 401) {
-        this.authService.isValidToken().subscribe(res => {
+        this.authService.isValidToken().then(res => {
           if (!res.response) {
             this.presentToast('You have been logged out.');
             this.storage.remove(StorageKeys.PROFILE);
@@ -56,10 +58,10 @@ export class FriendsPage implements OnInit {
     });
   }
 
-  segmentChanged(event) {
+  segmentChanged() {
     this.users = null;
-    this.clickType = event.target.value;
-    switch (event.target.value) {
+    this.clickType = this.segment;
+    switch (this.segment) {
       case 'recommended':
         this.showRecommendedFriends();
         break;
@@ -94,12 +96,12 @@ export class FriendsPage implements OnInit {
   showRecommendedFriends() {
     this.btnClass = 'person-add';
     this.secondButton = false;
-    this.friendService.getRecommendedFriends().subscribe(res => {
+    this.friendService.getRecommendedFriends().then(res => {
       this.users = res;
       this.changeRef.detectChanges();
     }, error => {
       if (error.status === 401) {
-        this.authService.isValidToken().subscribe(res => {
+        this.authService.isValidToken().then(res => {
           if (!res.response) {
             this.presentToast('You have been logged out.');
             this.storage.remove(StorageKeys.PROFILE);
@@ -112,14 +114,16 @@ export class FriendsPage implements OnInit {
   }
 
   showMyFriends() {
-    this.btnClass = 'chatbubbles';
+    this.btnClass = 'chatbubble';
     this.secondButton = false;
-    this.friendService.getMyFriends().then(res => {
-      this.users = res;
-      this.changeRef.detectChanges();
-    }, error => {
+    this.friendService.getMyFriends()
+      .then(res => {
+        this.users = res;
+        this.changeRef.detectChanges();
+      })
+      .catch(error => {
       if (error.status === 401) {
-        this.authService.isValidToken().subscribe(res => {
+        this.authService.isValidToken().then(res => {
           if (!res.response) {
             this.presentToast('You have been logged out.');
             this.storage.remove(StorageKeys.PROFILE);
@@ -134,12 +138,14 @@ export class FriendsPage implements OnInit {
   showMyFriendRequests() {
     this.btnClass = 'checkmark';
     this.secondButton = true;
-    this.friendService.getFriendRequests().subscribe(res => {
-      this.users = res;
-      this.changeRef.detectChanges();
-    }, error => {
+    this.friendService.getFriendRequests()
+      .then(res => {
+        this.users = res;
+        this.changeRef.detectChanges();
+      })
+      .catch(error => {
       if (error.status === 401) {
-        this.authService.isValidToken().subscribe(res => {
+        this.authService.isValidToken().then(res => {
           if (!res.response) {
             this.presentToast('You have been logged out.');
             this.storage.remove(StorageKeys.PROFILE);

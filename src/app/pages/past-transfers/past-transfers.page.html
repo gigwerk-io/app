@@ -13,7 +13,7 @@
       <h5 class="text-bold">PAST TRANSFERS</h5>
     </ion-list-header>
 
-    <ion-item *ngFor="let transfer of transfers" href (click)="goToJob(transfer.marketplace_id)" >
+    <ion-item *ngFor="let transfer of transfers" (click)="goToJob(transfer.marketplace_id)" >
       <ion-note slot="end"><small>{{transfer.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small></ion-note>
       <ion-label>
         <h2>${{transfer.amount.toFixed(2)}}</h2>

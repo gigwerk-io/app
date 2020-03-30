@@ -58,8 +58,7 @@ export class AuthService {
   }
 
   isValidToken() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -69,8 +68,7 @@ export class AuthService {
           return this.httpClient.get<ValidateTokenResponse>(API_ADDRESS + '/validate', authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 
   forgotPassword(email): Observable<SignOutResponse> {

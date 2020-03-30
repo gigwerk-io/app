@@ -16,7 +16,7 @@
 
   <!-- Default Segment -->
   <!-- Icon end -->
-  <ion-segment (ionChange)="segmentChanged($event)" [(ngModel)]="segment">
+  <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="segment">
     <ion-segment-button value="friends">
       <ion-label>Friend List</ion-label>
     </ion-segment-button>
@@ -29,30 +29,36 @@
   </ion-segment>
 
   <!-- List of Text Items -->
-  <ion-list *ngIf="users; else skeletonFriends">
-    <ion-item [detail]="(btnClass == 'arrow-forward')" *ngFor="let user of users; let i = index;" [attr.data-index]="i">
-      <ion-avatar slot="start" (click)="goToUserProfile(user.id)">
-        <ion-img [src]="!noImage ? user.profile.image : './assets/img/user.png'" alt="profile image" (ionError)="noImage = true"></ion-img>
-      </ion-avatar>
-      <ion-label (click)="goToUserProfile(user.id)">
-        {{user.name}}
-        <br>
-        <ion-note>@{{user.username}}</ion-note>
-      </ion-label>
-      <ion-button *ngIf="btnClass != 'arrow-forward'"
-                  (click)="handleClick(user, i)"
-                  [ngClass]="(btnClass === 'checkmark') ? 'checkmark-btn nav-button' : 'nav-button'">
-        <ion-icon [mode]="(btnClass === 'person-add' || btnClass === 'checkmark') ? 'md' : ''" [name]="btnClass"></ion-icon>
-      </ion-button>
-      <ion-button class="nav-button" *ngIf="secondButton" (click)="rejectFriendRequest(user.id)">
-        <ion-icon mode="md" name="close"></ion-icon>
-      </ion-button>
-    </ion-item>
-  </ion-list>
+  <ng-container *ngIf="users; else skeletonFriends">
+    <ion-list>
+      <ion-item [detail]="(btnClass == 'arrow-forward')" *ngFor="let user of users; let i = index;" [attr.data-index]="i">
+        <ion-avatar slot="start" (click)="goToUserProfile(user.id)">
+          <ion-img [src]="!noImage ? user.profile.image : 'assets/img/user.png'" alt="profile image" (ionError)="noImage = true"></ion-img>
+        </ion-avatar>
+        <ion-label (click)="goToUserProfile(user.id)">
+          {{user.name}}
+          <br>
+          <ion-note>@{{user.username}}</ion-note>
+        </ion-label>
+        <ion-button *ngIf="btnClass != 'arrow-forward'"
+                    (click)="handleClick(user, i)"
+                    [ngClass]="(btnClass === 'checkmark') ? 'checkmark-btn nav-button' : 'nav-button'">
+          <ion-icon [mode]="(btnClass === 'person-add' || btnClass === 'checkmark') ? 'md' : ''" [name]="btnClass"></ion-icon>
+        </ion-button>
+        <ion-button class="nav-button" *ngIf="secondButton" (click)="rejectFriendRequest(user.id)">
+          <ion-icon mode="md" name="close"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-title *ngIf="users.length == 0">
+      <img src="assets/img/monkey-face.png" alt="Nothing to see here">
+    </ion-title>
+  </ng-container>
 
   <ng-template #skeletonFriends>
     <ion-list>
-      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 9]">
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
         <ion-avatar slot="start">
           <ion-skeleton-text animated></ion-skeleton-text>
         </ion-avatar>

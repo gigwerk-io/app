@@ -52,15 +52,15 @@ export class SearchPage implements OnInit, OnDestroy {
 
   handleSearch() {
     // console.log(this.query);
-    this.friendService.searchUsers(this.query).toPromise().then(res => {
+    this.friendService.searchUsers(this.query).then(res => {
       this.users = res;
       // console.log(this.users);
     });
   }
 
   goToUserProfile(id) {
-    this.closeSearchPage();
-    this.router.navigate(['/app/profile', id]);
+    this.closeSearchPage()
+      .then(() => this.router.navigate(['/app/profile', id]));
   }
 
   public onSearchInputChange(term: string): void {
@@ -76,7 +76,7 @@ export class SearchPage implements OnInit, OnDestroy {
       debounceTime(250),
       distinctUntilChanged(),
     ).subscribe((term: string) => {
-      this.friendService.searchUsers(term).toPromise().then(res => {
+      this.friendService.searchUsers(term).then(res => {
         this.users = res;
         this.queryLength = this.users.length;
       });
@@ -128,7 +128,7 @@ export class SearchPage implements OnInit, OnDestroy {
   }
 
   goToChatRoom(user: Searchable) {
-    this.closeSearchPage();
-    this.startChat(user.username);
+    this.closeSearchPage()
+      .then(() => this.startChat(user.username));
   }
 }
