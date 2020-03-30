@@ -3,7 +3,7 @@ import {Searchable} from '../../utils/interfaces/searchable';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
 import {ChatService} from '../../utils/services/chat.service';
-import {NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, NavController, ToastController} from '@ionic/angular';
 import {AuthService} from '../../utils/services/auth.service';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
@@ -12,6 +12,7 @@ import {StorageKeys} from '../../providers/constants';
   selector: 'friends',
   templateUrl: './friends.page.html',
   styleUrls: ['./friends.page.scss'],
+  providers: [IonRouterOutlet]
 })
 export class FriendsPage implements OnInit {
   users: Searchable[];
@@ -25,11 +26,12 @@ export class FriendsPage implements OnInit {
   constructor(private friendService: FriendsService,
               private chatService: ChatService,
               private router: Router,
-              public toastController: ToastController,
+              private toastController: ToastController,
               private changeRef: ChangeDetectorRef,
               private authService: AuthService,
               private storage: Storage,
-              private navCtrl: NavController
+              private navCtrl: NavController,
+              private routerOutlet: IonRouterOutlet
   ) { }
 
   ngOnInit() {

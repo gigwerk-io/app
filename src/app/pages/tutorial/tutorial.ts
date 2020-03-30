@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MenuController, IonSlides } from '@ionic/angular';
@@ -12,7 +12,7 @@ import {StorageKeys} from '../../providers/constants';
   templateUrl: 'tutorial.html',
   styleUrls: ['./tutorial.scss'],
 })
-export class TutorialPage {
+export class TutorialPage implements OnInit, OnDestroy {
   showSkip = true;
 
   @ViewChild('slides', { static: true }) slides: IonSlides;
@@ -44,7 +44,7 @@ export class TutorialPage {
     });
   }
 
-  ionViewWillEnter() {
+  ngOnInit() {
     this.storage.get(StorageKeys.PLATFORM_TUTORIAL).then(res => {
       if (res === true) {
         this.authService.isLoggedIn().subscribe(loggedIn => {
@@ -56,12 +56,8 @@ export class TutorialPage {
         });
       }
     });
-
-    this.menu.enable(false);
   }
 
-  ionViewDidLeave() {
-    // enable the root left menu when leaving the tutorial page
-    this.menu.enable(true);
+  ngOnDestroy() {
   }
 }

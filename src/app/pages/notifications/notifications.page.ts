@@ -3,7 +3,7 @@ import {NotificationService} from '../../utils/services/notification.service';
 import {Notification} from '../../utils/interfaces/notification/notification';
 import {Router} from '@angular/router';
 import {AuthService} from '../../utils/services/auth.service';
-import {NavController, Platform, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, NavController, Platform, ToastController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import {Badge} from '@ionic-native/badge/ngx';
 import {StorageKeys} from '../../providers/constants';
@@ -12,6 +12,7 @@ import {StorageKeys} from '../../providers/constants';
   selector: 'notifications',
   templateUrl: './notifications.page.html',
   styleUrls: ['./notifications.page.scss'],
+  providers: [IonRouterOutlet]
 })
 export class NotificationsPage implements OnInit {
 
@@ -26,10 +27,11 @@ export class NotificationsPage implements OnInit {
               private changeRef: ChangeDetectorRef,
               private authService: AuthService,
               private storage: Storage,
-              public toastController: ToastController,
+              private toastController: ToastController,
               private platform: Platform,
               private badge: Badge,
-              private navCtrl: NavController) { }
+              private navCtrl: NavController,
+              private routerOutlet: IonRouterOutlet) { }
 
   ngOnInit() {
     this.segmentChanged();

@@ -3,7 +3,7 @@ import {AuthService} from '../../utils/services/auth.service';
 import {Storage} from '@ionic/storage';
 import {Role, StorageKeys} from '../../providers/constants';
 import {AuthorizationToken} from '../../utils/interfaces/user-options';
-import {ActionSheetController, NavController, Platform} from '@ionic/angular';
+import {ActionSheetController, IonRouterOutlet, NavController, Platform} from '@ionic/angular';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {environment} from '../../../environments/environment';
@@ -12,6 +12,7 @@ import {environment} from '../../../environments/environment';
   selector: 'settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
+  providers: [IonRouterOutlet]
 })
 export class SettingsPage implements OnInit {
 
@@ -28,7 +29,8 @@ export class SettingsPage implements OnInit {
               private iab: InAppBrowser,
               private statusBar: StatusBar,
               private changeRef: ChangeDetectorRef,
-              public actionSheetController: ActionSheetController) {}
+              private actionSheetController: ActionSheetController,
+              private routerOutlet: IonRouterOutlet) {}
 
   ngOnInit() {
     this.storage.get(StorageKeys.THEME_PREFERENCE)

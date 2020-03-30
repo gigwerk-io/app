@@ -17,7 +17,7 @@ import {ReportPage} from '../report/report.page';
   selector: 'profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
-  providers: [PhotoViewer, IonRouterOutlet]
+  providers: [PhotoViewer]
 })
 export class ProfilePage implements OnInit, OnDestroy {
 

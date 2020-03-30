@@ -1,8 +1,10 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
-  ActionSheetController, AlertController,
+  ActionSheetController,
+  AlertController,
   IonContent,
-  IonSlides, LoadingController,
+  IonSlides,
+  LoadingController,
   ModalController,
   NavController,
   Platform,
@@ -91,7 +93,7 @@ export class RequestPage implements OnInit, OnDestroy {
               private actionSheetCtrl: ActionSheetController,
               private previousRoute: PreviousRouteService,
               private navCtrl: NavController,
-              public platform: Platform,
+              private platform: Platform,
               private favrService: FavrDataService,
               private financeService: FinanceService,
               private loadingCtrl: LoadingController,

@@ -79,7 +79,7 @@ export class TabsPage implements OnInit {
     this.storage.get(StorageKeys.CUSTOMER_TUTORIAL).then(res => {
       setTimeout(async () => {
         if (!res) {
-          const modal = await this.modalCtrl.create({
+          const customerTutorialModal = await this.modalCtrl.create({
             component: CustomerTutorialPage,
             componentProps: {isModal: true}
           });
@@ -91,7 +91,7 @@ export class TabsPage implements OnInit {
 
           await loadingCustomerTutorialPage.present();
 
-          modal.onDidDismiss().then(async () => {
+          customerTutorialModal.onDidDismiss().then(async () => {
             const loadingMarketplacePage = await this.loadingCtrl.create({
               message: 'Please wait...',
               translucent: true
@@ -101,14 +101,45 @@ export class TabsPage implements OnInit {
             loadingMarketplacePage.dismiss();
           });
 
-          await modal.present()
-            .then(() => {
+          await customerTutorialModal.present()
+            .then(() => loadingCustomerTutorialPage.dismiss());
 
-              return loadingCustomerTutorialPage.dismiss();
+          await customerTutorialModal.onDidDismiss()
+            .then(async () => {
+              const taskRequestModal = await this.modalCtrl.create({
+                component: RequestPage,
+                componentProps: {isModal: true},
+                swipeToClose: false,
+                presentingElement: this.routerOutlet.nativeEl
+              });
+
+              const loadingRequestPage = await this.loadingCtrl.create({
+                message: 'Please wait...',
+                translucent: true
+              });
+
+              await loadingRequestPage.present();
+
+              taskRequestModal.onDidDismiss().then(async () => {
+                const loadingMarketplacePage = await this.loadingCtrl.create({
+                  message: 'Please wait...',
+                  translucent: true
+                });
+
+                await loadingMarketplacePage.present();
+
+                // this.marketplaceService.getMainMarketplaceRequests('all')
+                //   .then(tasks => this.marketplaceTasks = tasks);
+                // this.marketplaceService.getMainMarketplaceRequests('me')
+                //   .then(tasks => this.marketplaceTasks = tasks);
+                loadingMarketplacePage.dismiss();
+              });
+
+              await taskRequestModal.present()
+                .then(() => loadingRequestPage.dismiss());
             });
-          await Promise.resolve(false);
         } else {
-          const modal = await this.modalCtrl.create({
+          const taskRequestModal = await this.modalCtrl.create({
             component: RequestPage,
             componentProps: {isModal: true},
             swipeToClose: false,
@@ -122,7 +153,7 @@ export class TabsPage implements OnInit {
 
           await loadingRequestPage.present();
 
-          modal.onDidDismiss().then(async () => {
+          taskRequestModal.onDidDismiss().then(async () => {
             const loadingMarketplacePage = await this.loadingCtrl.create({
               message: 'Please wait...',
               translucent: true
@@ -137,11 +168,8 @@ export class TabsPage implements OnInit {
             loadingMarketplacePage.dismiss();
           });
 
-          await modal.present()
-            .then(() => {
-
-              return loadingRequestPage.dismiss();
-            });
+          await taskRequestModal.present()
+            .then(() => loadingRequestPage.dismiss());
         }
       }, 0);
     });

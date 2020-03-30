@@ -2,10 +2,8 @@ import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {IonSearchbar, ModalController, ToastController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
-import {Subject, BehaviorSubject, Subscription} from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {User} from '../../utils/interfaces/user';
-import {EventsService} from '../../utils/services/events.service';
 import {ChatService} from '../../utils/services/chat.service';
 import {Searchable} from '../../utils/interfaces/searchable';
 

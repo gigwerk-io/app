@@ -31,24 +31,5 @@ export class CustomerTutorialPage implements OnInit {
   goToRequestForm() {
     this.storage.set(StorageKeys.CUSTOMER_TUTORIAL, true);
     this.modalCtrl.dismiss();
-    setTimeout(async () => {
-      const modal = await this.modalCtrl.create({
-        component: RequestPage,
-        componentProps: {'isModal': true}
-      });
-
-      const loadingRequestPage = await this.loadingCtrl.create({
-        message: 'Please wait...',
-        translucent: true
-      });
-
-      await loadingRequestPage.present();
-
-      await modal.present()
-        .then(() => {
-
-          return loadingRequestPage.dismiss();
-        });
-    }, 0);
   }
 }

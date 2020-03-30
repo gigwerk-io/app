@@ -11,7 +11,7 @@
   <ion-toolbar *ngIf="showBackButton"
                class="mobile-only">
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/marketplace"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 
@@ -20,7 +20,7 @@
       <ion-col *ngIf="pageTitle" class="page-title-area">
         <h2 class="page-title">
           <ng-container *ngIf="pageTitle === 'Marketplace'; else title">
-            <img src="./assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
+            <img src="assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
           </ng-container>
           <ng-template #title>
             {{pageTitle}}
@@ -60,16 +60,9 @@
                       class="nav-button">
             <ion-icon name="chatbubbles"></ion-icon>
           </ion-button>
-
-          <!--<ion-button (click)="presentFilterOptions()"-->
-                      <!--*ngIf="pageTitle == 'Marketplace'"-->
-                      <!--class="nav-button">-->
-            <!--<ion-icon name="funnel" size="medium"></ion-icon>-->
-          <!--</ion-button>-->
         </ion-buttons>
       </ion-col>
     </ion-row>
     <ion-progress-bar *ngIf="progress" [value]="progress" [ngClass]="progress == 1 ? 'green-progress' : ''"></ion-progress-bar>
-    <!--<ion-searchbar *ngIf="showSearchBar" class="web-only" (keyup.enter)="onKeyEnter($event)" placeholder="Search"></ion-searchbar>-->
   </ion-toolbar>
 </ion-header>

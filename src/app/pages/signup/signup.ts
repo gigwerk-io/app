@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserRegistrationOptions } from '../../utils/interfaces/user-options';
 import {AuthService} from '../../utils/services/auth.service';
-import {IonContent, IonSlides, NavController, Platform, ToastController} from '@ionic/angular';
+import {IonContent, IonSlides, Platform, ToastController} from '@ionic/angular';
 import {setProgress} from '../request/request.page';
 import {Push, PushObject, PushOptions} from '@ionic-native/push/ngx';
 import {NotificationService} from '../../utils/services/notification.service';
@@ -60,7 +60,6 @@ export class SignupPage {
 
   constructor(
     private authService: AuthService,
-    public navCtrl: NavController,
     private toastController: ToastController,
     private push: Push,
     private notificationService: NotificationService,
@@ -82,7 +81,7 @@ export class SignupPage {
       this.authService.register(this.signup)
         .then(() => {
           this.authService.login({username: this.signup.username, password: this.signup.password}).then(() => {
-            this.navCtrl.navigateRoot('/app/tabs/marketplace').then(() => {
+            this.router.navigateByUrl('/app/tabs/marketplace').then(() => {
               this.initPushNotification();
             });
           });

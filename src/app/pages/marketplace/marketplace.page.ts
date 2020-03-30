@@ -20,10 +20,8 @@ import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page'
 export class MarketplacePage implements OnInit, OnDestroy {
 
   marketplaceTasks: MainMarketplaceTask[];
-  filterInputs: any;
-  filterDefault: string;
   segment = 'all';
-  userRole;
+  userRole: string;
   Role = Role;
 
   constructor(private marketplaceService: MarketplaceService,
@@ -176,11 +174,11 @@ export class MarketplacePage implements OnInit, OnDestroy {
         if (!res) {
           this.openCustomerTutorial();
         } else {
-          const modal = await this.modalCtrl.create({
+          const requestPageModal = await this.modalCtrl.create({
             component: RequestPage,
             componentProps: {isModal: true},
             swipeToClose: false,
-            presentingElement: this.routerOutlet.parentOutlet.nativeEl
+            presentingElement: this.routerOutlet.nativeEl
           });
 
           const loadingRequestPage = await this.loadingCtrl.create({
@@ -190,7 +188,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
           await loadingRequestPage.present();
 
-          await modal.present()
+          await requestPageModal.present()
             .then(() => {
 
               return loadingRequestPage.dismiss();
@@ -227,10 +225,5 @@ export class MarketplacePage implements OnInit, OnDestroy {
         }
       }
     }, 1000);
-  }
-
-  setFilterOption(option: string) {
-    this.filterDefault = option;
-    this.changeRef.detectChanges();
   }
 }
