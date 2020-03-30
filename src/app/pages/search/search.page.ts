@@ -35,7 +35,6 @@ export class SearchPage implements OnInit, OnDestroy {
               private chatService: ChatService) { }
 
   ngOnInit() {
-    setTimeout(() => this.searchBar.setFocus(), 350);
     this.setupSearchDebouncer();
     if (this.isChat) {
       this.friendService.getMyFriends()

@@ -20,10 +20,11 @@
     <ion-list *ngIf="rooms.length > 0; else noRooms">
       <ion-item *ngFor="let room of rooms" (click)="goToChatRoom(room.pusher_id)">
         <ion-avatar slot="start">
-          <ion-img *ngIf="!noImage; else defaultProfileImage" src="{{getUserProfileImage(room.members)}}" (ionError)="noImage = true" alt="Profile image"></ion-img>
-          <ng-template #defaultProfileImage>
-            <ion-img src="assets/img/user.png" alt="Profile image"></ion-img>
-          </ng-template>
+          <favr-img [src]="getUserProfileImage(room.members)"
+                    spinnerSrc="assets/img/user.png"
+                    imgClass="rounded-circle"
+                    loaderClass="rounded-circle"
+                    alt="Profile image"></favr-img>
         </ion-avatar>
         <ion-label>
           <h3>{{getUserName(room.members)}}</h3>

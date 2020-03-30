@@ -13,9 +13,8 @@ import {CreateChatResponse, Room} from '../interfaces/chat/room';
 export class ChatService {
   constructor(private http: HttpClient, private storage: Storage) { }
 
-  public getChatRooms(): Observable<Room[]> {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getChatRooms(): Promise<Room[]> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -26,8 +25,7 @@ export class ChatService {
             .toPromise()
             .then((res: Room[]) => res)
             .catch(() => []);
-        })
-    );
+        });
   }
 
   public getChatRoom(uuid): Observable<Room> {

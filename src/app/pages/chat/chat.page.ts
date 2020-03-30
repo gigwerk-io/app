@@ -34,7 +34,6 @@ export class ChatPage implements OnInit {
 
   public getRooms() {
     this.roomService.getChatRooms()
-      .toPromise()
       .then(res => this.rooms = res)
       .catch(() => this.rooms = []);
   }

@@ -66,7 +66,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   public getRooms() {
-    this.chatService.getChatRooms().toPromise().then(res => this.rooms = res);
+    this.chatService.getChatRooms().then(res => this.rooms = res);
   }
 
   getUserProfileImage(members?: Room[]) {
