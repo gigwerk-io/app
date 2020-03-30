@@ -1,32 +1,46 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {IonSearchbar, ModalController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
-import { Subject, BehaviorSubject } from 'rxjs';
+import {Subject, BehaviorSubject, Subscription} from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {User} from '../../utils/interfaces/user';
+import {EventsService} from '../../utils/services/events.service';
 
 @Component({
   selector: 'search',
   templateUrl: './search.page.html',
   styleUrls: ['./search.page.scss'],
 })
-export class SearchPage implements OnInit {
-  users;
+export class SearchPage implements OnInit, OnDestroy {
+
+  @Input() isChat = false;
+
+  users: User[];
   query;
-  query_length = undefined;
-  // Holds results
-  public people$: Subject<any> = new Subject();
+  queryLength = undefined;
 
   // Observable for debouncing input changes
-  private searchDecouncer$: Subject<string> = new Subject();
+  private searchDebouncerSubject: Subject<string> = new Subject();
+  private searchDebouncerSub: Subscription;
   // @ts-ignore
   @ViewChild(IonSearchbar) searchBar: IonSearchbar;
 
-  constructor(private modalCtrl: ModalController, private friendService: FriendsService, private router: Router) { }
+  constructor(private modalCtrl: ModalController,
+              private friendService: FriendsService,
+              private router: Router) { }
 
   ngOnInit() {
     setTimeout(() => this.searchBar.setFocus(), 350);
     this.setupSearchDebouncer();
+    if (this.isChat) {
+      this.friendService.getMyFriends()
+        .then(res => this.users = res);
+    }
+  }
+
+  ngOnDestroy() {
+    this.searchDebouncerSub.unsubscribe();
   }
 
   async closeSearchPage() {
@@ -35,7 +49,7 @@ export class SearchPage implements OnInit {
 
   handleSearch() {
     // console.log(this.query);
-    this.friendService.searchUsers(this.query).subscribe(res => {
+    this.friendService.searchUsers(this.query).toPromise().then(res => {
       this.users = res;
       // console.log(this.users);
     });
@@ -49,20 +63,24 @@ export class SearchPage implements OnInit {
   public onSearchInputChange(term: string): void {
     // `onSearchInputChange` is called whenever the input is changed.
     // We have to send the value to debouncing observable
-    this.searchDecouncer$.next(term);
+    this.searchDebouncerSubject.next(term);
   }
 
   private setupSearchDebouncer(): void {
-    // Subscribe to `searchDecouncer$` values,
+    // Subscribe to `searchDebouncerSubject` values,
     // but pipe through `debounceTime` and `distinctUntilChanged`
-    this.searchDecouncer$.pipe(
+    this.searchDebouncerSub = this.searchDebouncerSubject.pipe(
       debounceTime(250),
       distinctUntilChanged(),
     ).subscribe((term: string) => {
-      this.friendService.searchUsers(term).subscribe(res => {
+      this.friendService.searchUsers(term).toPromise().then(res => {
         this.users = res;
-        this.query_length = this.users.length;
+        this.queryLength = this.users.length;
       });
     });
+  }
+
+  goToChatRoom() {
+    console.log(this.isChat);
   }
 }

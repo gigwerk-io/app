@@ -36,7 +36,9 @@
       <ion-avatar slot="start">
         <favr-img
           [src]="mainMarketplaceTask.customer.profile.image"
-          [spinnerSrc]="'./assets/img/user.png'"
+          spinnerSrc="assets/img/user.png"
+          imgClass="rounded-circle"
+          loaderClass="rounded-circle"
           alt="profile picture"></favr-img>
       </ion-avatar>
       {{mainMarketplaceTask.customer.first_name}} {{mainMarketplaceTask.customer.last_name}}
@@ -65,7 +67,7 @@
           </ion-note>
         </small>
       </div>
-      <div slot="end" class="marketplace-card-distance-away">
+      <small slot="end" class="marketplace-card-distance-away">
         <ion-note *ngIf="mainMarketplaceTask.distance_away != undefined
                         && ((mainMarketplaceTask.status != TaskStatus.COMPLETE
                         && (isOwner || isFreelancer))
@@ -75,7 +77,7 @@
         <small *ngIf="mainMarketplaceTask.status == TaskStatus.COMPLETE">
           <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
         </small>
-      </div>
+      </small>
     </ion-item>
 
     <ion-grid class="ion-padding-start ion-padding-end">
@@ -88,6 +90,9 @@
             <ion-avatar>
               <favr-img
                 [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : 'assets/img/user.png'"
+                spinnerSrc="assets/img/user.png"
+                imgClass="rounded-circle"
+                loaderClass="rounded-circle"
                 alt="profile picture">
               </favr-img>
             </ion-avatar>
@@ -202,9 +207,7 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/stopwatch.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/stopwatch.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Current Status:</b>
@@ -214,10 +217,9 @@
       </ion-row>
 
       <ion-row class="ion-padding-bottom">
-        <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}"></favr-img>
-          </ion-avatar>
+        <ion-col size="3" class="ion-text-center">
+          <favr-img src="{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}"
+                    imgClass="marketplace-detail-icons" loaderClass="marketplace-detail-icons rounded-circle"></favr-img>
         </ion-col>
         <ion-col size="9">
           <b>Task Category:</b>
@@ -228,12 +230,10 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/suitcase.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/suitcase.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
-          <b>Task Description</b>
+          <b>Task Description:</b>
           <br>
           <div id="taskDescription" [innerHTML]="mainMarketplaceTask.description"></div>
         </ion-col>
@@ -241,9 +241,7 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/bank.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/bank.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Price:</b>
@@ -281,9 +279,7 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/group.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/group.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Freelancer Count:</b>
@@ -295,9 +291,7 @@
 
       <ion-row *ngIf="mainMarketplaceTask.locations" class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/map.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/map.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Location:</b>
@@ -313,9 +307,7 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/calendar.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/calendar.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else completedOn">
@@ -334,9 +326,7 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <ion-avatar>
-            <favr-img src="assets/img/tools.png" class="marketplace-detail-icons"></favr-img>
-          </ion-avatar>
+          <ion-img src="assets/img/tools.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Intensity:</b>

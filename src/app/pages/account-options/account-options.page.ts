@@ -25,12 +25,9 @@ export class AccountOptionsPage implements OnInit {
       message: 'Are you sure you want to deactivate your account?',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'No',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-
-          }
+          cssClass: 'secondary'
         }, {
           text: 'Yes',
           handler: () => {
@@ -53,12 +50,9 @@ export class AccountOptionsPage implements OnInit {
       message: 'Are you sure you want to delete your account?',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'No',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            // console.log('Confirm Cancel: blah');
-          }
+          cssClass: 'secondary'
         }, {
           text: 'Yes',
           handler: () => {
@@ -77,7 +71,7 @@ export class AccountOptionsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',

@@ -10,11 +10,10 @@ import {ActionSheetController, ToastController} from '@ionic/angular';
 })
 export class SavedLocationsPage implements OnInit {
 
-  locations: LocationAddress[];
+  locations: LocationAddress[] = [];
   constructor(private preferences: PreferencesService,
               public actionSheetCtrl: ActionSheetController,
-              private toastCtrl: ToastController,
-              private changeRef: ChangeDetectorRef) { }
+              private toastCtrl: ToastController) { }
 
   ngOnInit() {
     this.getLocations();

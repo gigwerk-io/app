@@ -22,8 +22,10 @@
               routerDirection="forward">
       <ion-avatar slot="start">
         <favr-img
-          [src]="mainMarketTask.customer.profile.image"
-          [spinnerSrc]="'./assets/img/user.png'"
+          [src]="mainMarketplaceTask.customer.profile.image"
+          spinnerSrc="assets/img/user.png"
+          imgClass="rounded-circle"
+          loaderClass="rounded-circle"
           alt="profile picture"></favr-img>
       </ion-avatar>
       {{mainMarketTask.customer.first_name}} {{mainMarketTask.customer.last_name}}
@@ -52,7 +54,7 @@
           </ion-note>
         </small>
       </div>
-      <div slot="end" class="marketplace-card-distance-away">
+      <small slot="end" class="marketplace-card-distance-away">
         <ion-note
           *ngIf="mainMarketTask.distance_away != undefined && mainMarketTask.status != TaskStatus.COMPLETE">{{mainMarketTask.distance_away}}
           Miles
@@ -60,7 +62,7 @@
         <small *ngIf="mainMarketTask.status == TaskStatus.COMPLETE">
           <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
         </small>
-      </div>
+      </small>
     </ion-item>
   </ion-card-header>
 
@@ -174,7 +176,9 @@
         <ion-avatar slot="start">
           <favr-img
             [src]="pastJob.marketplace.customer.profile.image"
-            [spinnerSrc]="'./assets/img/user.png'"
+            spinnerSrc="assets/img/user.png"
+            imgClass="rounded-circle"
+            loaderClass="rounded-circle"
             alt="profile picture"></favr-img>
         </ion-avatar>
         {{pastJob.marketplace.customer.first_name}} {{pastJob.marketplace.customer.last_name}}

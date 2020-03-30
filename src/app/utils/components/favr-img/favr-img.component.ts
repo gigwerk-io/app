@@ -9,10 +9,11 @@ export class FavrImgComponent implements OnInit {
 
   @Input() src: string;
   @Input() spinnerSrc = 'assets/img/preloader.gif';
-  @Input() imgContainerClass: string[];
   @Input() alt: string;
   @Input() height = 'auto';
   @Input() width = 'auto';
+  @Input() imgClass = 'default-img';
+  @Input() loaderClass = 'default-img';
 
   loading = true;
 

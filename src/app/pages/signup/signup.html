@@ -23,7 +23,7 @@
   <ng-container [ngSwitch]="subPage">
     <form #signupForm="ngForm" novalidate>
       <ion-list *ngSwitchCase="'signup-index'">
-        <ion-item href (click)="openSubPage('personal-info')">
+        <ion-item (click)="openSubPage('personal-info')">
           <ion-icon slot="start" name="contact"></ion-icon>
           Personal Information
           <div slot="end" *ngIf="signup.first_name
@@ -37,7 +37,7 @@
           </div>
         </ion-item>
 
-        <ion-item href (click)="openSubPage('set-up-password')">
+        <ion-item (click)="openSubPage('set-up-password')">
           <ion-icon slot="start" name="lock"></ion-icon>
           Set Up Password
           <div slot="end" *ngIf="signup.password
@@ -49,7 +49,7 @@
           </div>
         </ion-item>
 
-        <ion-item href (click)="openSubPage('select-city')">
+        <ion-item (click)="openSubPage('select-city')">
           <ion-icon slot="start" name="pin"></ion-icon>
           Select Your City
           <div slot="end" *ngIf="signup.city_id">

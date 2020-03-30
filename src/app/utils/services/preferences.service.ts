@@ -62,9 +62,8 @@ export class PreferencesService {
     );
   }
 
-  public addLocation(body) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public addLocation(body): Promise<UpdateResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -74,8 +73,7 @@ export class PreferencesService {
           return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/locations`, body, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 
   public getMyLocations() {

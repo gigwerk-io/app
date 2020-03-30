@@ -10,23 +10,25 @@
 <ion-content>
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">TEMPORARY OPTION</h5>
+      <h6 class="text-bold">Temporary</h6>
     </ion-list-header>
 
-    <ion-item href (click)="deactivateAccount()">
+    <ion-item (click)="deactivateAccount()">
       <ion-icon slot="start" name="alert" color="primary"></ion-icon>
-      <ion-label color="primary">Deactivate My Account</ion-label>
+      <ion-label color="danger">Deactivate My Account</ion-label>
+      <ion-icon size="small" slot="end" color="danger" name="chevron-forward-outline"></ion-icon>
     </ion-item>
   </ion-list>
 
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">PERMANENT OPTION</h5>
+      <h6 class="text-bold">Permanent</h6>
     </ion-list-header>
 
-    <ion-item href (click)="deleteAccount()">
-      <ion-icon slot="start" name="nuclear" color="primary"></ion-icon>
-      <ion-label color="primary">Delete My Account</ion-label>
+    <ion-item (click)="deleteAccount()">
+      <ion-icon slot="start" name="nuclear" color="danger"></ion-icon>
+      <ion-label color="danger">Delete My Account</ion-label>
+      <ion-icon size="small" slot="end" color="danger" name="chevron-forward-outline"></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>

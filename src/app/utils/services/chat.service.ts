@@ -24,7 +24,8 @@ export class ChatService {
           };
           return this.http.get<Room[]>(API_ADDRESS + '/rooms', authHeader)
             .toPromise()
-            .then((res: Room[]) => res);
+            .then((res: Room[]) => res)
+            .catch(() => []);
         })
     );
   }

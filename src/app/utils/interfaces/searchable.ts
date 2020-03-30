@@ -1,8 +1,10 @@
+import {Profile} from './user';
+
 export class Searchable {
   id: number;
   name: string;
   username: string;
-  profile: object;
+  profile: Profile;
 }
 
 export interface RecommendedFriendsResponse {

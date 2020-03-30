@@ -6,9 +6,9 @@
   <!-- PREFERENCES SECTION -->
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">
-        PREFERENCES
-      </h5>
+      <h6 class="text-bold">
+        Preferences
+      </h6>
     </ion-list-header>
 
     <ion-item routerLink="/app/edit-profile">
@@ -46,9 +46,9 @@
   <!--SECURITY SECTION-->
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">
-        SECURITY
-      </h5>
+      <h6 class="text-bold">
+        Security
+      </h6>
     </ion-list-header>
 
     <ion-item routerLink="/app/reset-password">
@@ -70,9 +70,9 @@
   <!--PAYMENTS SECTION-->
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">
-        PAYMENTS
-      </h5>
+      <h6 class="text-bold">
+        Payments
+      </h6>
     </ion-list-header>
 
     <ion-item routerLink="/app/manage-cards">
@@ -94,9 +94,9 @@
   <!--TRANSFERS SECTION (if freelancer)-->
   <ion-list class="ion-padding-start" *ngIf="isFreelancer">
     <ion-list-header>
-      <h5 class="text-bold">
-        TRANSFERS
-      </h5>
+      <h6 class="text-bold">
+        Transfers
+      </h6>
     </ion-list-header>
 
     <ion-item routerLink="/app/connect-bank-account">
@@ -119,9 +119,9 @@
   <!--CREDIT SECTION (show if not part of organization.)-->
   <ion-list class="ion-padding-start" *ngIf="seeCredit">
     <ion-list-header>
-      <h5 class="text-bold">
-        CREDIT
-      </h5>
+      <h6 class="text-bold">
+        Credit
+      </h6>
     </ion-list-header>
 
     <ion-item routerLink="/app/credit-amount">
@@ -138,9 +138,9 @@
   <!--Share Section-->
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">
+      <h6 class="text-bold">
         Invite Friends
-      </h5>
+      </h6>
     </ion-list-header>
 
     <ion-item routerLink="/app/refer-a-customer">
@@ -156,24 +156,24 @@
   <!--LEGAL SECTION-->
   <ion-list class="ion-padding-start">
     <ion-list-header>
-      <h5 class="text-bold">
-        LEGAL
-      </h5>
+      <h6 class="text-bold">
+        Legal
+      </h6>
     </ion-list-header>
 
-    <ion-item href (click)="openTerms()">
+    <ion-item (click)="openTerms()">
       <ion-icon slot="start" name="document"></ion-icon>
       <ion-label> Terms of Service </ion-label>
     </ion-item>
 
-    <ion-item href (click)="openPrivacy()">
+    <ion-item (click)="openPrivacy()">
       <ion-icon slot="start" name="megaphone"></ion-icon>
       <ion-label> Privacy Policy </ion-label>
     </ion-item>
   </ion-list>
 
   <ion-list class="ion-padding-start">
-    <ion-item href (click)="onLogout()">
+    <ion-item (click)="onLogout()">
       <ion-icon slot="start" name="exit" color="primary"></ion-icon>
       <ion-label color="primary">Sign Out</ion-label>
     </ion-item>

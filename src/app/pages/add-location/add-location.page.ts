@@ -9,15 +9,14 @@ import {ToastController} from '@ionic/angular';
   styleUrls: ['./add-location.page.scss'],
 })
 export class AddLocationPage implements OnInit {
-  street;
-  city;
-  state;
-  zip;
+  street: string;
+  city: string;
+  state: string;
+  zip: number;
+
   constructor(private preferences: PreferencesService, private location: Location, private toastController: ToastController) { }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {  }
 
   submitForm() {
     const body = {
@@ -26,14 +25,13 @@ export class AddLocationPage implements OnInit {
       state: this.state,
       zip: this.zip,
     };
-    this.preferences.addLocation(body).subscribe(res => {
-      this.presentToast(res.message);
-    });
+    this.preferences.addLocation(body).then(res => this.presentToast(res.message))
+      .catch(error => this.presentToast(error.statusText));
   }
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',

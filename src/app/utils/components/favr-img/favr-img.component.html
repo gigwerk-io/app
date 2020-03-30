@@ -1,4 +1,4 @@
 <div>
-  <img *ngIf="loading" src="{{spinnerSrc}}" alt="loading"/>
-  <img [hidden]="loading" (load)="onLoad()" src="{{src}}" alt="{{alt}}" style="height:{{height}};width:{{width}};" />
+  <img *ngIf="loading" src="{{spinnerSrc}}" class="{{loaderClass}}" alt="loading"/>
+  <img [hidden]="loading" (load)="onLoad()" src="{{src}}" alt="{{alt}}" class="{{imgClass}}" />
 </div>

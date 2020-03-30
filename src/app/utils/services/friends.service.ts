@@ -19,12 +19,9 @@ export class FriendsService {
 
   /**
    * Show current friends of a user.
-   *
-   * @returns {Observable<Searchable[]>}
    */
-  public getMyFriends(): Observable<Searchable[]> {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getMyFriends(): Promise<Searchable[]> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -34,8 +31,7 @@ export class FriendsService {
           return this.http.get<MyFriendsResponse>(API_ADDRESS + '/friends', authHeader)
             .toPromise()
             .then((res: MyFriendsResponse) => res.friends);
-        })
-    );
+        });
   }
 
   public searchUsers(query): Observable<Searchable[]> {

@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ChatService} from '../../utils/services/chat.service';
 import {Room} from '../../utils/interfaces/chat/room';
@@ -6,6 +6,7 @@ import {StorageKeys} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {ActionSheetController, IonContent, IonTextarea} from '@ionic/angular';
+import {Subscription} from 'rxjs';
 
 
 @Component({
@@ -13,7 +14,7 @@ import {ActionSheetController, IonContent, IonTextarea} from '@ionic/angular';
   templateUrl: './messages.page.html',
   styleUrls: ['./messages.page.scss'],
 })
-export class MessagesPage implements OnInit {
+export class MessagesPage implements OnInit, OnDestroy {
   // @ts-ignore
   @ViewChild('chatDisplay') content: IonContent;
   // @ts-ignore
@@ -29,6 +30,7 @@ export class MessagesPage implements OnInit {
   didScrollToBottomOnInit = false;
   rooms: Room[];
   noImage = false;
+  getChatRoomsSub: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
               private chatService: ChatService,
@@ -56,16 +58,15 @@ export class MessagesPage implements OnInit {
     });
   }
 
-  ionViewDidLeave() {
+  ngOnDestroy() {
     window.removeEventListener('keyboardDidShow', () => {
       // console.log('page destroyed');
     });
+    this.getChatRoomsSub.unsubscribe();
   }
 
   public getRooms() {
-    this.chatService.getChatRooms().subscribe(res => {
-      this.rooms = res;
-    });
+    this.chatService.getChatRooms().toPromise().then(res => this.rooms = res);
   }
 
   getUserProfileImage(members?: Room[]) {
@@ -126,7 +127,7 @@ export class MessagesPage implements OnInit {
   }
 
   getMessages() {
-    this.chatService.getChatRoom(this.uuid).subscribe(res => {
+    this.getChatRoomsSub = this.chatService.getChatRoom(this.uuid).subscribe(res => {
       this.room = res;
       this.messages = this.room.messages;
       this.toUser = this.getToUser();

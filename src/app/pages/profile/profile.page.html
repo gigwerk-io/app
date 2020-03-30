@@ -60,16 +60,18 @@
     </ion-toolbar>
     <div class="ion-text-center ion-padding-top">
       <div class="ion-margin-bottom img-container">
-        <ion-img [src]="(profile.user.image) ? profile.user.image : './assets/img/user.png'"
+        <favr-img [src]="profile.user.image"
+                  spinnerSrc="assets/img/user.png"
+                  imgClass="rounded-circle"
+                  loaderClass="rounded-circle"
                  (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
-                 (ionError)="profile.user.image = undefined"
-                 alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></ion-img>
+                 alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></favr-img>
       </div>
       <ion-note>
         @{{profile.user.user.username}}
         <ion-img *ngIf="profile.user.user.role == Role.VERIFIED_FREELANCER"
              class="badge"
-             src="../../../assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
+             src="assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
       </ion-note>
       <p>
         <ion-chip [color]="status.class">

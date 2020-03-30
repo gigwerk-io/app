@@ -83,6 +83,6 @@ export class FavrPageHeaderComponent implements OnInit {
       // leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
     });
 
-    modal.present();
+    await modal.present();
   }
 }

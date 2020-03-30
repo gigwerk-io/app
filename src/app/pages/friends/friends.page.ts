@@ -114,7 +114,7 @@ export class FriendsPage implements OnInit {
   showMyFriends() {
     this.btnClass = 'chatbubbles';
     this.secondButton = false;
-    this.friendService.getMyFriends().subscribe(res => {
+    this.friendService.getMyFriends().then(res => {
       this.users = res;
       this.changeRef.detectChanges();
     }, error => {

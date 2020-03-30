@@ -12,7 +12,7 @@
     <ion-item class="no-inner-border-width">
       <input type="file" accept="image/*" (change)="uploadImage($event)" #file style="display:none">
       <ion-avatar class="image-center">
-        <ion-img [src]="image ? image : './assets/img/user.png'" (click)="file.click()" alt="Edit your profile image." (ionError)="image = undefined"></ion-img>
+        <favr-img [src]="image" spinnerSrc="assets/img/user.png" imgClass="rounded-circle" loaderClass="rounded-circle" (click)="file.click()" alt="Edit your profile image."></favr-img>
       </ion-avatar>
     </ion-item>
 
