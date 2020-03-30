@@ -8,21 +8,39 @@
 </ion-header>
 
 <ion-content>
-  <ion-list class="ion-padding">
+  <ng-container *ngIf="notificationPreferences.sms && notificationPreferences.push && notificationPreferences.email; else skeletonList">
+    <ion-list class="ion-padding">
+      <ion-item>
+        <ion-label> Email Notifications </ion-label>
+        <ion-note><ion-toggle color="primary" [(ngModel)]="this.notificationPreferences.email" (click)="updateSettings('email')"></ion-toggle></ion-note>
+      </ion-item>
 
-    <ion-item>
-      <ion-label> Email Notifications </ion-label>
-      <ion-note><ion-toggle color="primary" [(ngModel)]="email_notifications" (click)="updateSettings('email')"></ion-toggle></ion-note>
-    </ion-item>
+      <ion-item>
+        <ion-label> SMS Notifications </ion-label>
+        <ion-note><ion-toggle  [(ngModel)]="this.notificationPreferences.sms" (click)="updateSettings('sms')" color="primary"></ion-toggle></ion-note>
+      </ion-item>
 
-    <ion-item>
-      <ion-label> SMS Notifications </ion-label>
-      <ion-note><ion-toggle  [(ngModel)]="sms_notifications" (click)="updateSettings('sms')" color="primary"></ion-toggle></ion-note>
-    </ion-item>
+      <ion-item>
+        <ion-label> Push Notifications </ion-label>
+        <ion-note><ion-toggle  [(ngModel)]="this.notificationPreferences.push" (click)="updateSettings('push')" color="primary"></ion-toggle></ion-note>
+      </ion-item>
+    </ion-list>
+  </ng-container>
 
-    <ion-item>
-      <ion-label> Push Notifications </ion-label>
-      <ion-note><ion-toggle  [(ngModel)]="push_notifications" (click)="updateSettings('push')" color="primary"></ion-toggle></ion-note>
-    </ion-item>
-  </ion-list>
+  <ng-template #skeletonList>
+    <ion-list>
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5]">
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="height: 10%;width: 100%;"></ion-skeleton-text>
+          </h2>
+        </ion-label>
+        <ion-label class="ion-text-right">
+          <h2 style="width: 50%;float: right">
+            <ion-skeleton-text style="height: 10%;" animated></ion-skeleton-text>
+          </h2>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 </ion-content>

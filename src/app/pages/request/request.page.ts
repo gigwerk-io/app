@@ -168,9 +168,7 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getLocations() {
-    this.preferences.getMyLocations().subscribe(res => {
-      this.locations = res.locations;
-    });
+    this.preferences.getMyLocations().then(res => this.locations = res.locations);
   }
 
   async presentActionSheet(location?: LocationAddress) {
@@ -192,7 +190,7 @@ export class RequestPage implements OnInit, OnDestroy {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.preferences.deleteLocation(location.id).subscribe(res => {
+          this.preferences.deleteLocation(location.id).then(res => {
             this.getLocations();
             this.presentToast(res.message);
           });

@@ -39,7 +39,7 @@ export class ResetPasswordPage implements OnInit {
 
   async presentToast(message, color = 'dark') {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: color,

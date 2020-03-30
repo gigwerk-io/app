@@ -8,29 +8,48 @@
 </ion-header>
 
 <ion-content>
-  <ion-list class="ion-padding">
-    <ion-item>
-      <ion-label> Default Scope </ion-label>
-      <ion-select #select [value]="scope" (ionChange)="scopeChange(select.value)" >
-        <ion-select-option>Public</ion-select-option>
-        <ion-select-option>Friends of Friends</ion-select-option>
-        <ion-select-option>Friends</ion-select-option>
-      </ion-select>
-    </ion-item>
+  <ng-container *ngIf="displayDescription && displayRating && displayReceipts; else skeletonList">
+    <ion-list class="ion-padding">
+      <ion-item>
+        <ion-label> Default Scope </ion-label>
+        <ion-select #select [value]="scope" (ionChange)="scopeChange(select.value)" >
+          <ion-select-option>Public</ion-select-option>
+          <ion-select-option>Friends of Friends</ion-select-option>
+          <ion-select-option>Friends</ion-select-option>
+        </ion-select>
+      </ion-item>
 
-    <ion-item>
-      <ion-label> Display Description </ion-label>
-      <ion-note><ion-toggle [(ngModel)]="display_description" (click)="updateSettings('description')" color="primary"></ion-toggle></ion-note>
-    </ion-item>
+      <ion-item>
+        <ion-label> Display Description </ion-label>
+        <ion-note><ion-toggle [(ngModel)]="displayDescription" (click)="updateSettings('description')" color="primary"></ion-toggle></ion-note>
+      </ion-item>
 
-    <ion-item>
-      <ion-label> Display Rating  </ion-label>
-      <ion-note><ion-toggle [(ngModel)]="display_rating" (click)="updateSettings('rating')" color="primary"></ion-toggle></ion-note>
-    </ion-item>
+      <ion-item>
+        <ion-label> Display Rating  </ion-label>
+        <ion-note><ion-toggle [(ngModel)]="displayRating" (click)="updateSettings('rating')" color="primary"></ion-toggle></ion-note>
+      </ion-item>
 
-    <ion-item>
-      <ion-label> Display Receipts </ion-label>
-      <ion-note><ion-toggle [(ngModel)]="display_receipts" (click)="updateSettings('receipts')" color="primary"></ion-toggle></ion-note>
-    </ion-item>
-  </ion-list>
+      <ion-item>
+        <ion-label> Display Receipts </ion-label>
+        <ion-note><ion-toggle [(ngModel)]="displayReceipts" (click)="updateSettings('receipts')" color="primary"></ion-toggle></ion-note>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <ng-template #skeletonList>
+    <ion-list>
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5]">
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="height: 10%;width: 100%;"></ion-skeleton-text>
+          </h2>
+        </ion-label>
+        <ion-label class="ion-text-right">
+          <h2 style="width: 50%;float: right">
+            <ion-skeleton-text style="height: 10%;" animated></ion-skeleton-text>
+          </h2>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 </ion-content>

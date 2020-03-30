@@ -51,7 +51,7 @@ export class ReferACustomerPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'bottom',
       duration: 2500,
       color: 'dark',

@@ -32,7 +32,7 @@ export class RedeemCodePage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
@@ -50,7 +50,7 @@ export class RedeemCodePage implements OnInit {
   async presentAlert(message) {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: message,
+      message,
       buttons: ['OK']
     });
 

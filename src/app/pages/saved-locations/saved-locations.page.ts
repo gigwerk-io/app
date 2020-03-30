@@ -26,7 +26,7 @@ export class SavedLocationsPage implements OnInit {
         text: 'Make Default',
         icon: 'checkmark',
         handler: () => {
-          this.preferences.makeDefaultLocation(id).subscribe(res => {
+          this.preferences.makeDefaultLocation(id).then(res => {
             this.getLocations();
             this.presentToast(res.message);
           });
@@ -36,7 +36,7 @@ export class SavedLocationsPage implements OnInit {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.preferences.deleteLocation(id).subscribe(res => {
+          this.preferences.deleteLocation(id).then(res => {
             this.getLocations();
             this.presentToast(res.message);
           });
@@ -52,7 +52,7 @@ export class SavedLocationsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
@@ -68,10 +68,7 @@ export class SavedLocationsPage implements OnInit {
   }
 
   getLocations() {
-    this.preferences.getMyLocations().subscribe(res => {
-      this.locations = res.locations;
-      // console.log(this.locations);
-    });
+    this.preferences.getMyLocations().then(res => this.locations = res.locations );
   }
 
   async doRefresh(event?) {

@@ -15,9 +15,8 @@ export class ProfileService {
   constructor(private httpClient: HttpClient,
               private storage: Storage) { }
 
-  public getProfile(id: number): Observable<ProfileRouteResponse> {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getProfile(id: number): Promise<ProfileRouteResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -27,8 +26,7 @@ export class ProfileService {
           return this.httpClient.get<ProfileRouteResponse>(`${API_ADDRESS}/profile/${id}`, authHeader)
             .toPromise()
             .then((res: ProfileRouteResponse) => res);
-        })
-    );
+        });
   }
 
   public getProfileImage(id: number): Promise<string> {
@@ -45,9 +43,8 @@ export class ProfileService {
       });
   }
 
-  public getFreelancerProposals(): Observable<MainProposal[]> {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getFreelancerProposals(): Promise<MainProposal[]> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -57,8 +54,7 @@ export class ProfileService {
           return this.httpClient.get<{requests: MainProposal[]}>(`${API_ADDRESS}/marketplace/main/proposals`, authHeader)
             .toPromise()
             .then((res: {requests: MainProposal[]}) => res.requests);
-        })
-    );
+        });
   }
 
   public reportUser(id: number, description: string): Promise<string> {
@@ -69,7 +65,7 @@ export class ProfileService {
             Authorization: (token) ? token : ''
           }
         };
-        return this.httpClient.post<{message: string}>(`${API_ADDRESS}/report/user/${id}`, {description: description}, authHeader)
+        return this.httpClient.post<{message: string}>(`${API_ADDRESS}/report/user/${id}`, {description}, authHeader)
           .toPromise()
           .then((res: {message: string}) => res.message);
       });

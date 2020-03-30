@@ -19,14 +19,13 @@ import {ReportPage} from '../report/report.page';
   styleUrls: ['./profile.page.scss'],
   providers: [PhotoViewer]
 })
-export class ProfilePage implements OnInit, OnDestroy {
+export class ProfilePage implements OnInit {
 
-  profileSubscription: Subscription;
   profile: ProfileRouteResponse;
   isOwner: boolean;
   status: {class: string, text: string};
   showFriendButton = true;
-  friendButton: object;
+  friendButton: any;
   rating: number;
   Role = Role;
   taskFeed = 'customer';
@@ -49,8 +48,8 @@ export class ProfilePage implements OnInit, OnDestroy {
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe(data => {
       const id: number = parseInt(data.get('id'), 10);
-      this.profileSubscription = this.profileService.getProfile(id)
-        .subscribe((profile: ProfileRouteResponse) => {
+      this.profileService.getProfile(id)
+        .then((profile: ProfileRouteResponse) => {
           this.profile = profile;
           if (profile.user.customer_rating != null) {
             this.rating = profile.user.customer_rating;
@@ -82,10 +81,6 @@ export class ProfilePage implements OnInit, OnDestroy {
           }
         });
     });
-  }
-
-  ngOnDestroy(): void {
-    this.profileSubscription.unsubscribe();
   }
 
   private viewAttachedPhoto(url: string, photoTitle?: string): void {
@@ -223,7 +218,7 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     const toast = await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
@@ -251,7 +246,7 @@ export class ProfilePage implements OnInit, OnDestroy {
           });
         break;
       case 'not_friend':
-        this.friendButton['disable'] = true;
+        this.friendButton.disable = true;
         this.friendService.sendFriendRequest(this.profile.user.user_id)
           .subscribe(res => {
             this.presentToast(res);
@@ -261,10 +256,9 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   async doRefresh(event?) {
-    this.profileSubscription.unsubscribe();
     setTimeout(() => {
-      this.profileSubscription = this.profileService.getProfile(this.profile.user.user_id)
-        .subscribe((profile: ProfileRouteResponse) => {
+      this.profileService.getProfile(this.profile.user.user_id)
+        .then((profile: ProfileRouteResponse) => {
           this.profile = profile;
           this.status = this.showBadge(profile.user.friend_status);
           this.friendButton = this.defineFriendButton(profile.user.friend_status);
