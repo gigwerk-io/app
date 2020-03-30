@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list class="ion-padding">
     <ion-list-header>
-      <h5 class="text-bold">PAST PAYMENTS</h5>
+      <h6 class="text-bold">Past Payments</h6>
     </ion-list-header>
 
     <ion-item *ngFor="let payment of payments" (click)="goToJob(payment.marketplace_id)" >
@@ -22,9 +22,9 @@
     </ion-item>
 
     <ion-item  *ngIf="isNone">
-      <ion-label>
-       You have no payment history. :(
-      </ion-label>
+      <ion-note>
+       You have no payment history :(
+      </ion-note>
     </ion-item>
   </ion-list>
 </ion-content>

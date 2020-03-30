@@ -57,6 +57,7 @@ export class SettingsPage implements OnInit {
           .then(res => {
             this.storage.remove(StorageKeys.ACCESS_TOKEN);
             this.storage.remove(StorageKeys.PROFILE);
+            this.storage.clear();
             this.navCtrl.navigateRoot('/welcome');
           })
           .catch(error => {
@@ -68,9 +69,9 @@ export class SettingsPage implements OnInit {
 
   openTerms() {
     if (this.platform.is('ios') || this.platform.is('android')) {
-      this.iab.create('https://askfavr.com/terms.html');
+      this.iab.create('https://app.termly.io/document/terms-of-use-for-online-marketplace/ccc0e79c-9dbe-4198-9203-95382505f3d6');
     } else {
-      window.open('https://askfavr.com/terms.html');
+      window.open('https://app.termly.io/document/terms-of-use-for-online-marketplace/ccc0e79c-9dbe-4198-9203-95382505f3d6');
     }
   }
 

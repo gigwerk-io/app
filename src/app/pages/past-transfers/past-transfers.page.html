@@ -10,7 +10,7 @@
 <ion-content>
   <ion-list class="ion-padding">
     <ion-list-header>
-      <h5 class="text-bold">PAST TRANSFERS</h5>
+      <h6 class="text-bold">Past Transfers</h6>
     </ion-list-header>
 
     <ion-item *ngFor="let transfer of transfers" (click)="goToJob(transfer.marketplace_id)" >
@@ -22,9 +22,9 @@
     </ion-item>
 
     <ion-item  *ngIf="isNone">
-      <ion-label>
-        Sorry, you have no payouts. :(
-      </ion-label>
+      <ion-note>
+        Sorry, you have no payouts :(
+      </ion-note>
     </ion-item>
   </ion-list>
 
