@@ -19,7 +19,7 @@ import {ReportPage} from '../report/report.page';
   styleUrls: ['./profile.page.scss'],
   providers: [PhotoViewer]
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage implements OnInit, OnDestroy {
 
   profile: ProfileRouteResponse;
   isOwner: boolean;
@@ -29,6 +29,7 @@ export class ProfilePage implements OnInit {
   rating: number;
   Role = Role;
   taskFeed = 'customer';
+  activatedRouteSub: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
               private storage: Storage,
@@ -46,7 +47,7 @@ export class ProfilePage implements OnInit {
               private routerOutlet: IonRouterOutlet) {}
 
   ngOnInit() {
-    this.activatedRoute.paramMap.subscribe(data => {
+    this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       const id: number = parseInt(data.get('id'), 10);
       this.profileService.getProfile(id)
         .then((profile: ProfileRouteResponse) => {
@@ -81,6 +82,10 @@ export class ProfilePage implements OnInit {
           }
         });
     });
+  }
+
+  ngOnDestroy() {
+    this.activatedRouteSub.unsubscribe();
   }
 
   private viewAttachedPhoto(url: string, photoTitle?: string): void {

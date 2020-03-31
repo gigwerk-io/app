@@ -16,6 +16,7 @@ import {RequestPage} from '../request/request.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'marketplace-detail',
@@ -35,6 +36,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   Categories: MainCategory[];
   TaskStatus = TaskStatus;
   credit: number;
+  activatedRouteSub: Subscription;
 
   constructor(private modalCtrl: ModalController,
               private loadingCtrl: LoadingController,
@@ -78,8 +80,13 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
 
+  ngOnDestroy() {
+    this.activatedRouteSub.unsubscribe();
+    this.events.unsubscribe('task-action');
+  }
+
   public getJobDetails(coords?: any) {
-    this.activatedRoute.paramMap.toPromise().then(data => {
+    this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       this.taskID = parseInt(data.get('id'), 10);
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID, coords)
         .then((task: MainMarketplaceTask) => {
@@ -97,10 +104,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
             });
         });
     });
-  }
-
-  ngOnDestroy(): void {
-    this.events.unsubscribe('task-action');
   }
 
   getCreditBalance() {

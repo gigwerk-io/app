@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MenuController, IonSlides } from '@ionic/angular';
+import {MenuController, IonSlides, NavController} from '@ionic/angular';
 
 import { Storage } from '@ionic/storage';
 import {AuthService} from '../../utils/services/auth.service';
 import {StorageKeys} from '../../providers/constants';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'page-tutorial',
@@ -16,23 +17,22 @@ export class TutorialPage implements OnInit, OnDestroy {
   showSkip = true;
 
   @ViewChild('slides', { static: true }) slides: IonSlides;
+  private authServiceSub: Subscription;
 
   constructor(
-    public menu: MenuController,
-    public  authService: AuthService,
-    public router: Router,
-    public storage: Storage
+    private navCtrl: NavController,
+    private authService: AuthService,
+    private router: Router,
+    private storage: Storage
   ) {}
 
   startApp() {
-    this.authService.isLoggedIn().subscribe(loggedIn => {
+    this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {
       if (loggedIn) {
-        this.router
-          .navigateByUrl('/app/tabs/marketplace')
+        this.navCtrl.navigateRoot('/app/tabs/marketplace')
           .then(() => this.storage.set(StorageKeys.PLATFORM_TUTORIAL, true));
       } else {
-        this.router
-          .navigateByUrl('/welcome')
+        this.navCtrl.navigateRoot('/welcome')
           .then(() => this.storage.set(StorageKeys.PLATFORM_TUTORIAL, true));
       }
     });
@@ -47,11 +47,11 @@ export class TutorialPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.storage.get(StorageKeys.PLATFORM_TUTORIAL).then(res => {
       if (res === true) {
-        this.authService.isLoggedIn().subscribe(loggedIn => {
+        this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {
           if (loggedIn) {
-            this.router.navigateByUrl('/app/tabs/marketplace');
+            this.navCtrl.navigateRoot('/app/tabs/marketplace');
           } else {
-            this.router.navigateByUrl('/welcome');
+            this.navCtrl.navigateRoot('/welcome');
           }
         });
       }
@@ -59,5 +59,6 @@ export class TutorialPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.authServiceSub.unsubscribe();
   }
 }

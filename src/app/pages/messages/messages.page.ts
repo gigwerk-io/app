@@ -31,6 +31,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   rooms: Room[];
   noImage = false;
   getChatRoomsSub: Subscription;
+  activatedRouteSub: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
               private chatService: ChatService,
@@ -43,7 +44,7 @@ export class MessagesPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getRooms();
-    this.activatedRoute.paramMap.toPromise().then(data => {
+    this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       this.uuid = data.get('uuid');
       // Initial Messages
       this.getMessages();
@@ -62,6 +63,7 @@ export class MessagesPage implements OnInit, OnDestroy {
     window.removeEventListener('keyboardDidShow', () => {
       // console.log('page destroyed');
     });
+    this.activatedRouteSub.unsubscribe();
     this.getChatRoomsSub.unsubscribe();
   }
 
