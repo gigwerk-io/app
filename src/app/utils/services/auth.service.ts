@@ -47,6 +47,7 @@ export class AuthService {
           this.storage.remove(StorageKeys.PROFILE);
           this.storage.remove(StorageKeys.ACCESS_TOKEN);
           this.authSubject.next(false);
+          this.authSubject.unsubscribe();
         }
       })
     ).toPromise();

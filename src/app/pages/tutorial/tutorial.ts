@@ -25,7 +25,7 @@ export class TutorialPage implements OnInit, OnDestroy {
   ) {}
 
   startApp() {
-    this.authService.isLoggedIn().toPromise().then(loggedIn => {
+    this.authService.isLoggedIn().subscribe(loggedIn => {
       if (loggedIn) {
         this.router
           .navigateByUrl('/app/tabs/marketplace')
@@ -47,7 +47,7 @@ export class TutorialPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.storage.get(StorageKeys.PLATFORM_TUTORIAL).then(res => {
       if (res === true) {
-        this.authService.isLoggedIn().toPromise().then(loggedIn => {
+        this.authService.isLoggedIn().subscribe(loggedIn => {
           if (loggedIn) {
             this.router.navigateByUrl('/app/tabs/marketplace');
           } else {
