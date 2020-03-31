@@ -43,7 +43,7 @@ export class MessagesPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getRooms();
-    this.activatedRoute.paramMap.subscribe(data => {
+    this.activatedRoute.paramMap.toPromise().then(data => {
       this.uuid = data.get('uuid');
       // Initial Messages
       this.getMessages();

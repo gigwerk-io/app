@@ -26,7 +26,7 @@ export class ResetPasswordPage implements OnInit {
           old_password: this.old_password,
           new_password: this.new_password
         };
-        this.securityService.updatePassword(body).subscribe(res => {
+        this.securityService.updatePassword(body).then(res => {
           this.presentToast(res.message);
         }, error => {
           this.presentToast(error.error.message, 'danger');
@@ -42,7 +42,7 @@ export class ResetPasswordPage implements OnInit {
       message,
       position: 'top',
       duration: 2500,
-      color: color,
+      color,
       buttons: [
         {
           text: 'Done',

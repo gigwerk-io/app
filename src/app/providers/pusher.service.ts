@@ -1,13 +1,21 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
 import {PUSHER_ID} from './constants';
+import {Subscription} from 'rxjs';
 declare const Pusher: any;
 @Injectable()
-export class PusherServiceProvider {
-  channel;
-  constructor(public http: HttpClient) {
+export class PusherServiceProvider implements OnInit, OnDestroy {
+  channel: any;
 
+  constructor(public http: HttpClient) {  }
+
+  ngOnInit(): void {
   }
+
+  ngOnDestroy() {
+    this.channel.unsubscribe();
+  }
+
   public init(uuid) {
     const pusher = new Pusher(PUSHER_ID, {
       cluster: 'us2',

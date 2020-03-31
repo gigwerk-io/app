@@ -241,14 +241,14 @@ export class ProfilePage implements OnInit {
         break;
       case 'respond':
         this.friendService.acceptFriendRequest(this.profile.user.user_id)
-          .subscribe(res => {
+          .then(res => {
             this.presentToast(res);
           });
         break;
       case 'not_friend':
         this.friendButton.disable = true;
         this.friendService.sendFriendRequest(this.profile.user.user_id)
-          .subscribe(res => {
+          .then(res => {
             this.presentToast(res);
           });
         break;

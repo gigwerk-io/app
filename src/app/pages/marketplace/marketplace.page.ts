@@ -48,14 +48,14 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   getAllMarketplaceRequests(coords?: any) {
     this.marketplaceService.getMainMarketplaceRequests('all', coords)
-      .subscribe(tasks => {
+      .then(tasks => {
         this.marketplaceTasks = tasks;
         const channel = this.pusher.marketplace();
         channel.bind('new-request', data => {
           this.marketplaceTasks.push(data.marketplace);
         });
         this.changeRef.detectChanges();
-      }, error => {
+      }).catch(error => {
         if (error.status === 401) {
           this.authService.isValidToken().then(res => {
             if (!res.response) {
@@ -88,10 +88,10 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   getMyMarketplaceRequests() {
     this.marketplaceService.getMainMarketplaceRequests('me')
-      .subscribe(tasks => {
+      .then(tasks => {
         this.marketplaceTasks = tasks;
         this.changeRef.detectChanges();
-      }, error => {
+      }).catch(error => {
         if (error.status === 401) {
           this.authService.isValidToken().then(res => {
             if (!res.response) {
@@ -107,10 +107,11 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   getMyJobs() {
     this.marketplaceService.getMainMarketplaceRequests('proposals')
-      .subscribe(tasks => {
+      .then(tasks => {
         this.marketplaceTasks = tasks;
         this.changeRef.detectChanges();
-      }, error => {
+      })
+      .catch(error => {
         if (error.status === 401) {
           this.authService.isValidToken().then(res => {
             if (!res.response) {

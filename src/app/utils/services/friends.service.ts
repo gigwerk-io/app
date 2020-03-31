@@ -88,8 +88,7 @@ export class FriendsService {
   }
 
   public sendFriendRequest(id) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -99,13 +98,11 @@ export class FriendsService {
           return this.http.get<GenericResponse>(API_ADDRESS + `/friend/send/${id}`, authHeader)
             .toPromise()
             .then((res: GenericResponse) => res.message);
-        })
-    );
+        });
   }
 
   public acceptFriendRequest(id) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -115,13 +112,11 @@ export class FriendsService {
           return this.http.get<GenericResponse>(API_ADDRESS + `/friend/accept/${id}`, authHeader)
             .toPromise()
             .then((res: GenericResponse) => res.message);
-        })
-    );
+        });
   }
 
   public rejectFriendRequest(id) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -131,8 +126,7 @@ export class FriendsService {
           return this.http.get<GenericResponse>(API_ADDRESS + `/friend/deny/${id}`, authHeader)
             .toPromise()
             .then((res: GenericResponse) => res.message);
-        })
-    );
+        });
   }
 
   public unfriend(id) {

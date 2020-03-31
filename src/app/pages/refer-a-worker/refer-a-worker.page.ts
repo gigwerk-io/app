@@ -28,8 +28,7 @@ export class ReferAWorkerPage implements OnInit {
   }
 
   getSteps() {
-    this.referralService.getStepsToReferWorkers()
-      .toPromise().then(res => this.remainingSteps = res.steps);
+    this.referralService.getStepsToReferWorkers().then(res => this.remainingSteps = res.steps);
   }
 
   shareReferral() {
@@ -77,8 +76,7 @@ export class ReferAWorkerPage implements OnInit {
 
   async doRefresh(event?: any) {
     setTimeout(() => {
-      this.referralService.getStepsToReferWorkers()
-        .toPromise().then(res => this.remainingSteps = res.steps);
+      this.referralService.getStepsToReferWorkers().then(res => this.remainingSteps = res.steps);
       this.changeRef.detectChanges();
       if (event) {
         if (event.target) {

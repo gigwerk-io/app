@@ -170,7 +170,7 @@ export class FriendsPage implements OnInit {
   }
 
   sendFriendRequest(id) {
-    this.friendService.sendFriendRequest(id).subscribe(res => {
+    this.friendService.sendFriendRequest(id).then(res => {
       this.presentToast(res);
     }, error => {
       // console.log(error);
@@ -178,14 +178,14 @@ export class FriendsPage implements OnInit {
   }
 
   acceptFriendRequest(id) {
-    this.friendService.acceptFriendRequest(id).subscribe(res => {
+    this.friendService.acceptFriendRequest(id).then(res => {
       this.presentToast(res);
       this.showMyFriendRequests();
     });
   }
 
   rejectFriendRequest(id) {
-    this.friendService.rejectFriendRequest(id).subscribe(res => {
+    this.friendService.rejectFriendRequest(id).then(res => {
       this.presentToast(res);
       this.showMyFriendRequests();
     });

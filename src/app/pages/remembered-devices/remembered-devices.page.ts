@@ -11,7 +11,7 @@ import {ToastController} from '@ionic/angular';
 export class RememberedDevicesPage implements OnInit {
 
   sessions: Sessions[];
-  activeSessionSubscription;
+
   constructor(private securityService: SecurityService,
               private toastController: ToastController) { }
 
@@ -20,15 +20,14 @@ export class RememberedDevicesPage implements OnInit {
   }
 
   getSessions() {
-    this.activeSessionSubscription = this.securityService.getSessions().subscribe(res => {
+    this.securityService.getSessions().then(res => {
       this.sessions = res.sessions;
       // console.log(this.sessions);
     });
   }
 
   killAll() {
-    this.activeSessionSubscription.unsubscribe();
-    this.securityService.killAll().subscribe(res => {
+    this.securityService.killAll().then(res => {
       this.presentToast(res.message);
       this.getSessions();
     });

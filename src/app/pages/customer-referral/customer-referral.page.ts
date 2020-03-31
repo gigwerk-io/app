@@ -43,8 +43,8 @@ export class CustomerReferralPage implements OnInit {
   }
 
   public getReferralProfile() {
-    this.activatedRoute.params.subscribe(param => {
-      this.referralService.getCustomerReferralProfile(param.username).subscribe(res => {
+    this.activatedRoute.params.toPromise().then(param => {
+      this.referralService.getCustomerReferralProfile(param.username).then(res => {
         this.name = res.data.name;
         this.location = res.data.city.city + ', ' + res.data.city.state;
         this.image = res.data.profile.image;
@@ -61,7 +61,7 @@ export class CustomerReferralPage implements OnInit {
   public submitReferral(form: NgForm) {
     this.submitted = true;
     if (form.valid) {
-      this.referralService.submitCustomerReferral(this.newReferral, this.username).subscribe(res => {
+      this.referralService.submitCustomerReferral(this.newReferral, this.username).then(res => {
         this.presentToast(res.message);
         this.router.navigateByUrl('welcome');
       });

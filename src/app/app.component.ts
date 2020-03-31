@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import { Router } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 
@@ -17,6 +17,7 @@ import {SearchPage} from './pages/search/search.page';
 import {popInAnimation} from './utils/animations/enter.animation';
 import {popOutAnimation} from './utils/animations/leave.animation';
 import {CustomerTutorialPage} from './pages/customer-tutorial/customer-tutorial.page';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -25,9 +26,10 @@ import {CustomerTutorialPage} from './pages/customer-tutorial/customer-tutorial.
   providers: [ScreenOrientation, TabsPage, IonRouterOutlet, SearchPage, CustomerTutorialPage],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   profileId: number;
   profileImage: string;
+  swUpdateSub: Subscription;
 
   constructor(
     private menu: MenuController,
@@ -59,7 +61,7 @@ export class AppComponent implements OnInit {
           this.profileImage = profile.image;
         }
       });
-    this.swUpdate.available.subscribe(async res => {
+    this.swUpdateSub = this.swUpdate.available.subscribe(async res => {
       const toast = await this.toastCtrl.create({
         message: 'Update available!',
         position: 'bottom',
@@ -81,6 +83,10 @@ export class AppComponent implements OnInit {
         .then(() => this.swUpdate.activateUpdate())
         .then(() => window.location.reload());
     });
+  }
+
+  ngOnDestroy() {
+    this.swUpdateSub.unsubscribe();
   }
 
   initializeApp() {

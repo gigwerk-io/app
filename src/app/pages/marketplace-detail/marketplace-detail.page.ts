@@ -79,7 +79,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
 
   public getJobDetails(coords?: any) {
-    this.activatedRoute.paramMap.subscribe(data => {
+    this.activatedRoute.paramMap.toPromise().then(data => {
       this.taskID = parseInt(data.get('id'), 10);
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID, coords)
         .then((task: MainMarketplaceTask) => {

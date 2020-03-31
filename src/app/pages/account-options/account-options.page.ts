@@ -31,7 +31,7 @@ export class AccountOptionsPage implements OnInit {
         }, {
           text: 'Yes',
           handler: () => {
-            this.securityService.deactivateAccount().subscribe(res => {
+            this.securityService.deactivateAccount().then(res => {
               this.storage.clear();
               this.presentToast(res.message);
               this.router.navigateByUrl('welcome');
@@ -56,7 +56,7 @@ export class AccountOptionsPage implements OnInit {
         }, {
           text: 'Yes',
           handler: () => {
-            this.securityService.deleteAccount().subscribe(res => {
+            this.securityService.deleteAccount().then(res => {
               this.storage.clear();
               this.presentToast(res.message);
               this.router.navigateByUrl('welcome');
