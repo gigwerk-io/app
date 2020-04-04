@@ -54,7 +54,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private favrService: FavrDataService,
               private financeService: FinanceService,
               private geolocation: Geolocation,
-              private routerOutlet: IonRouterOutlet) {
+              public routerOutlet: IonRouterOutlet) {
     this.favrService.getCategories().then(res => {
       this.Categories = res.categories;
     });

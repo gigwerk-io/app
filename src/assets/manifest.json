@@ -3,27 +3,27 @@
   "name": "FAVR Lite",
   "icons": [
     {
-      "src": "assets/brand/favicon.ico",
+      "src": "/assets/brand/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "assets/brand/launcher-icon-5x.png",
+      "src": "/assets/brand/launcher-icon-5x.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "assets/brand/launcher-icon-4x.png",
+      "src": "/assets/brand/launcher-icon-4x.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/brand/splash/launch-1125x2436.png",
+      "src": "/assets/brand/splash/launch-1125x2436.png",
       "sizes": "640x1136",
       "type": "image/png"
     },
     {
-      "src": "assets/brand/favr_logo_rd.png",
+      "src": "/assets/brand/favr_logo_rd.png",
       "type": "image/png",
       "sizes": "700x512"
     }

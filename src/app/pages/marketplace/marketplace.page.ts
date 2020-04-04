@@ -35,7 +35,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
               private router: Router,
               private toastController: ToastController,
               private geolocation: Geolocation,
-              private routerOutlet: IonRouterOutlet) { }
+              public routerOutlet: IonRouterOutlet) { }
 
   ngOnInit() {
     this.segmentChanged();

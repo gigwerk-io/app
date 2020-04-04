@@ -88,6 +88,7 @@
     "moment": "^2.24.0",
     "native-run": "^0.2.8",
     "ng-intercom": "^8.0.0",
+    "ng-push": "^0.2.2",
     "ngx-moment": "^3.4.0",
     "node-sass": "^4.13.1",
     "phonegap-plugin-multidex": "^1.0.0",

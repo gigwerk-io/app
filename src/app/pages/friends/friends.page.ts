@@ -31,7 +31,7 @@ export class FriendsPage implements OnInit {
               private authService: AuthService,
               private storage: Storage,
               private navCtrl: NavController,
-              private routerOutlet: IonRouterOutlet
+              public routerOutlet: IonRouterOutlet
   ) { }
 
   ngOnInit() {

@@ -11,7 +11,9 @@ export const environment = {
   intercomId: 'yvoar9nd',
   gcmKey: 'BBzQ8VDNcr9JDe706ocnMMKZ5FnshUOi6ylHcsvzlkpJfLsEQiTG31XToH2LfoEDylahzcgUqyWbkSEtlhxU-jg',
   origin: 'https://dev-m.askfavr.com',
-  version: '2.0.3'
+  version: '2.0.3',
+  publicKey: 'BM2zSPJRBEKkY760fJSxFDf8ie1LUkxv9EzoB4ZBckCAgMMpaagVLpwPpIBinXcxmyg4k_PQ2n4hspRUYay4JoI',
+  privateKey: 'i7XLhlRCVBbTtIaY_RaksPP7qGUvAkakDIE0npgPxxw'
 };
 
 /*

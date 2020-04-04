@@ -1,23 +1,25 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import { Router } from '@angular/router';
-import { SwUpdate } from '@angular/service-worker';
+import {Router} from '@angular/router';
+import {SwUpdate} from '@angular/service-worker';
 
 import {Config, IonRouterOutlet, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
 
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-import { Storage } from '@ionic/storage';
+import {Storage} from '@ionic/storage';
 import {StorageKeys} from './providers/constants';
 import {toggleDarkTheme} from './pages/settings/settings.page';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import {TabsPage} from './pages/tabs-page/tabs-page';
-import {RequestPage} from './pages/request/request.page';
 import {SearchPage} from './pages/search/search.page';
-import {popInAnimation} from './utils/animations/enter.animation';
-import {popOutAnimation} from './utils/animations/leave.animation';
 import {CustomerTutorialPage} from './pages/customer-tutorial/customer-tutorial.page';
 import {Subscription} from 'rxjs';
+
+import {
+  Plugins,
+  StatusBarStyle,
+  Capacitor
+} from '@capacitor/core';
+
+const {StatusBar, SplashScreen} = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -30,13 +32,13 @@ export class AppComponent implements OnInit, OnDestroy {
   profileId: number;
   profileImage: string;
   swUpdateSub: Subscription;
+  statusBarAvailable = Capacitor.isPluginAvailable('StatusBar');
+  splashScreenAvailable = Capacitor.isPluginAvailable('SplashScreen');
 
   constructor(
     private menu: MenuController,
     private platform: Platform,
     public router: Router,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
     private storage: Storage,
     private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
@@ -91,21 +93,27 @@ export class AppComponent implements OnInit, OnDestroy {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.overlaysWebView(false);
-      this.splashScreen.hide();
+      if (this.splashScreenAvailable) {
+        SplashScreen.hide();
+      }
       this.storage.get(StorageKeys.THEME_PREFERENCE)
         .then((prefersDark: boolean) => {
           if (prefersDark == null) {
-            this.statusBar.backgroundColorByHexString('#222428');
+            if (this.statusBarAvailable) {
+              StatusBar.setBackgroundColor({color: '#222428'});
+            }
             this.storage.set(StorageKeys.THEME_PREFERENCE, true)
               .then(() => toggleDarkTheme(true));
           } else {
             if (prefersDark) {
-              this.statusBar.backgroundColorByHexString('#222428');
+              if (this.statusBarAvailable) {
+                StatusBar.setBackgroundColor({color: '#222428'});
+              }
               toggleDarkTheme(prefersDark);
             } else {
-              this.statusBar.backgroundColorByHexString('#fff');
-              this.statusBar.styleDefault();
+              if (this.statusBarAvailable) {
+                StatusBar.setBackgroundColor({color: '#fff'});
+              }
               toggleDarkTheme(false);
             }
           }

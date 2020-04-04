@@ -5,8 +5,15 @@ import {Role, StorageKeys} from '../../providers/constants';
 import {AuthorizationToken} from '../../utils/interfaces/user-options';
 import {ActionSheetController, IonRouterOutlet, NavController, Platform} from '@ionic/angular';
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import {StatusBar} from '@ionic-native/status-bar/ngx';
 import {environment} from '../../../environments/environment';
+
+import {
+  Plugins,
+  StatusBarStyle,
+  Capacitor
+} from '@capacitor/core';
+
+const {StatusBar} = Plugins;
 
 @Component({
   selector: 'settings',
@@ -21,16 +28,16 @@ export class SettingsPage implements OnInit {
   isFreelancer: boolean;
   COPY_YEAR = (new Date()).getFullYear();
   VERSION = environment.version;
+  statusBarAvailable = Capacitor.isPluginAvailable('StatusBar');
 
   constructor(private authService: AuthService,
               private storage: Storage,
               private  navCtrl: NavController,
               private platform: Platform,
               private iab: InAppBrowser,
-              private statusBar: StatusBar,
               private changeRef: ChangeDetectorRef,
               private actionSheetController: ActionSheetController,
-              private routerOutlet: IonRouterOutlet) {}
+              public routerOutlet: IonRouterOutlet) {}
 
   ngOnInit() {
     this.storage.get(StorageKeys.THEME_PREFERENCE)
@@ -134,11 +141,14 @@ export class SettingsPage implements OnInit {
   setDarkMode() {
     switch (this.darkMode) {
       case true:
-        this.statusBar.backgroundColorByHexString('#222428');
+        if (this.statusBarAvailable) {
+          StatusBar.setBackgroundColor({color: '#222428'});
+        }
         break;
       case false:
-        this.statusBar.backgroundColorByHexString('#fff');
-        this.statusBar.styleDefault();
+        if (this.statusBarAvailable) {
+          StatusBar.setBackgroundColor({color: '#fff'});
+        }
         break;
     }
     this.storage.set(StorageKeys.THEME_PREFERENCE, this.darkMode)

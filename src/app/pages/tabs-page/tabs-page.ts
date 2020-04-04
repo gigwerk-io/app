@@ -29,7 +29,7 @@ export class TabsPage implements OnInit {
               private toastController: ToastController,
               private storage: Storage,
               private router: Router,
-              private routerOutlet: IonRouterOutlet,
+              public routerOutlet: IonRouterOutlet,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     if (window.innerWidth >= 1025) {
       this.tabSlot = 'top';

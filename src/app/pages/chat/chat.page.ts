@@ -19,7 +19,7 @@ export class ChatPage implements OnInit {
   constructor(private roomService: ChatService,
               private storage: Storage,
               private modalCtrl: ModalController,
-              private routerOutlet: IonRouterOutlet,
+              public routerOutlet: IonRouterOutlet,
               private router: Router) { }
 
   ngOnInit() {

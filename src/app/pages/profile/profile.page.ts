@@ -44,7 +44,7 @@ export class ProfilePage implements OnInit, OnDestroy {
               private modalCtrl: ModalController,
               private navCtrl: NavController,
               private authService: AuthService,
-              private routerOutlet: IonRouterOutlet) {}
+              public routerOutlet: IonRouterOutlet) {}
 
   ngOnInit() {
     this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
