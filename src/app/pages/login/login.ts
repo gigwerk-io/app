@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
 import {Badge} from '@ionic-native/badge/ngx';
 import {
   Plugins,
-  Capacitor
+  Capacitor, PushNotificationToken
 } from '@capacitor/core';
 import {SwPush} from '@angular/service-worker';
 import {environment} from '../../../environments/environment';
@@ -47,12 +47,7 @@ export class LoginPage {
       this.authService.login(this.login)
         .then(() => {
           this.navCtrl.navigateRoot('/app/tabs/marketplace').then(res => {
-            // to check if we have permission
-            try {
-              this.initPushNotification();
-            } catch (e) {
-              console.warn(e);
-            }
+            this.initPushNotification();
           });
         }, error => {
           this.presentToast(error.error.message);
@@ -64,7 +59,7 @@ export class LoginPage {
     await this.toastController.create({
       message,
       position: 'top',
-      duration: 2500,
+      duration: 5000,
       color: 'dark',
       buttons: [
         {
@@ -79,25 +74,30 @@ export class LoginPage {
 
   initPushNotification() {
     if (this.pushNotificationsAvailable) {
-      PushNotifications.requestPermission().then(res => {
-        if (res.granted) {
-          PushNotifications.addListener('registration', token => {
-            console.log('Token:' + token);
-            console.log(this.platform);
-            Device.getInfo().then(info => {
-              if (info.operatingSystem === 'ios') {
-                this.notificationService.saveAPNToken({device_token: token.value});
-              } else {
-                this.notificationService.saveFCMToken({device_token: token.value});
-              }
-            });
-          });
-
-          PushNotifications.addListener('pushNotificationReceived', notification => {
-            console.log(notification);
-          });
+      PushNotifications.requestPermission().then(permission => {
+        if (permission.granted) {
+          PushNotifications.register();
         }
       });
+
+      // On success, we should be able to receive notifications
+      PushNotifications.addListener('registration', (token: PushNotificationToken) => {
+        Device.getInfo().then(info => {
+          if (info.operatingSystem === 'ios') {
+            this.notificationService.saveAPNToken({device_token: token.value});
+          } else {
+            this.notificationService.saveFCMToken({device_token: token.value});
+          }
+        });
+      });
+
+      // Show us the notification payload if the app is open on our device
+      PushNotifications.addListener('pushNotificationReceived',
+        (notification) => {
+         console.log(notification);
+        }
+      );
+
     } else {
       this.swPush.requestSubscription({
         serverPublicKey: environment.publicKey
