@@ -9,10 +9,6 @@
 
 <ion-content>
   <ion-list class="ion-padding">
-    <ion-list-header>
-      <h6 class="text-bold">Past Payments</h6>
-    </ion-list-header>
-
     <ion-item *ngFor="let payment of payments" (click)="goToJob(payment.marketplace_id)" >
       <ion-note slot="end"><small>{{payment.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small></ion-note>
       <ion-label>

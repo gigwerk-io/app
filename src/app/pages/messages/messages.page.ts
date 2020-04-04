@@ -32,6 +32,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   noImage = false;
   getChatRoomsSub: Subscription;
   activatedRouteSub: Subscription;
+  footerHeight = 'inherit';
 
   constructor(private activatedRoute: ActivatedRoute,
               private chatService: ChatService,
@@ -150,7 +151,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   sendMessage() {
-    this.textarea.setFocus();
+    this.textarea.setFocus().then(() => this.footerHeight = 'inherit');
     this.sending = true;
     this.chatService.sendMessage(this.uuid, this.pendingMessage);
     this.pendingMessage = '';
@@ -191,5 +192,9 @@ export class MessagesPage implements OnInit, OnDestroy {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
+  }
+
+  setFooterHeight() {
+    this.textarea.getInputElement().then(el => el.clientHeight > 57 ? this.footerHeight = `${el.clientHeight + 10}px` : 'inherit');
   }
 }

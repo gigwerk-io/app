@@ -112,12 +112,13 @@
   </ion-content>
 </ion-split-pane>
 
-<ion-footer style="padding-left: 10px;">
+<ion-footer [style.height]="footerHeight" style="padding-left: 10px;">
   <div class="input-wrap">
     <ion-textarea placeholder="Text Message"
                   #chatBox
                   [(ngModel)]="pendingMessage"
                   (focusin)="onFocus()"
+                  (ionChange)="setFooterHeight()"
                   required
                   autocapitalize="on"
                   autoGrow="true"

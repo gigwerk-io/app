@@ -197,7 +197,7 @@
         </ion-col>
 
         <ion-col *ngIf="mainMarketplaceTask.action === 1 || mainMarketplaceTask.action === 7" class="ion-text-center">
-          <ion-button (click)="customerCancelTask()"
+          <ion-button (click)="alertConfirmCustomerCancel()"
                       fill="outline" size="small" color="primary">
             <ion-icon name="close" mode="md" slot="start"></ion-icon>
             Cancel

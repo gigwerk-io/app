@@ -1,5 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActionSheetController, IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {
+  ActionSheetController,
+  AlertController,
+  IonRouterOutlet,
+  LoadingController,
+  ModalController,
+  NavController,
+  ToastController
+} from '@ionic/angular';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -48,6 +56,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private marketplaceService: MarketplaceService,
               private actionSheetCtrl: ActionSheetController,
+              private alertCtrl: AlertController,
               private chatService: ChatService,
               private events: Events,
               private launchNavigator: LaunchNavigator,
@@ -213,6 +222,28 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     });
 
     await modal.present();
+  }
+
+  async alertConfirmCustomerCancel() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      // tslint:disable-next-line:max-line-length
+      message: 'You are about to <strong>cancel</strong> this request. Your request <strong>will be DELETED</strong>.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.customerCancelTask();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async customerCancelTask() {

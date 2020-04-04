@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MainMarketplaceTask} from '../../interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {ChatService} from '../../services/chat.service';
 import {MarketplaceService} from '../../services/marketplace.service';
@@ -25,7 +25,6 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   mainMarketTask: MainMarketplaceTask;
   pastJob: PastJob;
   TaskStatus = TaskStatus;
-  profileImgLoaded = false;
 
   constructor(private photoViewer: PhotoViewer,
               private loadingCtrl: LoadingController,
@@ -36,6 +35,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
               private changeRef: ChangeDetectorRef,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
+              private alertCtrl: AlertController,
               private events: Events) {
     this.events.subscribe('task-action', (action, taskID) => {
       if (this.mainMarketplaceTask.id === taskID) {
@@ -81,6 +81,28 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
     return this.router.navigateByUrl('/app/marketplace-detail/' + id)
       .then(() => loadingMarketplaceDetail.dismiss());
+  }
+
+  async alertConfirmCustomerCancel() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      // tslint:disable-next-line:max-line-length
+      message: 'You are about to <strong>cancel</strong> this request. Your request <strong>will be DELETED</strong>.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.customerCancelTask();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async presentToast(message) {

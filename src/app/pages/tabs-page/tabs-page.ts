@@ -8,6 +8,7 @@ import {StorageKeys} from '../../providers/constants';
 import {Router} from '@angular/router';
 import {Angulartics2GoogleAnalytics} from 'angulartics2/ga';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
+import {Events} from '../../utils/services/events';
 
 @Component({
   templateUrl: './tabs-page.html',
@@ -27,6 +28,7 @@ export class TabsPage implements OnInit {
               private pusher: PusherServiceProvider,
               private navCtrl: NavController,
               private toastController: ToastController,
+              private events: Events,
               private storage: Storage,
               private router: Router,
               public routerOutlet: IonRouterOutlet,
@@ -196,5 +198,9 @@ export class TabsPage implements OnInit {
 
   navigateToProfile() {
     this.navCtrl.navigateForward(`/app/profile/${this.profileId}`);
+  }
+
+  scrollToTop() {
+    this.events.publish('scroll-top-marketplace', true);
   }
 }

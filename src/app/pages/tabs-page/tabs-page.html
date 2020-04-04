@@ -1,8 +1,8 @@
 <ion-tabs>
   <ion-tab-bar *ngIf="tabSlot === 'bottom'" slot="bottom">
 
-    <ion-tab-button tab="marketplace">
-      <ion-icon mode="md" name="home"></ion-icon>
+    <ion-tab-button tab="marketplace" (click)="scrollToTop()">
+      <ion-icon name="basket"></ion-icon>
       <ion-label>Marketplace</ion-label>
     </ion-tab-button>
 

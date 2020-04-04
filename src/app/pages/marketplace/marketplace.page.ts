@@ -10,6 +10,7 @@ import {AuthService} from '../../utils/services/auth.service';
 import {Router} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'marketplace',
@@ -32,10 +33,13 @@ export class MarketplacePage implements OnInit, OnDestroy {
               private pusher: PusherServiceProvider,
               private authService: AuthService,
               private navCtrl: NavController,
+              private events: Events,
               private router: Router,
               private toastController: ToastController,
               private geolocation: Geolocation,
-              public routerOutlet: IonRouterOutlet) { }
+              public routerOutlet: IonRouterOutlet) {
+    this.events.subscribe('scroll-top-marketplace', () => console.log('Scroll to top.'));
+  }
 
   ngOnInit() {
     this.segmentChanged();
@@ -43,7 +47,9 @@ export class MarketplacePage implements OnInit, OnDestroy {
       .then(prof => this.userRole = prof.user.role);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.events.unsubscribe('scroll-top-marketplace');
+  }
 
 
   getAllMarketplaceRequests(coords?: any) {

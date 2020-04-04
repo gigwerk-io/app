@@ -30,10 +30,10 @@
           <h3>{{getUserName(room.members)}}</h3>
           <p>{{getLastMessage(room)}}</p>
         </ion-label>
-        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
-        <ion-note>
+        <ion-note slot="end">
           <small>{{room.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
         </ion-note>
+        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
         <ion-badge color="primary" slot="end" *ngIf="room.unread > 0">{{room.unread}}</ion-badge>
       </ion-item>
     </ion-list>
