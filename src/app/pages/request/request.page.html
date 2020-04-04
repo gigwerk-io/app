@@ -155,10 +155,8 @@
 
     <div *ngSwitchCase="'location'" [ngClass]="(backPage == 'location') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
       <ion-list>
-        <div no-margin *ngIf="locations.length != 0">
-          <ion-list-header>
-            SAVED LOCATIONS
-          </ion-list-header>
+        <div class="ion-no-margin" *ngIf="locations.length != 0">
+          <h5 class="text-bold">Saved Locations</h5>
           <ion-item *ngFor="let location of locations" (click)="presentActionSheet(location)">
             <ion-chip color="secondary" slot="end">Tap Here</ion-chip>
             <ion-label>
