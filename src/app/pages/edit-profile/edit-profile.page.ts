@@ -53,19 +53,21 @@ export class EditProfilePage implements OnInit {
       phone: this.phone,
       first_name: this.firstName,
       last_name: this.lastName,
-      birthday: this.birthday
+      birthday: this.birthday,
     };
     if (this.newImage) {
-      body.image = this.image.split(',')[1];
+      body.image = this.image;
     }
     this.preferences.updateProfile(body).then(res => {
       // Get Update Profile Info
       this.profileService.getProfile(this.userId).then(result => {
         // Update Storage Info
         this.storage.set(StorageKeys.PROFILE, result.user).then(response => {
-          this.presentToast(res.message);
+          this.presentToast('Your profile has been updated.');
         });
       });
+    }).catch(err => {
+      this.presentToast('An error has occurred while updating your profile');
     });
   }
 

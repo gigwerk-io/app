@@ -52,7 +52,15 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.marketplaceTasks = tasks;
         const channel = this.pusher.marketplace();
         channel.bind('new-request', data => {
+          // Push new job to feed
           this.marketplaceTasks.push(data.marketplace);
+          // Remove duplicate jobs from the feed.
+          const seen = new Set();
+          this.marketplaceTasks = this.marketplaceTasks.filter(marketplace => {
+            const duplicate = seen.has(marketplace.id);
+            seen.add(marketplace.id);
+            return !duplicate;
+          });
         });
         this.changeRef.detectChanges();
       }).catch(error => {
@@ -131,7 +139,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.segment = 'all';
         this.geolocation.getCurrentPosition().then(res => {
           const coords = {lat: res.coords.latitude, long: res.coords.longitude};
-          // GEt job details with location
+          // Get job details with location
           this.getAllMarketplaceRequests(coords);
         }).catch(err => {
           // Get job details without location

@@ -376,8 +376,7 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_one = (e.target as FileReader).result;
-          this.taskRequest.image_one = (e.target as FileReader).result.toString().split(',')[1];
+          this.taskImages.image_one = this.taskRequest.image_one = (e.target as FileReader).result;
         };
         reader.readAsDataURL(event.target.files[0]);
       }
@@ -386,8 +385,7 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_two = (e.target as FileReader).result;
-          this.taskRequest.image_two = (e.target as FileReader).result.toString().split(',')[1];
+          this.taskImages.image_two = this.taskRequest.image_two = (e.target as FileReader).result;
         };
         reader.readAsDataURL(event.target.files[1]);
       }
@@ -396,8 +394,7 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_three = (e.target as FileReader).result;
-          this.taskRequest.image_three = (e.target as FileReader).result.toString().split(',')[1];
+          this.taskImages.image_three = this.taskRequest.image_three = (e.target as FileReader).result;
         };
         reader.readAsDataURL(event.target.files[2]);
       }

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+  <access origin="*" />
+  
+  <feature name="PhotoViewer">
+    <param name="ios-package" value="PhotoViewer"/>
+  </feature>
+
+  <feature name="ActionSheet">
+    <param name="ios-package" value="ActionSheet"/>
+  </feature>
+
+  <feature name="AppRate">
+    <param name="ios-package" value="CDVAppRate"/>
+  </feature>
+
+  <feature name="Badge">
+    <param name="ios-package" value="APPBadge"/>
+  </feature>
+
+  <feature name="Camera">
+    <param name="ios-package" value="CDVCamera"/>
+  </feature>
+
+  <feature name="Contacts">
+    <param name="ios-package" value="CDVContacts"/>
+  </feature>
+
+  <feature name="Device">
+    <param name="ios-package" value="CDVDevice"/>
+  </feature>
+
+  <feature name="Notification">
+    <param name="ios-package" value="CDVNotification"/>
+  </feature>
+
+  <feature name="Geolocation">
+    <param name="ios-package" value="CDVLocation"/>
+  </feature>
+
+  <feature name="InAppBrowser">
+    <param name="ios-package" value="CDVInAppBrowser"/>
+    <param name="onload" value="true"/>
+  </feature>
+  <feature name="UIInAppBrowser">
+    <param name="ios-package" value="CDVUIInAppBrowser"/>
+    <param name="onload" value="true"/>
+  </feature>
+  <feature name="WKInAppBrowser">
+    <param name="ios-package" value="CDVWKInAppBrowser"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="NativeStorage">
+    <param name="ios-package" value="NativeStorage"/>
+  </feature>
+
+  <feature name="CDVOrientation">
+    <param name="ios-package" value="CDVOrientation"/>
+  </feature>
+
+  <feature name="CordovaStripe">
+    <param name="ios-package" value="CordovaStripe"/>
+  </feature>
+
+  <feature name="ImagePicker">
+    <param name="ios-package" value="SOSPicker"/>
+  </feature>
+
+  <feature name="SocialSharing">
+    <param name="ios-package" value="SocialSharing"/>
+    <param name="onload" value="true"/>
+  </feature>
+
+  <feature name="PushNotification">
+    <param name="ios-package" value="PushPlugin"/>
+  </feature>
+
+  <feature name="LaunchNavigator">
+    <param name="ios-package" value="LaunchNavigatorPlugin"/>
+  </feature>
+
+  
+  <preference name="ScrollEnabled" value="false" />
+  <preference name="android-minSdkVersion" value="19" />
+  <preference name="BackupWebStorage" value="isNone" />
+  <preference name="SplashMaintainAspectRatio" value="true" />
+  <preference name="FadeSplashScreenDuration" value="300" />
+  <preference name="SplashShowOnlyFirstTime" value="false" />
+  <preference name="SplashScreen" value="screen" />
+  <preference name="SplashScreenDelay" value="3000" />
+  <preference name="KeyboardDisplayRequiresUserAction" value="false" />
+</widget>
