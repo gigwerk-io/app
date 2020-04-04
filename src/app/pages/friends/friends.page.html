@@ -5,14 +5,6 @@
 </favr-page-header>
 
 <ion-content>
-  <!--<div>-->
-    <!--<ion-select class="filter" placeholder="Select One">-->
-      <!--<ion-select-option value="f">Female</ion-select-option>-->
-      <!--<ion-select-option value="m">Male</ion-select-option>-->
-    <!--</ion-select>-->
-  <!--</div>-->
-
-
   <!-- Default Segment -->
   <!-- Icon end -->
   <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="segment">
@@ -29,7 +21,7 @@
 
   <!-- List of Text Items -->
   <ng-container *ngIf="users; else skeletonFriends">
-    <ion-list>
+    <ion-list *ngIf="users.length > 0; else noFriendsList">
       <ion-item [detail]="(btnClass == 'arrow-forward')" *ngFor="let user of users; let i = index;" [attr.data-index]="i">
         <ion-avatar slot="start" (click)="goToUserProfile(user.id)">
           <ion-img [src]="!noImage ? user.profile.image : 'assets/img/user.png'" alt="profile image" (ionError)="noImage = true"></ion-img>
@@ -50,9 +42,11 @@
       </ion-item>
     </ion-list>
 
-    <ion-title *ngIf="users.length == 0">
-      <img src="assets/img/monkey-face.png" alt="Nothing to see here">
-    </ion-title>
+    <ng-template #noFriendsList>
+      <ion-title class="ion-text-center ion-margin-top">
+        <img src="assets/img/monkey-face.png" alt="Nothing to see here" style="max-width: 75%">
+      </ion-title>
+    </ng-template>
   </ng-container>
 
   <ng-template #skeletonFriends>

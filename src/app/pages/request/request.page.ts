@@ -145,14 +145,14 @@ export class RequestPage implements OnInit, OnDestroy {
     const alert = await this.alertCtrl.create({
       header: 'Are you sure?',
       // tslint:disable-next-line:max-line-length
-      message: 'You are about to <strong>close</strong> the request process while in the middle of your task request. Your request will <strong>NOT be saved</strong>.',
+      message: 'You are about to <strong>close</strong> the request process while in the middle of your task request. Your request <strong>might NOT be saved</strong>.',
       buttons: [
         {
           text: 'No',
           role: 'cancel',
           cssClass: 'secondary',
         }, {
-          text: 'Yes, close',
+          text: 'Yes',
           handler: () => {
             this.closeRequestPage();
           }

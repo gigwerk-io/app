@@ -121,7 +121,7 @@ export class SearchPage implements OnInit, OnDestroy {
         this.router.navigate(['/app/room', res.id]);
       })
       .catch(error => {
-      this.errorMessage(error.message);
+      this.errorMessage(error.statusText);
     });
   }
 
