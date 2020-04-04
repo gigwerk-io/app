@@ -9,13 +9,11 @@ import {SettingsPageModule} from '../settings/settings.module';
 import {MarketplaceDetailPageModule} from '../marketplace-detail/marketplace-detail.module';
 import {CompleteTaskPageModule} from '../complete-task/complete-task.module';
 import {ReportPageModule} from '../report/report.module';
-import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 const MODULES = [
   CommonModule,
   CompleteTaskPageModule,
   FriendsPageModule,
-  FontAwesomeModule,
   IonicModule,
   MarketplaceDetailPageModule,
   ReportPageModule,
