@@ -7,11 +7,7 @@ import {ActionSheetController, IonRouterOutlet, NavController, Platform} from '@
 import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {environment} from '../../../environments/environment';
 
-import {
-  Plugins,
-  StatusBarStyle,
-  Capacitor
-} from '@capacitor/core';
+import {Capacitor, Plugins, StatusBarStyle} from '@capacitor/core';
 
 const {StatusBar} = Plugins;
 
@@ -142,12 +138,12 @@ export class SettingsPage implements OnInit {
     switch (this.darkMode) {
       case true:
         if (this.statusBarAvailable) {
-          StatusBar.setBackgroundColor({color: '#222428'});
+          StatusBar.setStyle({style: StatusBarStyle.Dark});
         }
         break;
       case false:
         if (this.statusBarAvailable) {
-          StatusBar.setBackgroundColor({color: '#fff'});
+          StatusBar.setStyle({style: StatusBarStyle.Light});
         }
         break;
     }

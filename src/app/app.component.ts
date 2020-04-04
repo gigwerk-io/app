@@ -100,19 +100,19 @@ export class AppComponent implements OnInit, OnDestroy {
         .then((prefersDark: boolean) => {
           if (prefersDark == null) {
             if (this.statusBarAvailable) {
-              StatusBar.setBackgroundColor({color: '#222428'});
+              StatusBar.setStyle({style: StatusBarStyle.Dark});
             }
             this.storage.set(StorageKeys.THEME_PREFERENCE, true)
               .then(() => toggleDarkTheme(true));
           } else {
             if (prefersDark) {
               if (this.statusBarAvailable) {
-                StatusBar.setBackgroundColor({color: '#222428'});
+                StatusBar.setStyle({style: StatusBarStyle.Dark});
               }
               toggleDarkTheme(prefersDark);
             } else {
               if (this.statusBarAvailable) {
-                StatusBar.setBackgroundColor({color: '#fff'});
+                StatusBar.setStyle({style: StatusBarStyle.Light});
               }
               toggleDarkTheme(false);
             }

@@ -14,7 +14,7 @@ import {
 import {SwPush} from '@angular/service-worker';
 import {environment} from '../../../environments/environment';
 
-const {PushNotifications} = Plugins;
+const {PushNotifications, Device} = Plugins;
 
 @Component({
   selector: 'page-login',
@@ -82,12 +82,15 @@ export class LoginPage {
       PushNotifications.requestPermission().then(res => {
         if (res.granted) {
           PushNotifications.addListener('registration', token => {
-            console.log(token);
-            if (this.platform.is('ios')) {
-              this.notificationService.saveAPNToken({device_token: token.value});
-            } else if (this.platform.is('android')) {
-              this.notificationService.saveFCMToken({device_token: token.value});
-            }
+            console.log('Token:' + token);
+            console.log(this.platform);
+            Device.getInfo().then(info => {
+              if (info.operatingSystem === 'ios') {
+                this.notificationService.saveAPNToken({device_token: token.value});
+              } else {
+                this.notificationService.saveFCMToken({device_token: token.value});
+              }
+            });
           });
 
           PushNotifications.addListener('pushNotificationReceived', notification => {
