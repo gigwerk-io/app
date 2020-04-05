@@ -14,7 +14,7 @@ export class AddLocationPage implements OnInit {
   state: string;
   zip: number;
 
-  constructor(private preferences: PreferencesService, private location: Location, private toastController: ToastController) { }
+  constructor(private preferences: PreferencesService, private location: Location, private toastCtrl: ToastController) { }
 
   ngOnInit() {  }
 
@@ -26,11 +26,28 @@ export class AddLocationPage implements OnInit {
       zip: this.zip,
     };
     this.preferences.addLocation(body).then(res => this.presentToast(res.message))
-      .catch(error => this.presentToast(error.statusText));
+      .catch(error => this.errorMessage(error.message));
+  }
+
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
   }
 
   async presentToast(message) {
-    await this.toastController.create({
+    await this.toastCtrl.create({
       message,
       position: 'top',
       duration: 2500,

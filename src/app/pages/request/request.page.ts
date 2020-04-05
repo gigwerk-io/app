@@ -8,7 +8,7 @@ import {
   ModalController,
   NavController,
   Platform,
-  ToastController
+  ToastController,
 } from '@ionic/angular';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
@@ -86,7 +86,7 @@ export class RequestPage implements OnInit, OnDestroy {
               private imagePicker: ImagePicker,
               private camera: Camera,
               private marketplaceService: MarketplaceService,
-              private toastController: ToastController,
+              private toastCtrl: ToastController,
               private router: Router,
               private events: Events,
               private preferences: PreferencesService,
@@ -263,7 +263,7 @@ export class RequestPage implements OnInit, OnDestroy {
               this.router.navigateByUrl('app/set-up-payments')
                 .then(() => {
                   this.events.publish('task-request', this.taskRequest);
-                  this.presentToast(error.error.message);
+                  this.errorMessage(error.error.message);
                 });
             });
           loadingPage.dismiss();
@@ -276,8 +276,25 @@ export class RequestPage implements OnInit, OnDestroy {
     this.updateProgress();
   }
 
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
+
   async presentToast(message) {
-    await this.toastController.create({
+    await this.toastCtrl.create({
       message,
       position: 'top',
       duration: 2500,

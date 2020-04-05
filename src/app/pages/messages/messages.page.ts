@@ -32,7 +32,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   noImage = false;
   getChatRoomsSub: Subscription;
   activatedRouteSub: Subscription;
-  footerHeight = 'inherit';
+  footerHeight = '61px';
 
   constructor(private activatedRoute: ActivatedRoute,
               private chatService: ChatService,
@@ -195,6 +195,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   setFooterHeight() {
-    this.textarea.getInputElement().then(el => el.clientHeight > 57 ? this.footerHeight = `${el.clientHeight + 10}px` : 'inherit');
+    console.log(this.footerHeight);
+    this.textarea.getInputElement().then(el => this.footerHeight = `${el.clientHeight + 5}px`);
   }
 }
