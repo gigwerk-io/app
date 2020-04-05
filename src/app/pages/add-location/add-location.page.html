@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/saved-locations"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/saved-locations"></ion-back-button>
     </ion-buttons>
     <ion-title>Add Location</ion-title>
   </ion-toolbar>
@@ -9,18 +9,14 @@
 
 <ion-content>
   <ion-list class="ion-padding">
-    <ion-list-header>
-      ADD LOCATION
-    </ion-list-header>
-
     <ion-item>
       <ion-label position="stacked">What is your street address?<ion-text color="danger">*</ion-text></ion-label>
-      <ion-input [(ngModel)]="street" placeholder="123 Main Street"></ion-input>
+      <ion-input [(ngModel)]="street"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">What is your city?<ion-text color="danger">*</ion-text></ion-label>
-      <ion-input [(ngModel)]="city" placeholder="Rochester"></ion-input>
+      <ion-input [(ngModel)]="city"></ion-input>
     </ion-item>
 
     <ion-item>
@@ -82,7 +78,7 @@
 
     <ion-item>
       <ion-label position="stacked">What is your zip code?<ion-text color="danger">*</ion-text></ion-label>
-      <ion-input [(ngModel)]="zip" placeholder="55901"></ion-input>
+      <ion-input [(ngModel)]="zip"></ion-input>
     </ion-item>
 
     <div class="ion-padding-top form-submit-button">

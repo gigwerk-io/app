@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Edit Profile</ion-title>
   </ion-toolbar>
@@ -12,7 +12,7 @@
     <ion-item class="no-inner-border-width">
       <input type="file" accept="image/*" (change)="uploadImage($event)" #file style="display:none">
       <ion-avatar class="image-center">
-        <ion-img [src]="image ? image : './assets/img/user.png'" (click)="file.click()" alt="Edit your profile image." (ionError)="image = undefined"></ion-img>
+        <favr-img [src]="image" spinnerSrc="assets/img/user.png" imgClass="rounded-circle" loaderClass="rounded-circle" (click)="file.click()" alt="Edit your profile image."></favr-img>
       </ion-avatar>
     </ion-item>
 
@@ -33,12 +33,12 @@
 
     <ion-item>
       <ion-label position="stacked">First Name</ion-label>
-      <ion-input [(ngModel)]="first_name" type="text"></ion-input>
+      <ion-input [(ngModel)]="firstName" type="text"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked">Last Name</ion-label>
-      <ion-input [(ngModel)]="last_name" type="text"></ion-input>
+      <ion-input [(ngModel)]="lastName" type="text"></ion-input>
     </ion-item>
 
     <ion-item>

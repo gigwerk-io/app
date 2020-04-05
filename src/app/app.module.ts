@@ -29,6 +29,7 @@ import {RequestPageModule} from './pages/request/request.module';
 import {SearchPageModule} from './pages/search/search.module';
 import {CustomerTutorialPageModule} from './pages/customer-tutorial/customer-tutorial.module';
 import {MarketplacePageModule} from './pages/marketplace/marketplace.module';
+import { PushNotificationsModule } from 'ng-push';
 
 @NgModule({
   imports: [
@@ -40,9 +41,7 @@ import {MarketplacePageModule} from './pages/marketplace/marketplace.module';
     CreditCardDirectivesModule,
     FormsModule,
     HttpClientModule,
-    IonicModule.forRoot({
-      mode: 'ios'
-    }),
+    IonicModule.forRoot(),
     IntercomModule.forRoot({
       appId: 'yvoar9nd', // from your Intercom config
       updateOnRouterChange: true // will automatically run `update` on router event changes. Default: `false`
@@ -55,7 +54,8 @@ import {MarketplacePageModule} from './pages/marketplace/marketplace.module';
     }),
     MomentModule,
     MarketplacePageModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    PushNotificationsModule
   ],
   declarations: [AppComponent],
   providers: [

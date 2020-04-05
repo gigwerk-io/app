@@ -11,16 +11,16 @@ import {ProfileService} from '../../utils/services/profile.service';
   styleUrls: ['./edit-profile.page.scss'],
 })
 export class EditProfilePage implements OnInit {
-  first_name;
-  last_name;
+  firstName;
+  lastName;
   username;
   email;
   phone;
   description;
   birthday;
   image;
-  user_id;
-  new_image = false;
+  userId;
+  newImage = false;
 
   constructor(private storage: Storage,
               private preferences: PreferencesService,
@@ -33,61 +33,68 @@ export class EditProfilePage implements OnInit {
 
   getProfileInfo() {
     this.storage.get(StorageKeys.PROFILE).then(profile => {
-      this.first_name = profile.user.first_name;
-      this.last_name = profile.user.last_name;
+      this.firstName = profile.user.first_name;
+      this.lastName = profile.user.last_name;
       this.username = profile.user.username;
       this.phone = profile.user.phone;
       this.description = profile.description;
       this.email = profile.user.email;
       this.birthday = profile.user.birthday;
       this.image = profile.image;
-      this.user_id = profile.user_id;
+      this.userId = profile.user_id;
     });
   }
 
 
   updateProfileInfo() {
-    const body = {
+    const body: any = {
       description: this.description,
       email: this.email,
       phone: this.phone,
-      first_name: this.first_name,
-      last_name: this.last_name,
-      birthday: this.birthday
+      first_name: this.firstName,
+      last_name: this.lastName,
+      birthday: this.birthday,
     };
-    if (this.new_image) {
-      body['image'] = this.image.split(',')[1];
+    if (this.newImage) {
+      body.image = this.image;
     }
-    this.preferences.updateProfile(body).subscribe(res => {
+    this.preferences.updateProfile(body).then(res => {
       // Get Update Profile Info
-      this.profileService.getProfile(this.user_id).subscribe(result => {
+      this.profileService.getProfile(this.userId).then(result => {
         // Update Storage Info
         this.storage.set(StorageKeys.PROFILE, result.user).then(response => {
-          this.presentToast(res.message);
+          this.presentToast('Your profile has been updated.');
         });
       });
+    }).catch(err => {
+      this.presentToast('An error has occurred while updating your profile');
     });
   }
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
   }
 
   uploadImage(event: any) {
-    this.new_image = true;
+    this.newImage = true;
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
 
       reader.onload = (e: ProgressEvent) => {
-        this.image = (<FileReader>e.target).result;
+        this.image = (e.target as FileReader).result;
       };
       reader.readAsDataURL(event.target.files[0]);
     }

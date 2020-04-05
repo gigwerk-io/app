@@ -4,7 +4,7 @@ import {ProfileRouteResponse} from '../../utils/interfaces/user';
 import {ProfileService} from '../../utils/services/profile.service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {Storage} from '@ionic/storage';
-import {ActionSheetController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {ActionSheetController, IonRouterOutlet, ModalController, NavController, ToastController} from '@ionic/angular';
 import {ChatService} from '../../utils/services/chat.service';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Role, StorageKeys} from '../../providers/constants';
@@ -21,15 +21,15 @@ import {ReportPage} from '../report/report.page';
 })
 export class ProfilePage implements OnInit, OnDestroy {
 
-  profileSubscription: Subscription;
   profile: ProfileRouteResponse;
   isOwner: boolean;
   status: {class: string, text: string};
   showFriendButton = true;
-  friendButton: object;
+  friendButton: any;
   rating: number;
   Role = Role;
   taskFeed = 'customer';
+  activatedRouteSub: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
               private storage: Storage,
@@ -43,13 +43,14 @@ export class ProfilePage implements OnInit, OnDestroy {
               private actionSheetCtrl: ActionSheetController,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
-              private authService: AuthService) {}
+              private authService: AuthService,
+              public routerOutlet: IonRouterOutlet) {}
 
   ngOnInit() {
-    this.activatedRoute.paramMap.subscribe(data => {
+    this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       const id: number = parseInt(data.get('id'), 10);
-      this.profileSubscription = this.profileService.getProfile(id)
-        .subscribe((profile: ProfileRouteResponse) => {
+      this.profileService.getProfile(id)
+        .then((profile: ProfileRouteResponse) => {
           this.profile = profile;
           if (profile.user.customer_rating != null) {
             this.rating = profile.user.customer_rating;
@@ -70,7 +71,7 @@ export class ProfilePage implements OnInit, OnDestroy {
             });
         }, error => {
           if (error.status === 401) {
-            this.authService.isValidToken().subscribe(res => {
+            this.authService.isValidToken().then(res => {
               if (!res.response) {
                 this.presentToast('You have been logged out.');
                 this.storage.clear();
@@ -83,8 +84,8 @@ export class ProfilePage implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.profileSubscription.unsubscribe();
+  ngOnDestroy() {
+    this.activatedRouteSub.unsubscribe();
   }
 
   private viewAttachedPhoto(url: string, photoTitle?: string): void {
@@ -137,10 +138,12 @@ export class ProfilePage implements OnInit, OnDestroy {
         setTimeout(async () => {
           const reportUserModal = await this.modalCtrl.create({
             component: ReportPage,
-            componentProps: {type: 'User', extra: this.profile}
+            componentProps: {type: 'User', extra: this.profile},
+            swipeToClose: true,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
-          reportUserModal.present();
+          await reportUserModal.present();
         }, 0);
       }
     }, {
@@ -157,10 +160,12 @@ export class ProfilePage implements OnInit, OnDestroy {
         setTimeout(async () => {
           const reportUserModal = await this.modalCtrl.create({
             component: ReportPage,
-            componentProps: {type: 'User', extra: this.profile}
+            componentProps: {type: 'User', extra: this.profile},
+            swipeToClose: true,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
-          reportUserModal.present();
+          await reportUserModal.present();
         }, 0);
       }
     }, {
@@ -179,7 +184,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).subscribe(res => {
+    this.chatService.startChat(username).then(res => {
       this.router.navigate(['/app/room', res.id]);
     });
   }
@@ -218,11 +223,16 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     const toast = await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(t => {
       t.present();
     });
@@ -236,14 +246,14 @@ export class ProfilePage implements OnInit, OnDestroy {
         break;
       case 'respond':
         this.friendService.acceptFriendRequest(this.profile.user.user_id)
-          .subscribe(res => {
+          .then(res => {
             this.presentToast(res);
           });
         break;
       case 'not_friend':
-        this.friendButton['disable'] = true;
+        this.friendButton.disable = true;
         this.friendService.sendFriendRequest(this.profile.user.user_id)
-          .subscribe(res => {
+          .then(res => {
             this.presentToast(res);
           });
         break;
@@ -251,10 +261,9 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   async doRefresh(event?) {
-    this.profileSubscription.unsubscribe();
     setTimeout(() => {
-      this.profileSubscription = this.profileService.getProfile(this.profile.user.user_id)
-        .subscribe((profile: ProfileRouteResponse) => {
+      this.profileService.getProfile(this.profile.user.user_id)
+        .then((profile: ProfileRouteResponse) => {
           this.profile = profile;
           this.status = this.showBadge(profile.user.friend_status);
           this.friendButton = this.defineFriendButton(profile.user.friend_status);

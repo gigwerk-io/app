@@ -1,29 +1,28 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
-import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {RequestPage} from '../request/request.page';
 import {Role, StorageKeys} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {AuthService} from '../../utils/services/auth.service';
 import {Router} from '@angular/router';
-import {ProfileRouteResponse, User} from '../../utils/interfaces/user';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'marketplace',
   templateUrl: './marketplace.page.html',
-  styleUrls: ['./marketplace.page.scss']
+  styleUrls: ['./marketplace.page.scss'],
+  providers: [IonRouterOutlet]
 })
 export class MarketplacePage implements OnInit, OnDestroy {
 
   marketplaceTasks: MainMarketplaceTask[];
-  filterInputs: any;
-  filterDefault: string;
   segment = 'all';
-  userRole;
+  userRole: string;
   Role = Role;
 
   constructor(private marketplaceService: MarketplaceService,
@@ -34,31 +33,45 @@ export class MarketplacePage implements OnInit, OnDestroy {
               private pusher: PusherServiceProvider,
               private authService: AuthService,
               private navCtrl: NavController,
+              private events: Events,
               private router: Router,
               private toastController: ToastController,
-              private geolocation: Geolocation) { }
+              private geolocation: Geolocation,
+              public routerOutlet: IonRouterOutlet) {
+    this.events.subscribe('scroll-top-marketplace', () => console.log('Scroll to top.'));
+  }
 
   ngOnInit() {
-    this.segmentChanged(this.segment);
+    this.segmentChanged();
     this.storage.get(StorageKeys.PROFILE)
       .then(prof => this.userRole = prof.user.role);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.events.unsubscribe('scroll-top-marketplace');
+  }
 
 
   getAllMarketplaceRequests(coords?: any) {
     this.marketplaceService.getMainMarketplaceRequests('all', coords)
-      .subscribe(tasks => {
+      .then(tasks => {
         this.marketplaceTasks = tasks;
         const channel = this.pusher.marketplace();
         channel.bind('new-request', data => {
+          // Push new job to feed
           this.marketplaceTasks.push(data.marketplace);
+          // Remove duplicate jobs from the feed.
+          const seen = new Set();
+          this.marketplaceTasks = this.marketplaceTasks.filter(marketplace => {
+            const duplicate = seen.has(marketplace.id);
+            seen.add(marketplace.id);
+            return !duplicate;
+          });
         });
         this.changeRef.detectChanges();
-      }, error => {
+      }).catch(error => {
         if (error.status === 401) {
-          this.authService.isValidToken().subscribe(res => {
+          this.authService.isValidToken().then(res => {
             if (!res.response) {
               this.presentToast('You have been logged out.');
               this.storage.remove(StorageKeys.PROFILE);
@@ -72,11 +85,16 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
@@ -84,12 +102,12 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   getMyMarketplaceRequests() {
     this.marketplaceService.getMainMarketplaceRequests('me')
-      .subscribe(tasks => {
+      .then(tasks => {
         this.marketplaceTasks = tasks;
         this.changeRef.detectChanges();
-      }, error => {
+      }).catch(error => {
         if (error.status === 401) {
-          this.authService.isValidToken().subscribe(res => {
+          this.authService.isValidToken().then(res => {
             if (!res.response) {
               this.presentToast('You have been logged out.');
               this.storage.remove(StorageKeys.PROFILE);
@@ -103,12 +121,13 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   getMyJobs() {
     this.marketplaceService.getMainMarketplaceRequests('proposals')
-      .subscribe(tasks => {
+      .then(tasks => {
         this.marketplaceTasks = tasks;
         this.changeRef.detectChanges();
-      }, error => {
+      })
+      .catch(error => {
         if (error.status === 401) {
-          this.authService.isValidToken().subscribe(res => {
+          this.authService.isValidToken().then(res => {
             if (!res.response) {
               this.presentToast('You have been logged out.');
               this.storage.remove(StorageKeys.PROFILE);
@@ -120,13 +139,13 @@ export class MarketplacePage implements OnInit, OnDestroy {
       });
   }
 
-  segmentChanged(value) {
-    switch (value) {
+  segmentChanged() {
+    switch (this.segment) {
       case 'all':
         this.segment = 'all';
         this.geolocation.getCurrentPosition().then(res => {
           const coords = {lat: res.coords.latitude, long: res.coords.longitude};
-          // GEt job details with location
+          // Get job details with location
           this.getAllMarketplaceRequests(coords);
         }).catch(err => {
           // Get job details without location
@@ -147,7 +166,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
   async openCustomerTutorial() {
     const modal = await this.modalCtrl.create({
       component: CustomerTutorialPage,
-      componentProps: {'isModal': true}
+      componentProps: {isModal: true}
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({
@@ -170,9 +189,11 @@ export class MarketplacePage implements OnInit, OnDestroy {
         if (!res) {
           this.openCustomerTutorial();
         } else {
-          const modal = await this.modalCtrl.create({
+          const requestPageModal = await this.modalCtrl.create({
             component: RequestPage,
-            componentProps: {'isModal': true}
+            componentProps: {isModal: true},
+            swipeToClose: false,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
           const loadingRequestPage = await this.loadingCtrl.create({
@@ -182,7 +203,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
           await loadingRequestPage.present();
 
-          await modal.present()
+          await requestPageModal.present()
             .then(() => {
 
               return loadingRequestPage.dismiss();
@@ -219,10 +240,5 @@ export class MarketplacePage implements OnInit, OnDestroy {
         }
       }
     }, 1000);
-  }
-
-  setFilterOption(option: string) {
-    this.filterDefault = option;
-    this.changeRef.detectChanges();
   }
 }

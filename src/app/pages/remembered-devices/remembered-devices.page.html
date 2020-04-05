@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Device Sessions</ion-title>
   </ion-toolbar>
@@ -10,7 +10,9 @@
 <ion-content>
   <ion-list class="ion-padding">
     <ion-list-header>
-      ACTIVE SESSIONS
+      <h6 class="text-bold">
+        Active Sessions
+      </h6>
       <ion-button class="kill-all-btn" size="small" (click)="killAll()">Kill All</ion-button>
     </ion-list-header>
     <ion-item *ngFor="let session of sessions">

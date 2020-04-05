@@ -1,7 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Events, ModalController, ToastController} from '@ionic/angular';
+import {ModalController, ToastController} from '@ionic/angular';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {TaskActions, TaskStatus} from '../../providers/constants';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'complete-task',
@@ -22,12 +23,17 @@ export class CompleteTaskPage implements OnInit {
   ngOnInit() {}
 
   async presentToast(message) {
-    await this.toastCtrl.create({
-      message: message,
+    return await this.toastCtrl.create({
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

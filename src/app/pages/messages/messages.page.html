@@ -1,12 +1,12 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title>{{toUser}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="presentActionSheet()" class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -44,47 +44,84 @@
   </ion-menu>
 
   <!-- the main content -->
-  <ion-content margin-top padding-top margin-bottom padding-bottom padding-start padding-end #chatDisplay id="menu-content" class="message-wrap">
+  <ion-content #chatDisplay id="menu-content" class="message-wrap ion-margin-top ion-margin-bottom ion-padding">
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <br>
     <br>
-    <div *ngFor="let message of messages; let last = last"
-         class="message"
-         [class.left]=" message.sender_id != user_id"
-         [class.right]=" message.sender_id == user_id">
-      <img class="user-img" [src]="message.sender.profile.image" alt="avatar"
-           [routerLink]="'/app/profile/' + message.sender_id" routerDirection="forward">
-      <!--<ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>-->
-      <div class="msg-detail">
-        <div class="msg-info">
-          <p>{{message.isoFormat | amFromUtc | amLocal |  amTimeAgo:true}} ago</p>
-        </div>
-        <div class="msg-content">
+    <br>
+    <ng-container *ngIf="messages; else skeletonMessages">
+      <div *ngFor="let message of messages; let last = last"
+           class="message"
+           [class.left]=" message.sender_id != userId"
+           [class.right]=" message.sender_id == userId">
+        <img class="user-img" [src]="message.sender.profile.image" alt="avatar"
+             [routerLink]="'/app/profile/' + message.sender_id" routerDirection="forward">
+        <!--<ion-spinner name="dots" *ngIf="msg.status === 'pending'"></ion-spinner>-->
+        <div class="msg-detail">
+          <div class="msg-info">
+            <p>{{message.isoFormat | amFromUtc | amLocal |  amTimeAgo:true}} ago</p>
+          </div>
+          <div class="msg-content">
         <span class="triangle"
-              [class.left]=" message.sender_id != user_id"
-              [class.right]=" message.sender_id == user_id"></span>
-          <p class="line-breaker ">{{message.text}}</p>
+              [class.left]=" message.sender_id != userId"
+              [class.right]=" message.sender_id == userId"></span>
+            <p class="line-breaker ">{{message.text}}</p>
+          </div>
         </div>
-      </div>
 
-      {{last && !didScrollToBottomOnInit ? scrollToBottomOnInit() : ''}}
-    </div>
+        {{last && !didScrollToBottomOnInit ? scrollToBottomOnInit() : ''}}
+      </div>
+    </ng-container>
+    <ng-template #skeletonMessages>
+      <ion-list>
+        <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+          <ion-item>
+            <ion-avatar slot="start">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-avatar>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text animated style="width: 70%;"></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+              </p>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>
+              <h3>
+                <ion-skeleton-text animated style="float: right;width: 70%;"></ion-skeleton-text>
+              </h3>
+              <p>
+                <ion-skeleton-text animated style="float: right;width: 60%"></ion-skeleton-text>
+              </p>
+            </ion-label>
+            <ion-avatar slot="end">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ion-avatar>
+          </ion-item>
+        </ng-container>
+      </ion-list>
+    </ng-template>
+    <br>
     <br>
     <br>
   </ion-content>
 </ion-split-pane>
 
-<ion-footer no-border style="padding-left: 10px;">
+<ion-footer [style.height]="footerHeight" style="padding-left: 10px;">
   <div class="input-wrap">
     <ion-textarea placeholder="Text Message"
                   #chatBox
                   [(ngModel)]="pendingMessage"
                   (focusin)="onFocus()"
+                  (ionChange)="setFooterHeight()"
                   required
-                  autocapitalize
-                  autoGrow
+                  autocapitalize="on"
+                  autoGrow="true"
                   clearOnEdit="true"
     ></ion-textarea>
     <ion-button class="send-button" [disabled]="!pendingMessage" (click)="sendMessage()">

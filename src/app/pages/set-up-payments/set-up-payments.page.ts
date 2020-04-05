@@ -1,28 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Stripe } from '@ionic-native/stripe/ngx';
 import {STRIPE_PUBLIC} from '../../providers/constants';
 import {FinanceService} from '../../utils/services/finance.service';
-import {AlertController, Events, LoadingController, ToastController} from '@ionic/angular';
+import {AlertController, LoadingController, ToastController} from '@ionic/angular';
 import {FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CreditCardValidator } from 'angular-cc-library';
 import {Validators} from '@angular/forms';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Router} from '@angular/router';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'set-up-payments',
   templateUrl: './set-up-payments.page.html',
   styleUrls: ['./set-up-payments.page.scss'],
 })
-export class SetUpPaymentsPage implements OnInit {
+export class SetUpPaymentsPage implements OnInit, OnDestroy {
   form: FormGroup;
   submitted = false;
   task: MainMarketplaceTask = undefined;
 
   constructor(private stripe: Stripe,
               private financeService: FinanceService,
-              private toastController: ToastController,
+              private toastCtrl: ToastController,
               private alertController: AlertController,
               private marketplaceService: MarketplaceService,
               private router: Router,
@@ -37,10 +38,14 @@ export class SetUpPaymentsPage implements OnInit {
   ngOnInit() {
     this.stripe.setPublishableKey(STRIPE_PUBLIC);
     this.form = this.fb.group({
-      creditCard: ['', [<any>CreditCardValidator.validateCCNumber]],
-      expirationDate: ['', [<any>CreditCardValidator.validateExpDate]],
-      cvc: ['', [<any>Validators.required, <any>Validators.minLength(3), <any>Validators.maxLength(4)]]
+      creditCard: ['', [CreditCardValidator.validateCCNumber as any]],
+      expirationDate: ['', [CreditCardValidator.validateExpDate as any]],
+      cvc: ['', [Validators.required as any, Validators.minLength(3) as any, Validators.maxLength(4) as any]]
     });
+  }
+
+  ngOnDestroy() {
+    this.events.unsubscribe('task-request');
   }
 
   async onSubmit(form) {
@@ -56,35 +61,61 @@ export class SetUpPaymentsPage implements OnInit {
     date = date.split('/');
     const card = {
       number: this.form.get('creditCard').value,
-      expMonth: date[0].trim(),
-      expYear: date[1].trim(),
+      expMonth: (date[0] !== undefined) ? date[0].trim() : null,
+      expYear: (date[1] !== undefined) ? date[1].trim() : null,
       cvc: this.form.get('cvc').value
     };
-    this.stripe.createCardToken(card).then(token => {
-      const body = {stripeToken: token.id};
-      this.financeService.saveCreditCard(body).subscribe(res => {
-        if (this.task) {
-          this.marketplaceService.createMainMarketplaceRequest(this.task)
-            .then(resp => this.presentToast(resp));
-          this.router.navigateByUrl('app/tabs/marketplace');
-          this.events.unsubscribe('task-request');
-        } else {
-          this.presentToast(res.message);
-        }
-      });
-    }).catch(error => this.presentToast(error));
+
+    if (this.form.valid) {
+      this.stripe.createCardToken(card).then(token => {
+        const body = {stripeToken: token.id};
+        this.financeService.saveCreditCard(body).then(res => {
+          if (this.task) {
+            setTimeout(() => {
+              this.marketplaceService.createMainMarketplaceRequest(this.task)
+                .then(resp => this.presentToast(resp));
+            }, 1000);
+            this.router.navigateByUrl('app/tabs/marketplace');
+            this.events.unsubscribe('task-request');
+          } else {
+            this.presentToast(res.message);
+          }
+        });
+      }).catch(error => this.errorMessage(error.message));
+    }
 
     await loadingCtrl.dismiss();
   }
 
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
 
   async presentToast(message) {
-    await this.toastController.create({
-      message: message,
+    await this.toastCtrl.create({
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => toast.present());
   }
 

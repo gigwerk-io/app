@@ -22,7 +22,7 @@ export class ForgotPasswordPage implements OnInit {
   submitEmail(form: NgForm) {
     this.submitted = true;
     if (form.valid) {
-      this.authService.forgotPassword(this.email).subscribe(res => {
+      this.authService.forgotPassword(this.email).then(res => {
         this.presentToast(res.message).then(() => {
           this.router.navigateByUrl('login');
         });
@@ -38,11 +38,16 @@ export class ForgotPasswordPage implements OnInit {
 
   async presentToast(message, color = 'dark') {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 3000,
-      color: color,
-      showCloseButton: true
+      color,
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

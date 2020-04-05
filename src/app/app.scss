@@ -226,7 +226,9 @@ ion-select.icon {
 
 .nav-button {
   --background: var(--ion-color-primary-tint)!important;
-  color: white;
+  ion-icon {
+    color: white;
+  }
   height: 32px;
   width: 32px;
   --border-radius: 50%!important;
@@ -239,6 +241,10 @@ ion-textarea.ios {
 
 ion-textarea.md {
   --background: none!important;
+}
+
+.text-bold {
+  font-weight: bold;
 }
 
 .md {
@@ -268,4 +274,8 @@ ion-modal.transparent-modal {
     margin-right: auto;
     max-width: 600px;
   }
+}
+
+ion-segment-button {
+  --indicator-color: red;
 }

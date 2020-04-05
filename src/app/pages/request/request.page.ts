@@ -1,13 +1,14 @@
 import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {
-  ActionSheetController, AlertController,
-  Events,
+  ActionSheetController,
+  AlertController,
   IonContent,
-  IonSlides, LoadingController,
+  IonSlides,
+  LoadingController,
   ModalController,
   NavController,
   Platform,
-  ToastController
+  ToastController,
 } from '@ionic/angular';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
@@ -24,6 +25,7 @@ import {TaskActions} from '../../providers/constants';
 import {FavrDataService} from '../../utils/services/favr-data.service';
 import {PageStack} from '../signup/signup';
 import {FinanceService} from '../../utils/services/finance.service';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'request',
@@ -84,14 +86,14 @@ export class RequestPage implements OnInit, OnDestroy {
               private imagePicker: ImagePicker,
               private camera: Camera,
               private marketplaceService: MarketplaceService,
-              private toastController: ToastController,
+              private toastCtrl: ToastController,
               private router: Router,
               private events: Events,
               private preferences: PreferencesService,
               private actionSheetCtrl: ActionSheetController,
               private previousRoute: PreviousRouteService,
               private navCtrl: NavController,
-              public platform: Platform,
+              private platform: Platform,
               private favrService: FavrDataService,
               private financeService: FinanceService,
               private loadingCtrl: LoadingController,
@@ -136,21 +138,21 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getCategories() {
-    this.favrService.getCategories().toPromise().then(res => this.categories = res.categories);
+    this.favrService.getCategories().then(res => this.categories = res.categories);
   }
 
   async alertConfirmClose() {
     const alert = await this.alertCtrl.create({
       header: 'Are you sure?',
       // tslint:disable-next-line:max-line-length
-      message: 'You are about to <strong>close</strong> the request process while in the middle of your task request. Your request will <strong>NOT be saved</strong>.',
+      message: 'You are about to <strong>close</strong> the request process while in the middle of your task request. Your request <strong>might NOT be saved</strong>.',
       buttons: [
         {
           text: 'No',
           role: 'cancel',
           cssClass: 'secondary',
         }, {
-          text: 'Yes, close',
+          text: 'Yes',
           handler: () => {
             this.closeRequestPage();
           }
@@ -166,9 +168,7 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getLocations() {
-    this.preferences.getMyLocations().subscribe(res => {
-      this.locations = res.locations;
-    });
+    this.preferences.getMyLocations().then(res => this.locations = res.locations);
   }
 
   async presentActionSheet(location?: LocationAddress) {
@@ -190,7 +190,7 @@ export class RequestPage implements OnInit, OnDestroy {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.preferences.deleteLocation(location.id).subscribe(res => {
+          this.preferences.deleteLocation(location.id).then(res => {
             this.getLocations();
             this.presentToast(res.message);
           });
@@ -263,7 +263,7 @@ export class RequestPage implements OnInit, OnDestroy {
               this.router.navigateByUrl('app/set-up-payments')
                 .then(() => {
                   this.events.publish('task-request', this.taskRequest);
-                  this.presentToast(error.error.message);
+                  this.errorMessage(error.error.message);
                 });
             });
           loadingPage.dismiss();
@@ -276,13 +276,35 @@ export class RequestPage implements OnInit, OnDestroy {
     this.updateProgress();
   }
 
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
+
   async presentToast(message) {
-    await this.toastController.create({
-      message: message,
+    await this.toastCtrl.create({
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
@@ -342,7 +364,7 @@ export class RequestPage implements OnInit, OnDestroy {
         this.subPageTitle = 'Set Price';
         break;
     }
-    this.pageStack.push({pageTitle: this.subPageTitle, page: page});
+    this.pageStack.push({pageTitle: this.subPageTitle, page});
     this.subPage = page;
     this.backPage = this.pageStack[this.pageStack.length - 2].page;
   }
@@ -371,8 +393,7 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_one = (<FileReader>e.target).result;
-          this.taskRequest.image_one = (<FileReader>e.target).result.toString().split(',')[1];
+          this.taskImages.image_one = this.taskRequest.image_one = (e.target as FileReader).result;
         };
         reader.readAsDataURL(event.target.files[0]);
       }
@@ -381,8 +402,7 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_two = (<FileReader>e.target).result;
-          this.taskRequest.image_two = (<FileReader>e.target).result.toString().split(',')[1];
+          this.taskImages.image_two = this.taskRequest.image_two = (e.target as FileReader).result;
         };
         reader.readAsDataURL(event.target.files[1]);
       }
@@ -391,8 +411,7 @@ export class RequestPage implements OnInit, OnDestroy {
         const reader = new FileReader();
 
         reader.onload = (e: ProgressEvent) => {
-          this.taskImages.image_three = (<FileReader>e.target).result;
-          this.taskRequest.image_three = (<FileReader>e.target).result.toString().split(',')[1];
+          this.taskImages.image_three = this.taskRequest.image_three = (e.target as FileReader).result;
         };
         reader.readAsDataURL(event.target.files[2]);
       }

@@ -9,15 +9,14 @@ import {ToastController} from '@ionic/angular';
   styleUrls: ['./add-location.page.scss'],
 })
 export class AddLocationPage implements OnInit {
-  street;
-  city;
-  state;
-  zip;
-  constructor(private preferences: PreferencesService, private location: Location, private toastController: ToastController) { }
+  street: string;
+  city: string;
+  state: string;
+  zip: number;
 
-  ngOnInit() {
+  constructor(private preferences: PreferencesService, private location: Location, private toastCtrl: ToastController) { }
 
-  }
+  ngOnInit() {  }
 
   submitForm() {
     const body = {
@@ -26,18 +25,39 @@ export class AddLocationPage implements OnInit {
       state: this.state,
       zip: this.zip,
     };
-    this.preferences.addLocation(body).subscribe(res => {
-      this.presentToast(res.message);
+    this.preferences.addLocation(body).then(res => this.presentToast(res.message))
+      .catch(error => this.errorMessage(error.message));
+  }
+
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
     });
   }
 
   async presentToast(message) {
-    await this.toastController.create({
-      message: message,
+    await this.toastCtrl.create({
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

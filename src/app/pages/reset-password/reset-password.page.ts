@@ -26,7 +26,7 @@ export class ResetPasswordPage implements OnInit {
           old_password: this.old_password,
           new_password: this.new_password
         };
-        this.securityService.updatePassword(body).subscribe(res => {
+        this.securityService.updatePassword(body).then(res => {
           this.presentToast(res.message);
         }, error => {
           this.presentToast(error.error.message, 'danger');
@@ -39,11 +39,16 @@ export class ResetPasswordPage implements OnInit {
 
   async presentToast(message, color = 'dark') {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
-      color: color,
-      showCloseButton: true
+      color,
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

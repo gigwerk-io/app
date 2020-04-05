@@ -11,7 +11,7 @@
   <ion-header [ngClass]="!isModal ? 'animated slideInRight' : ''">
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button color="primary" icon="md-arrow-back"  mode="md" (click)="goBack()" defaultHref></ion-back-button>
+        <ion-back-button color="primary" icon="arrow-back"  mode="md" (click)="goBack()" defaultHref></ion-back-button>
       </ion-buttons>
       <ion-buttons slot="end">
         <ion-button class="nav-button" (click)="openSubPage('request-index')">
@@ -29,7 +29,7 @@
 <ion-content>
   <ng-container [ngSwitch]="subPage">
     <ion-list *ngSwitchCase="'request-index'" style="min-height: 100%;">
-      <ion-item href (click)="openSubPage('select-category')">
+      <ion-item (click)="openSubPage('select-category')">
         <ion-icon slot="start" name="cart"></ion-icon>
         <ion-label>Select Category</ion-label>
         <div slot="end" *ngIf="taskRequest.category_id">
@@ -39,7 +39,7 @@
         </div>
       </ion-item>
 
-      <ion-item href (click)="openSubPage('task-information')">
+      <ion-item (click)="openSubPage('task-information')">
         <ion-icon slot="start" mode="md" name="clipboard"></ion-icon>
         <ion-label>Task Information</ion-label>
         <div slot="end" *ngIf="taskRequest.description && taskRequest.date">
@@ -49,7 +49,7 @@
         </div>
       </ion-item>
 
-      <ion-item href (click)="openSubPage('location')">
+      <ion-item (click)="openSubPage('location')">
         <ion-icon slot="start" name="pin"></ion-icon>
         <ion-label>Location</ion-label>
         <div slot="end" *ngIf="taskRequest.street_address && taskRequest.city && taskRequest.state && taskRequest.zip">
@@ -59,7 +59,7 @@
         </div>
       </ion-item>
 
-      <ion-item href (click)="openSubPage('task-intensity')">
+      <ion-item (click)="openSubPage('task-intensity')">
         <ion-icon slot="start" mode="ios" name="hourglass"></ion-icon>
         <ion-label>Task Difficulty</ion-label>
         <div slot="end" *ngIf="taskRequest.intensity">
@@ -69,7 +69,7 @@
         </div>
       </ion-item>
 
-      <ion-item *ngIf="!isTaskEdit" href (click)="openSubPage('set-price')">
+      <ion-item *ngIf="!isTaskEdit" (click)="openSubPage('set-price')">
         <ion-icon slot="start" name="pricetag"></ion-icon>
         <ion-label>Set Your Price</ion-label>
         <div slot="end" *ngIf="taskRequest.price">
@@ -79,7 +79,7 @@
         </div>
       </ion-item>
 
-      <ion-item href *ngIf="!isTaskEdit" (click)="openSubPage('attach-images')">
+      <ion-item *ngIf="!isTaskEdit" (click)="openSubPage('attach-images')">
         <ion-icon slot="start" mode="md" name="images"></ion-icon>
         <ion-label>Attach Images (Optional)</ion-label>
         <div slot="end" *ngIf="taskImages.image_one">
@@ -119,7 +119,7 @@
 
     <div *ngSwitchCase="'task-information'" [ngClass]="(backPage == 'task-information') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
       <ion-list>
-        <ion-item padding-top margin-top>
+        <ion-item class="ion-padding-top ion-margin-top">
           <ion-textarea
             placeholder="Please Describe Your Job"
             (ionChange)="onTextboxChange()"
@@ -128,7 +128,7 @@
           ></ion-textarea>
         </ion-item>
 
-        <ion-item padding-top margin-top class="datetime-item">
+        <ion-item class="ion-padding-top ion-margin-top datetime-item">
           <ion-label position="stacked">
             Complete My Task By
           </ion-label>
@@ -155,10 +155,8 @@
 
     <div *ngSwitchCase="'location'" [ngClass]="(backPage == 'location') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
       <ion-list>
-        <div no-margin *ngIf="locations.length != 0">
-          <ion-list-header>
-            SAVED LOCATIONS
-          </ion-list-header>
+        <div class="ion-no-margin" *ngIf="locations.length != 0">
+          <h5 class="text-bold ion-padding-start">Saved Locations</h5>
           <ion-item *ngFor="let location of locations" (click)="presentActionSheet(location)">
             <ion-chip color="secondary" slot="end">Tap Here</ion-chip>
             <ion-label>
@@ -250,7 +248,7 @@
           <li><b>Medium</b> tasks take about 2 - 3 hours to complete.</li>
           <li><b>Hard</b> tasks take more than 3 hours to complete.</li>
         </ul>
-        <div text-center>
+        <div class="ion-text-center">
           <ion-button color="success"
                       [ngClass]="(taskRequest.intensity && taskRequest.intensity != 'Easy') ? 'inactive' : ''"
                       (click)="setDifficulty('Easy')">
@@ -288,8 +286,8 @@
     </div>
 
     <div *ngSwitchCase="'set-price'" [ngClass]="(backPage == 'set-price') ? 'animated faster slideInLeft' : 'animated faster slideInRight'">
-      <ion-list padding-top margin-top>
-        <ion-item padding-top margin-top class="input-item">
+      <ion-list class="ion-padding-top ion-margin-top">
+        <ion-item class="ion-padding-top ion-margin-top input-item">
           <ion-label position="stacked">
             Set Your Price
           </ion-label>
@@ -309,7 +307,7 @@
             <ion-icon name="logo-usd" color="primary" slot="start"></ion-icon>
           </ion-input>
         </ion-item>
-        <div text-center>
+        <div class="ion-text-center">
           <ion-note>
             <small>
               <b>Note:</b> jobs with an unreasonable price will likely receive no proposals and be ignored on the marketplace feed.
@@ -318,8 +316,8 @@
         </div>
       </ion-list>
 
-      <div text-center *ngIf="credit > 0">You have <div style="color: green;">{{credit | currency: 'USD'}}</div> in credit</div>
-      <h4 text-center>You will pay</h4>
+      <div class="ion-text-center" *ngIf="credit > 0">You have <div style="color: green;">{{credit | currency: 'USD'}}</div> in credit</div>
+      <h4 class="ion-text-center">You will pay</h4>
       <div class="price-proposal">
         <h1 *ngIf="credit == 0; else creditAndPrice">
           {{((taskRequest.price) ? taskRequest.price : 0) | currency:'USD'}}

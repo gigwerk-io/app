@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RequestPage} from '../request/request.page';
-import {LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {Storage} from '@ionic/storage';
@@ -8,6 +8,7 @@ import {StorageKeys} from '../../providers/constants';
 import {Router} from '@angular/router';
 import {Angulartics2GoogleAnalytics} from 'angulartics2/ga';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
+import {Events} from '../../utils/services/events';
 
 @Component({
   templateUrl: './tabs-page.html',
@@ -27,8 +28,10 @@ export class TabsPage implements OnInit {
               private pusher: PusherServiceProvider,
               private navCtrl: NavController,
               private toastController: ToastController,
+              private events: Events,
               private storage: Storage,
               private router: Router,
+              public routerOutlet: IonRouterOutlet,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     if (window.innerWidth >= 1025) {
       this.tabSlot = 'top';
@@ -52,7 +55,7 @@ export class TabsPage implements OnInit {
 
   getBadges() {
     setTimeout(() => {
-      this.notificationService.getBadgeCount().subscribe(res => {
+      this.notificationService.getBadgeCount().then(res => {
         this.notificationCount = res.notifications;
         this.friendCount = res.friends;
         // Listen To Pusher User Channel
@@ -78,19 +81,19 @@ export class TabsPage implements OnInit {
     this.storage.get(StorageKeys.CUSTOMER_TUTORIAL).then(res => {
       setTimeout(async () => {
         if (!res) {
-          const modal = await this.modalCtrl.create({
+          const customerTutorialModal = await this.modalCtrl.create({
             component: CustomerTutorialPage,
-            componentProps: {'isModal': true}
+            componentProps: {isModal: true}
           });
 
-          const loadingRequestPage = await this.loadingCtrl.create({
+          const loadingCustomerTutorialPage = await this.loadingCtrl.create({
             message: 'Please wait...',
             translucent: true
           });
 
-          await loadingRequestPage.present();
+          await loadingCustomerTutorialPage.present();
 
-          modal.onDidDismiss().then(async () => {
+          customerTutorialModal.onDidDismiss().then(async () => {
             const loadingMarketplacePage = await this.loadingCtrl.create({
               message: 'Please wait...',
               translucent: true
@@ -100,16 +103,49 @@ export class TabsPage implements OnInit {
             loadingMarketplacePage.dismiss();
           });
 
-          await modal.present()
-            .then(() => {
+          await customerTutorialModal.present()
+            .then(() => loadingCustomerTutorialPage.dismiss());
 
-              return loadingRequestPage.dismiss();
+          await customerTutorialModal.onDidDismiss()
+            .then(async () => {
+              const taskRequestModal = await this.modalCtrl.create({
+                component: RequestPage,
+                componentProps: {isModal: true},
+                swipeToClose: false,
+                presentingElement: this.routerOutlet.nativeEl
+              });
+
+              const loadingRequestPage = await this.loadingCtrl.create({
+                message: 'Please wait...',
+                translucent: true
+              });
+
+              await loadingRequestPage.present();
+
+              taskRequestModal.onDidDismiss().then(async () => {
+                const loadingMarketplacePage = await this.loadingCtrl.create({
+                  message: 'Please wait...',
+                  translucent: true
+                });
+
+                await loadingMarketplacePage.present();
+
+                // this.marketplaceService.getMainMarketplaceRequests('all')
+                //   .then(tasks => this.marketplaceTasks = tasks);
+                // this.marketplaceService.getMainMarketplaceRequests('me')
+                //   .then(tasks => this.marketplaceTasks = tasks);
+                loadingMarketplacePage.dismiss();
+              });
+
+              await taskRequestModal.present()
+                .then(() => loadingRequestPage.dismiss());
             });
-          await Promise.resolve(false);
         } else {
-          const modal = await this.modalCtrl.create({
+          const taskRequestModal = await this.modalCtrl.create({
             component: RequestPage,
-            componentProps: {'isModal': true}
+            componentProps: {isModal: true},
+            swipeToClose: false,
+            presentingElement: this.routerOutlet.nativeEl
           });
 
           const loadingRequestPage = await this.loadingCtrl.create({
@@ -119,7 +155,7 @@ export class TabsPage implements OnInit {
 
           await loadingRequestPage.present();
 
-          modal.onDidDismiss().then(async () => {
+          taskRequestModal.onDidDismiss().then(async () => {
             const loadingMarketplacePage = await this.loadingCtrl.create({
               message: 'Please wait...',
               translucent: true
@@ -134,11 +170,8 @@ export class TabsPage implements OnInit {
             loadingMarketplacePage.dismiss();
           });
 
-          await modal.present()
-            .then(() => {
-
-              return loadingRequestPage.dismiss();
-            });
+          await taskRequestModal.present()
+            .then(() => loadingRequestPage.dismiss());
         }
       }, 0);
     });
@@ -146,7 +179,7 @@ export class TabsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 4000,
       color: 'dark',
@@ -165,5 +198,9 @@ export class TabsPage implements OnInit {
 
   navigateToProfile() {
     this.navCtrl.navigateForward(`/app/profile/${this.profileId}`);
+  }
+
+  scrollToTop() {
+    this.events.publish('scroll-top-marketplace', true);
   }
 }

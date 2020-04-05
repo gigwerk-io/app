@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Past Payments</ion-title>
   </ion-toolbar>
@@ -9,11 +9,7 @@
 
 <ion-content>
   <ion-list class="ion-padding">
-    <ion-list-header>
-      PAST PAYMENTS
-    </ion-list-header>
-
-    <ion-item *ngFor="let payment of payments" href (click)="goToJob(payment.marketplace_id)" >
+    <ion-item *ngFor="let payment of payments" (click)="goToJob(payment.marketplace_id)" >
       <ion-note slot="end"><small>{{payment.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small></ion-note>
       <ion-label>
         <h2>${{payment.amount.toFixed(2)}}</h2>
@@ -22,9 +18,9 @@
     </ion-item>
 
     <ion-item  *ngIf="isNone">
-      <ion-label>
-       You have no payment history. :(
-      </ion-label>
+      <ion-note>
+       You have no payment history :(
+      </ion-note>
     </ion-item>
   </ion-list>
 </ion-content>

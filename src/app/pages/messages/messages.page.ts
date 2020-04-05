@@ -1,11 +1,12 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ChatService} from '../../utils/services/chat.service';
 import {Room} from '../../utils/interfaces/chat/room';
 import {StorageKeys} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
-import {ActionSheetController, Events, IonContent, IonTextarea} from '@ionic/angular';
+import {ActionSheetController, IonContent, IonTextarea} from '@ionic/angular';
+import {Subscription} from 'rxjs';
 
 
 @Component({
@@ -13,14 +14,14 @@ import {ActionSheetController, Events, IonContent, IonTextarea} from '@ionic/ang
   templateUrl: './messages.page.html',
   styleUrls: ['./messages.page.scss'],
 })
-export class MessagesPage implements OnInit {
+export class MessagesPage implements OnInit, OnDestroy {
   // @ts-ignore
   @ViewChild('chatDisplay') content: IonContent;
   // @ts-ignore
   @ViewChild('chatBox') textarea: IonTextarea;
 
   room: Room;
-  user_id: Number;
+  userId: number;
   messages: any; // TODO create types
   toUser: string;
   uuid: string;
@@ -29,6 +30,9 @@ export class MessagesPage implements OnInit {
   didScrollToBottomOnInit = false;
   rooms: Room[];
   noImage = false;
+  getChatRoomsSub: Subscription;
+  activatedRouteSub: Subscription;
+  footerHeight = '61px';
 
   constructor(private activatedRoute: ActivatedRoute,
               private chatService: ChatService,
@@ -41,14 +45,14 @@ export class MessagesPage implements OnInit {
 
   ngOnInit() {
     this.getRooms();
-    this.activatedRoute.paramMap.subscribe(data => {
+    this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       this.uuid = data.get('uuid');
       // Initial Messages
       this.getMessages();
     });
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
-        this.user_id = profile.user_id;
+        this.userId = profile.user_id;
       });
     window.addEventListener('keyboardDidShow', (event) => {
       // console.log('Keyboard opened');
@@ -56,29 +60,29 @@ export class MessagesPage implements OnInit {
     });
   }
 
-  ionViewDidLeave() {
+  ngOnDestroy() {
     window.removeEventListener('keyboardDidShow', () => {
       // console.log('page destroyed');
     });
+    this.activatedRouteSub.unsubscribe();
+    this.getChatRoomsSub.unsubscribe();
   }
 
   public getRooms() {
-    this.chatService.getChatRooms().subscribe(res => {
-      this.rooms = res;
-    });
+    this.chatService.getChatRooms().then(res => this.rooms = res);
   }
 
   getUserProfileImage(members?: Room[]) {
     if (members) {
       // tslint:disable-next-line
       for(let member of members) {
-        if (member.id !== this.user_id) {
+        if (member.id !== this.userId) {
           return member.profile.image;
         }
       }
     } else {
       for (const member of this.room.members) {
-        if (member.id !== this.user_id) {
+        if (member.id !== this.userId) {
           return member.profile.image;
         }
       }
@@ -88,7 +92,7 @@ export class MessagesPage implements OnInit {
   public getUserName(members) {
     // tslint:disable-next-line
     for(let member of members) {
-      if (member.id !== this.user_id) {
+      if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
     }
@@ -110,7 +114,7 @@ export class MessagesPage implements OnInit {
     const members = this.room.members;
     // tslint:disable-next-line
     for(let member of members) {
-      if (member.id !== this.user_id) {
+      if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
     }
@@ -119,14 +123,14 @@ export class MessagesPage implements OnInit {
   goToUserProfile() {
     const members = this.room.members;
     for (const member of members) {
-      if (member.id !== this.user_id) {
+      if (member.id !== this.userId) {
         this.router.navigate(['/app/profile', member.id]);
       }
     }
   }
 
   getMessages() {
-    this.chatService.getChatRoom(this.uuid).subscribe(res => {
+    this.getChatRoomsSub = this.chatService.getChatRoom(this.uuid).subscribe(res => {
       this.room = res;
       this.messages = this.room.messages;
       this.toUser = this.getToUser();
@@ -147,7 +151,7 @@ export class MessagesPage implements OnInit {
   }
 
   sendMessage() {
-    this.textarea.setFocus();
+    this.textarea.setFocus().then(() => this.footerHeight = 'inherit');
     this.sending = true;
     this.chatService.sendMessage(this.uuid, this.pendingMessage);
     this.pendingMessage = '';
@@ -188,5 +192,10 @@ export class MessagesPage implements OnInit {
     setTimeout(() => {
       event.target.complete();
     }, 2000);
+  }
+
+  setFooterHeight() {
+    console.log(this.footerHeight);
+    this.textarea.getInputElement().then(el => this.footerHeight = `${el.clientHeight + 5}px`);
   }
 }

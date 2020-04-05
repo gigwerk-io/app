@@ -1,17 +1,15 @@
 <favr-page-header
   pageTitle="Marketplace"
   [showSearchBar]="true"
-  [filterInputs]="filterInputs"
-  [filterDefault]="filterDefault"
-  (filterOption)="setFilterOption($event)"
+  [routerOutlet]="routerOutlet"
 >
 </favr-page-header>
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-segment (ionChange)="segmentChanged($event.target.value)" [(ngModel)]="segment">
-    <ion-segment-button checked value="all">
+  <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="segment">
+    <ion-segment-button value="all">
       <ion-label>Feed</ion-label>
     </ion-segment-button>
     <ion-segment-button value="me">

@@ -18,8 +18,7 @@ export class FinanceService {
 
 
   getFreelancerBalance() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -29,13 +28,11 @@ export class FinanceService {
           return this.httpClient.get<BalanceResponse>(`${API_ADDRESS}/balance`, authHeader)
             .toPromise()
             .then((res: BalanceResponse) => res);
-        })
-    );
+        });
   }
 
   getTransfers() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -45,13 +42,11 @@ export class FinanceService {
           return this.httpClient.get<PayoutsResponse>(`${API_ADDRESS}/transfers`, authHeader)
             .toPromise()
             .then((res: PayoutsResponse) => res);
-        })
-    );
+        });
   }
 
   saveCreditCard(body) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -61,8 +56,7 @@ export class FinanceService {
           return this.httpClient.post<CardSavedResponse>(`${API_ADDRESS}/customer/save`, body, authHeader)
             .toPromise()
             .then((res: CardSavedResponse) => res);
-        })
-    );
+        });
   }
 
   getPaymentInformation() {
@@ -80,8 +74,7 @@ export class FinanceService {
   }
 
   getPayments() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -91,13 +84,11 @@ export class FinanceService {
           return this.httpClient.get<PaymentsResponse>(`${API_ADDRESS}/payments`, authHeader)
             .toPromise()
             .then((res: PaymentsResponse) => res);
-        })
-    );
+        });
   }
 
   saveBankAccount() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -107,8 +98,7 @@ export class FinanceService {
           return this.httpClient.get<OAuthResponse>(`${API_ADDRESS}/stripe/oauth`, authHeader)
             .toPromise()
             .then((res: OAuthResponse) => res);
-        })
-    );
+        });
   }
 
   getCreditBalance() {
@@ -126,8 +116,7 @@ export class FinanceService {
   }
 
   redeemCredit(body) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -137,7 +126,6 @@ export class FinanceService {
           return this.httpClient.post<RedeemedCreditResponse>(`${API_ADDRESS}/redeem`, body, authHeader)
             .toPromise()
             .then((res: RedeemedCreditResponse) => res);
-        })
-    );
+        });
   }
 }

@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ChatPage } from './chat.page';
 import {MomentModule} from 'ngx-moment';
+import {CommonComponentsModule} from '../../utils/components/common-components.module';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    MomentModule
+    MomentModule,
+    CommonComponentsModule
   ],
   declarations: [ChatPage]
 })

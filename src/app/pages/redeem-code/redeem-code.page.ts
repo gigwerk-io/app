@@ -22,7 +22,7 @@ export class RedeemCodePage implements OnInit {
       this.presentAlert('Please fill out the code field.');
     } else {
       const body = {code: this.code};
-      this.financeService.redeemCredit(body).subscribe(res => {
+      this.financeService.redeemCredit(body).then(res => {
         this.presentToast(res.message);
       }, error => {
         this.presentAlert(error.error.message);
@@ -32,11 +32,16 @@ export class RedeemCodePage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
@@ -45,7 +50,7 @@ export class RedeemCodePage implements OnInit {
   async presentAlert(message) {
     const alert = await this.alertController.create({
       header: 'Error',
-      message: message,
+      message,
       buttons: ['OK']
     });
 

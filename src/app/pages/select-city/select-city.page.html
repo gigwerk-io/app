@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Select Your City</ion-title>
   </ion-toolbar>
@@ -9,18 +9,15 @@
 
 <ion-content>
   <ion-list>
-    <ion-card *ngFor="let city of cities" style="border-radius: 2rem!important;">
-      <ion-item style="padding-right: 0!important;">
-        <h2>
-          {{city.city}}, {{city.state}}
-        </h2>
-      </ion-item>
+    <ion-card *ngFor="let city of cities">
 
-      <ion-slides>
-        <ion-slide style="max-height: 200px;overflow-y: hidden;overflow-x: hidden;">
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="assets/img/{{city.image}}">
-        </ion-slide>
-      </ion-slides>
+      <img src="assets/img/{{city.image}}" alt="{{city.city}}">
+
+      <ion-card-header>
+        <ion-card-title>
+          <h3 class="text-bold">{{city.city}}, {{city.state}}</h3>
+        </ion-card-title>
+      </ion-card-header>
 
       <ion-card-content>
         <p>{{city.description}}</p>

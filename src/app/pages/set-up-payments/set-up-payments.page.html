@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/manage-cards"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/manage-cards"></ion-back-button>
     </ion-buttons>
     <ion-title>Set Up Payments</ion-title>
   </ion-toolbar>
@@ -9,12 +9,8 @@
 
 
 <ion-content>
-  <form #paymentForm="ngForm" (ngSubmit)="onSubmit(paymentForm)" [formGroup]="form" novalidate>
-    <ion-list class="ion-padding">
-      <ion-list-header>
-        ADD PAYMENT METHOD
-      </ion-list-header>
-
+  <form #paymentForm ngForm="ngForm" (ngSubmit)="onSubmit(paymentForm)" [formGroup]="form" novalidate>
+    <ion-list class="ion-padding-top">
       <ion-item>
         <ion-label position="stacked">Card Number<ion-text color="danger">*</ion-text></ion-label>
         <ion-input id="cc-number" formControlName="creditCard" type="tel" autocomplete="cc-number" ccNumber [maxlength]="19" class="ion-input" required></ion-input>
@@ -30,8 +26,8 @@
         <ion-input id="cc-cvc"  formControlName="cvc" type="tel" [maxlength]="3" autocomplete="off" ccCvc required></ion-input>
       </ion-item>
 
-      <div class="ion-padding-top form-submit-button">
-        <ion-button expand="block" type="submit" class="ion-no-margin">Submit</ion-button>
+      <div class="ion-padding form-submit-button">
+        <ion-button expand="block" type="submit" class="ion-no-margin" [disabled]="!form.valid">Submit</ion-button>
       </div>
 
     </ion-list>

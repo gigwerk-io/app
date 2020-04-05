@@ -19,7 +19,7 @@ export class PastPaymentsPage implements OnInit {
   }
 
   getPayments() {
-    this.financeService.getPayments().subscribe(res => {
+    this.financeService.getPayments().then(res => {
       this.payments = res.payments;
       if (res.payments.length === 0) {
         this.isNone = true;
@@ -33,11 +33,16 @@ export class PastPaymentsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

@@ -1,33 +1,64 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title> Recent Conversations</ion-title>
+    <ion-buttons class="mobile-only" slot="end">
+      <ion-button class="nav-button" (click)="openSearchModal()">
+        <ion-icon name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen>
+<ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list>
-    <ion-item *ngFor="let room of rooms" (click)="goToChatRoom(room.pusher_id)">
-      <ion-avatar slot="start">
-        <ion-img *ngIf="!noImage; else defaultProfileImage" src="{{getUserProfileImage(room.members)}}" (ionError)="noImage = true" alt="Profile image"></ion-img>
-        <ng-template #defaultProfileImage>
-          <ion-img src="./assets/img/user.png" alt="Profile image"></ion-img>
-        </ng-template>
-      </ion-avatar>
-      <ion-label>
-        <h2>{{getUserName(room.members)}}</h2>
-        <p>{{getLastMessage(room)}}</p>
-      </ion-label>
-      <ion-note>
-        <small> {{room.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
-      </ion-note>
-      <ion-badge color="primary" slot="end" *ngIf="room.unread > 0">{{room.unread}}</ion-badge>
-    </ion-item>
+  <ng-container *ngIf="rooms; else skeletonRooms">
+    <ion-list *ngIf="rooms.length > 0; else noRooms">
+      <ion-item *ngFor="let room of rooms" (click)="goToChatRoom(room.pusher_id)">
+        <ion-avatar slot="start">
+          <favr-img [src]="getUserProfileImage(room.members)"
+                    spinnerSrc="assets/img/user.png"
+                    imgClass="rounded-circle"
+                    loaderClass="rounded-circle"
+                    alt="Profile image"></favr-img>
+        </ion-avatar>
+        <ion-label>
+          <h3>{{getUserName(room.members)}}</h3>
+          <p>{{getLastMessage(room)}}</p>
+        </ion-label>
+        <ion-note slot="end">
+          <small>{{room.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
+        </ion-note>
+        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
+        <ion-badge color="primary" slot="end" *ngIf="room.unread > 0">{{room.unread}}</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ng-template #noRooms>
+      <ion-title>
+        <ion-note>No chats open.</ion-note>
+      </ion-title>
+    </ng-template>
+  </ng-container>
 
-  </ion-list>
+  <ng-template #skeletonRooms>
+    <ion-list>
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h3>
+            <ion-skeleton-text animated style="width: 70%;"></ion-skeleton-text>
+          </h3>
+          <p>
+            <ion-skeleton-text animated style="width: 60%"></ion-skeleton-text>
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
 </ion-content>

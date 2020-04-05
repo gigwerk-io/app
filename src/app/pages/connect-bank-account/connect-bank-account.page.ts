@@ -13,12 +13,13 @@ export class ConnectBankAccountPage implements OnInit {
   constructor(private financeService: FinanceService, private iab: InAppBrowser, private platform: Platform) { }
 
   ngOnInit() {
-    this.financeService.saveBankAccount().subscribe(res => {
+    this.financeService.saveBankAccount().then(res => {
       // const browser = this.iab.create(res.url);
       if (this.platform.is('desktop')) {
         window.open(res.url);
       } else {
-        this.iab.create(res.url);
+        const browser = this.iab.create(res.url);
+        browser.show();
       }
     });
   }

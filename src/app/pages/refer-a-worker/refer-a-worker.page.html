@@ -1,13 +1,13 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Refer a Worker</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="ion-padding">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -15,7 +15,7 @@
   <ion-list margin-top padding-top>
 
     <div style="text-align: center;">
-      <img src="../../../assets/img/bank.png" height="128" width="128" alt="Earn money">
+      <img src="assets/img/bank.png" height="128" width="128" alt="Earn money">
     </div>
     <h2>
       <ion-card-subtitle>Invite Friends</ion-card-subtitle>

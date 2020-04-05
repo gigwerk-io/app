@@ -1,5 +1,13 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActionSheetController, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {
+  ActionSheetController,
+  AlertController,
+  IonRouterOutlet,
+  LoadingController,
+  ModalController,
+  NavController,
+  ToastController
+} from '@ionic/angular';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -7,7 +15,7 @@ import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Storage} from '@ionic/storage';
 import {Role, StorageKeys, TaskActions, TaskStatus} from '../../providers/constants';
 import {ChatService} from '../../utils/services/chat.service';
-import {Events} from '@ionic/angular';
+import {Events} from '../../utils/services/events';
 import {CompleteTaskPage} from '../complete-task/complete-task.page';
 import {LaunchNavigator, LaunchNavigatorOptions} from '@ionic-native/launch-navigator/ngx';
 import {ReportPage} from '../report/report.page';
@@ -15,12 +23,14 @@ import {FavrDataService} from '../../utils/services/favr-data.service';
 import {RequestPage} from '../request/request.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'marketplace-detail',
   templateUrl: './marketplace-detail.page.html',
   styleUrls: ['./marketplace-detail.page.scss'],
-  providers: [PhotoViewer, LaunchNavigator]
+  providers: [PhotoViewer, LaunchNavigator, IonRouterOutlet]
 })
 export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
@@ -31,9 +41,10 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   isOwner: boolean;
   isFreelancer: boolean;
   userRole: string;
-  Categories;
+  Categories: MainCategory[];
   TaskStatus = TaskStatus;
   credit: number;
+  activatedRouteSub: Subscription;
 
   constructor(private modalCtrl: ModalController,
               private loadingCtrl: LoadingController,
@@ -45,13 +56,15 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private marketplaceService: MarketplaceService,
               private actionSheetCtrl: ActionSheetController,
+              private alertCtrl: AlertController,
               private chatService: ChatService,
               private events: Events,
               private launchNavigator: LaunchNavigator,
               private favrService: FavrDataService,
               private financeService: FinanceService,
-              private geolocation: Geolocation) {
-    this.favrService.getCategories().subscribe(res => {
+              private geolocation: Geolocation,
+              public routerOutlet: IonRouterOutlet) {
+    this.favrService.getCategories().then(res => {
       this.Categories = res.categories;
     });
     this.events.subscribe('task-action', (action) => {
@@ -76,8 +89,13 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
 
+  ngOnDestroy() {
+    this.activatedRouteSub.unsubscribe();
+    this.events.unsubscribe('task-action');
+  }
+
   public getJobDetails(coords?: any) {
-    this.activatedRoute.paramMap.subscribe(data => {
+    this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       this.taskID = parseInt(data.get('id'), 10);
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID, coords)
         .then((task: MainMarketplaceTask) => {
@@ -95,10 +113,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
             });
         });
     });
-  }
-
-  ngOnDestroy(): void {
-    this.events.unsubscribe('task-action');
   }
 
   getCreditBalance() {
@@ -122,10 +136,12 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
           setTimeout(async () => {
             const reportUserModal = await this.modalCtrl.create({
               component: ReportPage,
-              componentProps: {type: 'Task', extra: this.mainMarketplaceTask}
+              componentProps: {type: 'Task', extra: this.mainMarketplaceTask},
+              swipeToClose: true,
+              presentingElement: this.routerOutlet.nativeEl
             });
 
-            reportUserModal.present();
+            await reportUserModal.present();
           }, 0);
         }
       }, {
@@ -141,11 +157,16 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
       this.marketplaceService.getSingleMainMarketplaceRequest(this.mainMarketplaceTask.id)
@@ -159,9 +180,11 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).subscribe(res => {
-      this.router.navigate(['/app/room', res.id]);
-    }, error => {
+    this.chatService.startChat(username)
+      .then(res => {
+        this.router.navigate(['/app/room', res.id]);
+      })
+      .catch(error => {
       this.presentToast(error.error.message);
     });
   }
@@ -193,10 +216,34 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async completeTask(isFreelancer: boolean) {
     const modal = await this.modalCtrl.create({
       component: CompleteTaskPage,
-      componentProps: {'taskID': this.mainMarketplaceTask.id, 'isFreelancer': isFreelancer},
+      componentProps: {taskID: this.mainMarketplaceTask.id, isFreelancer},
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl
     });
 
-    modal.present();
+    await modal.present();
+  }
+
+  async alertConfirmCustomerCancel() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      // tslint:disable-next-line:max-line-length
+      message: 'You are about to <strong>cancel</strong> this request. Your request <strong>will be DELETED</strong>.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.customerCancelTask();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async customerCancelTask() {
@@ -262,7 +309,9 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async editTaskRequest(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
-      componentProps: {'isModal': true}
+      componentProps: {isModal: true},
+      swipeToClose: false,
+      presentingElement: this.routerOutlet.nativeEl
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({
@@ -295,9 +344,9 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
       + this.mainMarketplaceTask.locations[0].state + ', '
       + this.mainMarketplaceTask.locations[0].zip;
 
-    const options: LaunchNavigatorOptions = {};
+   const options: LaunchNavigatorOptions = {};
 
-    this.launchNavigator.navigate(locationAddress, options)
+   this.launchNavigator.navigate(locationAddress, options)
       .then(success => {})
       .catch(error => window.open('https://maps.google.com/?q=' + locationAddress));
   }

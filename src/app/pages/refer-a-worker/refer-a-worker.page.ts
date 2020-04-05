@@ -28,8 +28,7 @@ export class ReferAWorkerPage implements OnInit {
   }
 
   getSteps() {
-    this.referralService.getStepsToReferWorkers()
-      .toPromise().then(res => this.remainingSteps = res.steps);
+    this.referralService.getStepsToReferWorkers().then(res => this.remainingSteps = res.steps);
   }
 
   shareReferral() {
@@ -62,18 +61,22 @@ export class ReferAWorkerPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'bottom',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => toast.present());
   }
 
   async doRefresh(event?: any) {
     setTimeout(() => {
-      this.referralService.getStepsToReferWorkers()
-        .toPromise().then(res => this.remainingSteps = res.steps);
+      this.referralService.getStepsToReferWorkers().then(res => this.remainingSteps = res.steps);
       this.changeRef.detectChanges();
       if (event) {
         if (event.target) {

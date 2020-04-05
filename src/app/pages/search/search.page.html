@@ -13,7 +13,7 @@
       </ion-searchbar>
     </form>
     <ion-buttons slot="end">
-      <ion-button (click)="closeSearchPage()">
+      <ion-button class="ion-padding-top" (click)="closeSearchPage()">
         Cancel
       </ion-button>
     </ion-buttons>
@@ -22,20 +22,24 @@
 
 <ion-content>
   <ion-list *ngIf="users; else noSearch">
-    <ion-item href *ngFor="let user of users; let i = index;" [attr.data-index]="i" (click)="goToUserProfile(user.id)">
+    <ion-item *ngFor="let user of users; let i = index;" [attr.data-index]="i" (click)="isChat ? goToChatRoom(user): goToUserProfile(user.id)">
+      <ion-avatar slot="start">
+        <favr-img [src]="user.profile.image" spinnerSrc="assets/img/user.png" imgClass="rounded-circle" loaderClass="rounded-circle"></favr-img>
+      </ion-avatar>
       <ion-label>
         {{user.name}}
         <br>
         <ion-note>@{{user.username}}</ion-note>
       </ion-label>
+      <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
     </ion-item>
   </ion-list>
   <ng-template #noSearch>
-    <ion-title>
-      <img src="../../../assets/img/binoculars.png" alt="No users found.">
+    <ion-title class="ion-margin-top ion-text-center">
+      <img src="assets/img/binoculars.png" alt="Search users." style="max-width: 75%">
     </ion-title>
   </ng-template>
-  <ion-title *ngIf="query_length == 0 && query_length != undefined">
+  <ion-title *ngIf="queryLength == 0 && queryLength != undefined">
     <ion-note class="ion-text-center">No users found.</ion-note>
   </ion-title>
 </ion-content>

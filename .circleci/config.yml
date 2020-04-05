@@ -14,11 +14,6 @@ aliases:
       name: Install Python Pip
       command: sudo apt-get update; sudo apt install python-pip; python --version; pip --version;
 
-#  - $install-aws
-#      name: Install AWS Cli
-#      command: pip install awscli; awscli --version;
-
-
   - &restore-cache-src
       key: dependency-cache-{{ checksum "package.json" }}
 
@@ -39,12 +34,9 @@ jobs:
       - checkout
       - restore_cache: *restore-cache-src
       - run: npm install
-      - run: sudo npm install -g ionic cordova
+      - run: sudo npm install -g @ionic/cli cordova
       - run: ionic -v
-      - run: ionic cordova platform add browser
-      - run: ionic cordova build browser --prod
-      - run: cd platforms/browser
-      - run: ls -l
+      - run: ionic build --prod
       - save_cache: *save-cache-src
 #      - run: npm run lint
 #      - run: npm run build --prodK
@@ -54,7 +46,7 @@ jobs:
             - "*"
       - persist_to_workspace:
           root: .
-          paths: platforms/browser/www
+          paths: www/
   test:
     <<: *defaults
     steps:
@@ -72,7 +64,7 @@ jobs:
       - run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
       - run: aws configure set aws_secret_access_key $AWS_ACCESS_KEY_ID
       - run: aws configure set region $AWS_DEFAULT_REGION
-      - run: aws s3 sync platforms/browser/www s3://favr-ionic-staging
+      - run: aws s3 sync www/ s3://favr-ionic-staging
   production-deployment:
     <<: *defaults
     steps:
@@ -83,7 +75,7 @@ jobs:
       - run: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
       - run: aws configure set aws_secret_access_key $AWS_ACCESS_KEY_ID
       - run: aws configure set region $AWS_DEFAULT_REGION
-      - run: aws s3 sync platforms/browser/www s3://favr-pwa
+      - run: aws s3 sync www/ s3://favr-pwa
 workflows:
   version: 2
   build-and-deploy:

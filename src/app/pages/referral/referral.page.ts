@@ -30,8 +30,8 @@ export class ReferralPage implements OnInit {
   }
 
   public getReferralProfile() {
-    this.activatedRoute.params.subscribe(param => {
-      this.referralService.getReferralProfile(param.username).subscribe(res => {
+    this.activatedRoute.params.toPromise().then(param => {
+      this.referralService.getReferralProfile(param.username).then(res => {
         this.name = res.data.name;
         this.location = res.data.city.city + ', ' + res.data.city.state;
         this.image = res.data.profile.image;
@@ -47,18 +47,23 @@ export class ReferralPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => toast.present());
   }
 
   public submitReferral(form: NgForm) {
     this.submitted = true;
     if (form.valid) {
-      this.referralService.submitWorkerReferral(this.newReferral, this.username).subscribe(res => {
+      this.referralService.submitWorkerReferral(this.newReferral, this.username).then(res => {
         this.presentToast(res.message);
         this.router.navigateByUrl('welcome');
       });

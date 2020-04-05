@@ -21,8 +21,7 @@ export class ReferralService {
   }
 
   public getStepsToReferWorkers() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -32,13 +31,11 @@ export class ReferralService {
           return this.httpClient.get<ReferralStepsResponse>(`${API_ADDRESS}/remaining-steps`, authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 
   public getReferralProfile(username) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -48,13 +45,11 @@ export class ReferralService {
           return this.httpClient.get<ReferralProfileResponse>(`${API_ADDRESS}/referral/${username}`, authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 
   public getCustomerReferralProfile(username) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -64,39 +59,34 @@ export class ReferralService {
           return this.httpClient.get<ReferralProfileResponse>(`${API_ADDRESS}/customer-referral/${username}`, authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 
-  public submitWorkerReferral(body, affiliate_username) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public submitWorkerReferral(body, affiliateUsername) {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
               Authorization: (token) ? token : ''
             }
           };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/referral/${affiliate_username}`, body , authHeader)
+          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/referral/${affiliateUsername}`, body , authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 
-  public submitCustomerReferral(body, affiliate_username) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public submitCustomerReferral(body, affiliateUsername) {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
               Authorization: (token) ? token : ''
             }
           };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/customer-referral/${affiliate_username}`, body , authHeader)
+          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/customer-referral/${affiliateUsername}`, body , authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 }

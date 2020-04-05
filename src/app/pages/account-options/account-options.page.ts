@@ -25,16 +25,13 @@ export class AccountOptionsPage implements OnInit {
       message: 'Are you sure you want to deactivate your account?',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'No',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-
-          }
+          cssClass: 'secondary'
         }, {
           text: 'Yes',
           handler: () => {
-            this.securityService.deactivateAccount().subscribe(res => {
+            this.securityService.deactivateAccount().then(res => {
               this.storage.clear();
               this.presentToast(res.message);
               this.router.navigateByUrl('welcome');
@@ -53,16 +50,13 @@ export class AccountOptionsPage implements OnInit {
       message: 'Are you sure you want to delete your account?',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'No',
           role: 'cancel',
-          cssClass: 'secondary',
-          handler: (blah) => {
-            // console.log('Confirm Cancel: blah');
-          }
+          cssClass: 'secondary'
         }, {
           text: 'Yes',
           handler: () => {
-            this.securityService.deleteAccount().subscribe(res => {
+            this.securityService.deleteAccount().then(res => {
               this.storage.clear();
               this.presentToast(res.message);
               this.router.navigateByUrl('welcome');
@@ -77,11 +71,16 @@ export class AccountOptionsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

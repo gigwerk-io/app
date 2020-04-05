@@ -9,11 +9,13 @@ import {FavrCategoryCardButtonsComponent} from './favr-category-card-buttons/fav
 import {MomentModule} from 'ngx-moment';
 import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
 import {ImagePreloaderDirective} from '../directives/image-preloader.directive';
+import {FavrImgComponent} from './favr-img/favr-img.component';
 
 const COMPONENTS = [
   FavrCategoryCardButtonsComponent,
   FavrMarketplaceCardComponent,
   FavrPageHeaderComponent,
+  FavrImgComponent,
   ImagePreloaderDirective,
 ];
 

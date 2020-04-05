@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="profile">
       {{profile.user.user.first_name}} {{profile.user.user.last_name}}
@@ -13,7 +13,7 @@
       </ion-button>
       <ion-button (click)="presentActionSheet()"
                   class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end" *ngIf="isOwner">
@@ -24,7 +24,7 @@
       </ion-button>
       <ion-button (click)="presentOwnerActionSheet()"
                   class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -35,7 +35,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-list style="margin-bottom: unset;">
-    <ion-toolbar padding-top class="web-only">
+    <ion-toolbar class="ion-padding-top web-only">
       <ion-buttons slot="end" *ngIf="!isOwner" >
         <ion-button (click)="startChat(profile.user.user.username)"
                     class="nav-button">
@@ -43,7 +43,7 @@
         </ion-button>
         <ion-button (click)="presentActionSheet()"
                     class="nav-button">
-          <ion-icon name="more"></ion-icon>
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end" *ngIf="isOwner">
@@ -54,22 +54,24 @@
         </ion-button>
         <ion-button (click)="presentOwnerActionSheet()"
                     class="nav-button">
-          <ion-icon name="more"></ion-icon>
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
         </ion-button>
       </ion-buttons>
     </ion-toolbar>
-    <div text-center padding-top>
-      <div margin-bottom class="img-container">
-        <ion-img [src]="(profile.user.image) ? profile.user.image : './assets/img/user.png'"
+    <div class="ion-text-center ion-padding-top">
+      <div class="ion-margin-bottom img-container">
+        <favr-img [src]="profile.user.image"
+                  spinnerSrc="assets/img/user.png"
+                  imgClass="rounded-circle"
+                  loaderClass="rounded-circle"
                  (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
-                 (ionError)="profile.user.image = undefined"
-                 alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></ion-img>
+                 alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></favr-img>
       </div>
       <ion-note>
         @{{profile.user.user.username}}
         <ion-img *ngIf="profile.user.user.role == Role.VERIFIED_FREELANCER"
              class="badge"
-             src="../../../assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
+             src="assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
       </ion-note>
       <p>
         <ion-chip [color]="status.class">
@@ -83,11 +85,11 @@
       </span>
       </ng-template>
 
-      <div padding-bottom *ngIf="rating">
+      <div class="ion-padding-bottom" *ngIf="rating">
         <ngb-rating [(rate)]="rating" [starTemplate]="star" [readonly]="true" max="5"></ngb-rating>
       </div>
     </div>
-    <div text-center>
+    <div class="ion-text-center">
       <section *ngIf="!isOwner">
         <ion-button *ngIf="showFriendButton" size="small" style="font-size: 16px;" [disabled]="friendButton.disable" (click)="handleFriendButtonClick()">
           <ion-icon slot="start" mode="md" [name]="friendButton.class"></ion-icon>
@@ -111,7 +113,7 @@
   </ion-toolbar>
   <ng-container [ngSwitch]="taskFeed">
     <ng-container *ngSwitchCase="'customer'">
-      <ng-container text-center *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
+      <ng-container class="ion-text-center" *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
         <ion-title color="medium" class="no-tasks">
           No Tasks To Display
         </ion-title>
@@ -125,7 +127,7 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'freelancer'">
-      <ng-container text-center *ngIf="profile.user.past_jobs.length === 0; else tasks">
+      <ng-container class="ion-text-center" *ngIf="profile.user.past_jobs.length === 0; else tasks">
         <ion-title color="medium" class="no-tasks">
           No Past Jobs To Display
         </ion-title>

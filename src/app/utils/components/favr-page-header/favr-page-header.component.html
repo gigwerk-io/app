@@ -11,7 +11,7 @@
   <ion-toolbar *ngIf="showBackButton"
                class="mobile-only">
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 
@@ -20,7 +20,7 @@
       <ion-col *ngIf="pageTitle" class="page-title-area">
         <h2 class="page-title">
           <ng-container *ngIf="pageTitle === 'Marketplace'; else title">
-            <img src="./assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
+            <img src="assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
           </ng-container>
           <ng-template #title>
             {{pageTitle}}
@@ -31,9 +31,15 @@
         <ion-buttons class="page-header-buttons mobile-only">
           <ion-button *ngIf="showProfile"
                       (click)="navigateToProfile()" routerDirection="forward"
-                      class="mobile-only">
+                      class="nav-button">
             <ion-avatar class="page-title-header-profile">
-              <ion-img [src]="profileImage ? profileImage : '../../../../assets/img/user.png'" alt="profile picture" (ionError)="profileImage = undefined"></ion-img>
+              <favr-img [src]="profileImage"
+                        spinnerSrc="assets/img/user.png"
+                        imgClass="rounded-circle"
+                        loaderClass="rounded-circle"
+                        class="page-title-header-profile"
+                        alt="profile picture">
+              </favr-img>
             </ion-avatar>
           </ion-button>
 
@@ -54,16 +60,9 @@
                       class="nav-button">
             <ion-icon name="chatbubbles"></ion-icon>
           </ion-button>
-
-          <!--<ion-button (click)="presentFilterOptions()"-->
-                      <!--*ngIf="pageTitle == 'Marketplace'"-->
-                      <!--class="nav-button">-->
-            <!--<ion-icon name="funnel" size="medium"></ion-icon>-->
-          <!--</ion-button>-->
         </ion-buttons>
       </ion-col>
     </ion-row>
     <ion-progress-bar *ngIf="progress" [value]="progress" [ngClass]="progress == 1 ? 'green-progress' : ''"></ion-progress-bar>
-    <!--<ion-searchbar *ngIf="showSearchBar" class="web-only" (keyup.enter)="onKeyEnter($event)" placeholder="Search"></ion-searchbar>-->
   </ion-toolbar>
 </ion-header>

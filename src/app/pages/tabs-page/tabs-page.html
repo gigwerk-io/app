@@ -1,13 +1,13 @@
 <ion-tabs>
   <ion-tab-bar *ngIf="tabSlot === 'bottom'" slot="bottom">
 
-    <ion-tab-button tab="marketplace">
-      <ion-icon mode="md" name="home"></ion-icon>
+    <ion-tab-button tab="marketplace" (click)="scrollToTop()">
+      <ion-icon name="basket"></ion-icon>
       <ion-label>Marketplace</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="friends">
-      <ion-icon name="contacts"></ion-icon>
+      <ion-icon name="people-circle"></ion-icon>
       <ion-label>Friends</ion-label>
       <ion-badge *ngIf="friendCount > 0" color="danger">{{friendCount}}</ion-badge>
     </ion-tab-button>

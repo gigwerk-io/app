@@ -10,11 +10,10 @@ import {ActionSheetController, ToastController} from '@ionic/angular';
 })
 export class SavedLocationsPage implements OnInit {
 
-  locations: LocationAddress[];
+  locations: LocationAddress[] = [];
   constructor(private preferences: PreferencesService,
               public actionSheetCtrl: ActionSheetController,
-              private toastCtrl: ToastController,
-              private changeRef: ChangeDetectorRef) { }
+              private toastCtrl: ToastController) { }
 
   ngOnInit() {
     this.getLocations();
@@ -27,7 +26,7 @@ export class SavedLocationsPage implements OnInit {
         text: 'Make Default',
         icon: 'checkmark',
         handler: () => {
-          this.preferences.makeDefaultLocation(id).subscribe(res => {
+          this.preferences.makeDefaultLocation(id).then(res => {
             this.getLocations();
             this.presentToast(res.message);
           });
@@ -37,7 +36,7 @@ export class SavedLocationsPage implements OnInit {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.preferences.deleteLocation(id).subscribe(res => {
+          this.preferences.deleteLocation(id).then(res => {
             this.getLocations();
             this.presentToast(res.message);
           });
@@ -53,21 +52,23 @@ export class SavedLocationsPage implements OnInit {
 
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
   }
 
   getLocations() {
-    this.preferences.getMyLocations().subscribe(res => {
-      this.locations = res.locations;
-      // console.log(this.locations);
-    });
+    this.preferences.getMyLocations().then(res => this.locations = res.locations );
   }
 
   async doRefresh(event?) {

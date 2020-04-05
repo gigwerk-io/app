@@ -8,6 +8,7 @@ import {FriendProposals} from './friend-marketplace/friend-proposals';
 export interface User {
   id?: number;
   username?: string;
+  name?: string;
   role?: string;
   first_name?: string;
   last_name?: string;

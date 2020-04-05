@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="md-arrow-back" mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back" mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title>Task Details</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="presentActionSheet()"
                   class="nav-button">
-        <ion-icon name="more"></ion-icon>
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -20,23 +20,26 @@
   <ion-list *ngIf="mainMarketplaceTask; else skeletonList">
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 1')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_one">
-        <ion-img [appImagePreloader]="mainMarketplaceTask.image_one" alt="Task image one"></ion-img>
+        <favr-img [src]="mainMarketplaceTask.image_one" alt="Task image one"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_two, 'Image 2')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_two">
-        <ion-img [appImagePreloader]="mainMarketplaceTask.image_two" alt="Task image two"></ion-img>
+        <favr-img [src]="mainMarketplaceTask.image_two" alt="Task image two"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 3')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_three">
-        <ion-img [appImagePreloader]="mainMarketplaceTask.image_three" alt="Task image three"></ion-img>
+        <favr-img [src]="mainMarketplaceTask.image_three" alt="Task image three"></favr-img>
       </ion-slide>
     </ion-slides>
 
     <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{mainMarketplaceTask.customer.id}}">
       <ion-avatar slot="start">
-        <ion-img
-          [src]="mainMarketplaceTask.customer.profile.image ? mainMarketplaceTask.customer.profile.image : './assets/img/user.png'"
-          (ionError)="mainMarketplaceTask.customer.profile.image = undefined" alt="profile picture"></ion-img>
+        <favr-img
+          [src]="mainMarketplaceTask.customer.profile.image"
+          spinnerSrc="assets/img/user.png"
+          imgClass="rounded-circle"
+          loaderClass="rounded-circle"
+          alt="profile picture"></favr-img>
       </ion-avatar>
       {{mainMarketplaceTask.customer.first_name}} {{mainMarketplaceTask.customer.last_name}}
       <div slot="end">
@@ -64,7 +67,7 @@
           </ion-note>
         </small>
       </div>
-      <div slot="end" class="marketplace-card-distance-away">
+      <small slot="end" class="marketplace-card-distance-away">
         <ion-note *ngIf="mainMarketplaceTask.distance_away != undefined
                         && ((mainMarketplaceTask.status != TaskStatus.COMPLETE
                         && (isOwner || isFreelancer))
@@ -74,10 +77,10 @@
         <small *ngIf="mainMarketplaceTask.status == TaskStatus.COMPLETE">
           <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
         </small>
-      </div>
+      </small>
     </ion-item>
 
-    <ion-grid padding-start padding-end>
+    <ion-grid class="ion-padding-start ion-padding-end">
 
       <ng-container *ngIf="mainMarketplaceTask.proposals">
         <ion-row
@@ -85,12 +88,16 @@
           routerLink="/app/profile/{{mainMarketplaceTask.proposals[0].user_id}}" routerDirection="forward">
           <ion-col size="3">
             <ion-avatar>
-              <img
-                [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : '../../../assets/img/user.png'"
+              <favr-img
+                [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : 'assets/img/user.png'"
+                spinnerSrc="assets/img/user.png"
+                imgClass="rounded-circle"
+                loaderClass="rounded-circle"
                 alt="profile picture">
+              </favr-img>
             </ion-avatar>
           </ion-col>
-          <ion-col size="9" padding-top>
+          <ion-col size="9" class="ion-padding-top">
             <ng-container *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE; else proposedBy">
               <b>Completed By:</b>
               <br>
@@ -133,7 +140,7 @@
                       size="small"
                       color="primary"
                       (click)="startChat(mainMarketplaceTask.customer.username)">
-            <ion-icon name="chatbubbles" slot="start"></ion-icon>
+            <ion-icon name="chatbubble" slot="start"></ion-icon>
             Contact
           </ion-button>
         </ion-col>
@@ -143,7 +150,7 @@
                       fill="outline"
                       size="small"
                       color="primary">
-            <ion-icon mode="md" name="hand" slot="start"></ion-icon>
+            <ion-icon mode="md" name="hand-right" slot="start"></ion-icon>
             Arrive
           </ion-button>
         </ion-col>
@@ -190,7 +197,7 @@
         </ion-col>
 
         <ion-col *ngIf="mainMarketplaceTask.action === 1 || mainMarketplaceTask.action === 7" class="ion-text-center">
-          <ion-button (click)="customerCancelTask()"
+          <ion-button (click)="alertConfirmCustomerCancel()"
                       fill="outline" size="small" color="primary">
             <ion-icon name="close" mode="md" slot="start"></ion-icon>
             Cancel
@@ -198,9 +205,9 @@
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/stopwatch.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/stopwatch.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Current Status:</b>
@@ -209,10 +216,12 @@
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
-        <ion-col size="3">
-          <img src="../../../assets/img/{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}"
-               class="marketplace-detail-icons">
+      <ion-row class="ion-padding-bottom">
+        <ion-col size="3" class="ion-text-center">
+          <favr-img src="{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}"
+                    spinnerSrc="assets/img/spinner.gif"
+                    imgClass="marketplace-detail-icons"
+                    loaderClass="marketplace-detail-icons rounded-circle"></favr-img>
         </ion-col>
         <ion-col size="9">
           <b>Task Category:</b>
@@ -221,20 +230,20 @@
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/suitcase.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/suitcase.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
-          <b>Task Description</b>
+          <b>Task Description:</b>
           <br>
           <div id="taskDescription" [innerHTML]="mainMarketplaceTask.description"></div>
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/bank.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/bank.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Price:</b>
@@ -270,9 +279,9 @@
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/group.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/group.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Freelancer Count:</b>
@@ -282,9 +291,9 @@
         </ion-col>
       </ion-row>
 
-      <ion-row *ngIf="mainMarketplaceTask.locations" padding-bottom>
+      <ion-row *ngIf="mainMarketplaceTask.locations" class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/map.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/map.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Location:</b>
@@ -298,9 +307,9 @@
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/calendar.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/calendar.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <ng-container *ngIf="mainMarketplaceTask.status !== TaskStatus.COMPLETE; else completedOn">
@@ -317,9 +326,9 @@
         </ion-col>
       </ion-row>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col size="3">
-          <img src="../../../assets/img/tools.png" class="marketplace-detail-icons">
+          <ion-img src="assets/img/tools.png" class="marketplace-detail-icons"></ion-img>
         </ion-col>
         <ion-col size="9">
           <b>Intensity:</b>
@@ -346,7 +355,7 @@
         </ion-slide>
       </ion-slides>
 
-      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 9]">
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
         <ion-avatar slot="start">
           <ion-skeleton-text animated></ion-skeleton-text>
         </ion-avatar>

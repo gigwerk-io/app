@@ -42,11 +42,10 @@ export class MarketplaceService {
         });
   }
 
-  public getMainMarketplaceRequests(filter?: string, coords?: any): Observable<MainMarketplaceTask[]> {
+  public getMainMarketplaceRequests(filter?: string, coords?: any) {
     switch (filter) {
       case 'all':
-        return from(
-          this.storage.get(StorageKeys.ACCESS_TOKEN)
+        return this.storage.get(StorageKeys.ACCESS_TOKEN)
             .then(token => {
               const authHeader = {
                 headers: {
@@ -57,11 +56,9 @@ export class MarketplaceService {
               return this.httpClient.get<MainMarketplaceRouteResponse>(`${API_ADDRESS}/marketplace/main/feed`, authHeader)
                 .toPromise()
                 .then((res: MainMarketplaceRouteResponse) => res.requests);
-            })
-        );
+            });
       case 'me':
-        return from(
-          this.storage.get(StorageKeys.ACCESS_TOKEN)
+        return this.storage.get(StorageKeys.ACCESS_TOKEN)
             .then(token => {
               const authHeader: AuthorizationToken = {
                 headers: {
@@ -71,11 +68,9 @@ export class MarketplaceService {
               return this.httpClient.get<MainMarketplaceRouteResponse>(`${API_ADDRESS}/marketplace/main/me`, authHeader)
                 .toPromise()
                 .then((res: MainMarketplaceRouteResponse) => res.requests);
-            })
-        );
+            });
       case 'proposals':
-        return from(
-          this.storage.get(StorageKeys.ACCESS_TOKEN)
+        return this.storage.get(StorageKeys.ACCESS_TOKEN)
             .then(token => {
               const authHeader: AuthorizationToken = {
                 headers: {
@@ -85,8 +80,7 @@ export class MarketplaceService {
               return this.httpClient.get<MainMarketplaceRouteResponse>(`${API_ADDRESS}/marketplace/main/proposals`, authHeader)
                 .toPromise()
                 .then((res: MainMarketplaceRouteResponse) => res.requests);
-            })
-        );
+            });
     }
   }
 
@@ -253,7 +247,7 @@ export class MarketplaceService {
         };
 
         return this.httpClient.post<ReportTaskResponse>(`${API_ADDRESS}/report/main/marketplace/${id}`,
-          {description: description}, authHeader)
+          {description}, authHeader)
           .toPromise()
           .then((res: ReportTaskResponse) => res.message);
       });

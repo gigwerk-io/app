@@ -13,9 +13,8 @@ import {CreateChatResponse, Room} from '../interfaces/chat/room';
 export class ChatService {
   constructor(private http: HttpClient, private storage: Storage) { }
 
-  public getChatRooms(): Observable<Room[]> {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public getChatRooms(): Promise<Room[]> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -24,9 +23,9 @@ export class ChatService {
           };
           return this.http.get<Room[]>(API_ADDRESS + '/rooms', authHeader)
             .toPromise()
-            .then((res: Room[]) => res);
-        })
-    );
+            .then((res: Room[]) => res)
+            .catch(() => []);
+        });
   }
 
   public getChatRoom(uuid): Observable<Room> {
@@ -61,9 +60,8 @@ export class ChatService {
     );
   }
 
-  public startChat(username) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+  public startChat(username): Promise<CreateChatResponse> {
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -73,7 +71,6 @@ export class ChatService {
           return this.http.get<CreateChatResponse>(`${API_ADDRESS}/chat/${username}`, authHeader)
             .toPromise()
             .then((res) => res);
-        })
-    );
+        });
   }
 }

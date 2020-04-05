@@ -19,31 +19,36 @@ export class SelectCityPage implements OnInit {
 
   ngOnInit() {
     this.getCurrentCity();
-    this.favrService.getCities().subscribe(res => {
+    this.favrService.getCities().then(res => {
       this.cities = res.cities;
     });
   }
 
   selectCity(city: City) {
-    this.preferencesService.selectCity(city.id).subscribe(res => {
+    this.preferencesService.selectCity(city.id).then(res => {
       this.current = city.id;
       this.presentToast(res.message);
     });
   }
 
   getCurrentCity() {
-    this.preferencesService.currentCity().subscribe(res => {
+    this.preferencesService.currentCity().then(res => {
       this.current = res.id;
     });
   }
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });

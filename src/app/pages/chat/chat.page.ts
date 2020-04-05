@@ -4,6 +4,8 @@ import {ChatService} from '../../utils/services/chat.service';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
 import {Router} from '@angular/router';
+import {SearchPage} from '../search/search.page';
+import {IonRouterOutlet, ModalController} from '@ionic/angular';
 
 @Component({
   selector: 'chat',
@@ -11,38 +13,40 @@ import {Router} from '@angular/router';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-  noImage = false;
   rooms: Room[];
-  user_id: Number;
-  constructor(private roomService: ChatService, private storage: Storage, private router: Router) { }
+  userId: number;
+
+  constructor(private roomService: ChatService,
+              private storage: Storage,
+              private modalCtrl: ModalController,
+              public routerOutlet: IonRouterOutlet,
+              private router: Router) { }
 
   ngOnInit() {
     this.getRooms();
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
-        this.user_id = profile.user_id;
+        this.userId = profile.user_id;
       });
   }
 
   public getRooms() {
-    this.roomService.getChatRooms().subscribe(res => {
-      this.rooms = res;
-    });
+    this.roomService.getChatRooms()
+      .then(res => this.rooms = res)
+      .catch(() => this.rooms = []);
   }
 
   public getUserProfileImage(members) {
-    // tslint:disable-next-line
-    for(let member of members) {
-      if (member.id !== this.user_id) {
+    for (const member of members) {
+      if (member.id !== this.userId) {
         return member.profile.image;
       }
     }
   }
 
   public getUserName(members) {
-    // tslint:disable-next-line
-    for(let member of members) {
-      if (member.id !== this.user_id) {
+    for (const member of members) {
+      if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
     }
@@ -67,4 +71,17 @@ export class ChatPage implements OnInit {
     }, 2000);
   }
 
+  async openSearchModal() {
+    const modal = await this.modalCtrl.create({
+      component: SearchPage,
+      componentProps: {isModal: true, isChat: true},
+      swipeToClose: true,
+      presentingElement: this.routerOutlet.nativeEl,
+      cssClass: 'transparent-modal',
+      // enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
+      // leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
+    });
+
+    await modal.present();
+  }
 }

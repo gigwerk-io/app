@@ -1,13 +1,20 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import {Component} from '@angular/core';
+import {NgForm} from '@angular/forms';
 
-import { UserOptions } from '../../utils/interfaces/user-options';
+import {UserOptions} from '../../utils/interfaces/user-options';
 import {AuthService} from '../../utils/services/auth.service';
 import {NavController, Platform, ToastController} from '@ionic/angular';
-import { Push, PushObject, PushOptions } from '@ionic-native/push/ngx';
 import {NotificationService} from '../../utils/services/notification.service';
 import {Router} from '@angular/router';
 import {Badge} from '@ionic-native/badge/ngx';
+import {
+  Plugins,
+  Capacitor, PushNotificationToken
+} from '@capacitor/core';
+import {SwPush} from '@angular/service-worker';
+import {environment} from '../../../environments/environment';
+
+const {PushNotifications, Device} = Plugins;
 
 @Component({
   selector: 'page-login',
@@ -20,30 +27,27 @@ export class LoginPage {
     password: undefined
   };
   submitted = false;
+  pushNotificationsAvailable = Capacitor.isPluginAvailable('PushNotifications');
 
   constructor(
     private authService: AuthService,
     public navCtrl: NavController,
-    private push: Push,
-    private notficationService: NotificationService,
+    private notificationService: NotificationService,
     private platform: Platform,
     private toastController: ToastController,
     private router: Router,
-    private badge: Badge
-  ) { }
+    private badge: Badge,
+    private swPush: SwPush
+  ) {
+  }
 
   onLogin(form: NgForm) {
     this.submitted = true;
     if (form.valid) {
       this.authService.login(this.login)
-        .subscribe(() => {
+        .then(() => {
           this.navCtrl.navigateRoot('/app/tabs/marketplace').then(res => {
-            // to check if we have permission
-            try {
-              this.initPushNotification();
-            } catch (e) {
-              console.warn(e);
-            }
+            this.initPushNotification();
           });
         }, error => {
           this.presentToast(error.error.message);
@@ -53,60 +57,55 @@ export class LoginPage {
 
   async presentToast(message) {
     await this.toastController.create({
-      message: message,
+      message,
       position: 'top',
-      duration: 2500,
+      duration: 5000,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
   }
 
   initPushNotification() {
-    if (!this.platform.is('cordova')) {
-      console.warn('Push notifications not initialized. Cordova is not available - Run in physical device');
-      return;
-    }
-
-    const options: PushOptions = {
-      android: {
-        sound: true
-      },
-      ios: {
-        alert: true,
-        badge: true,
-        sound: true
-      }
-    };
-    if (!(this.platform.is('pwa') && this.platform.is('ios'))) {
-      const pushObject: PushObject = this.push.init(options);
-      pushObject.on('registration').subscribe((data: any) => {
-        // console.log('Token: ' + data.registrationId);
-        if (this.platform.is('ios')) {
-          this.notficationService.saveAPNToken({'device_token': data.registrationId}).subscribe(res => {
-            // console.log(res);
-          });
-        } else if (this.platform.is('android')) {
-          this.notficationService.saveFCMToken({'device_token': data.registrationId}).subscribe(res => {
-            // console.log(res);
-          });
+    if (this.pushNotificationsAvailable) {
+      PushNotifications.requestPermission().then(permission => {
+        if (permission.granted) {
+          PushNotifications.register();
         }
-      }, error1 => {
-        // console.log(error1);
       });
 
-      pushObject.on('notification').subscribe((data: any) => {
-        // console.log(data);
-        this.badge.increase(1);
-        if (!data.additionalData.foreground) {
-          if (data.custom !== undefined) {
-            this.router.navigate(data.custom.action.page, data.custom.action.params);
+      // On success, we should be able to receive notifications
+      PushNotifications.addListener('registration', (token: PushNotificationToken) => {
+        Device.getInfo().then(info => {
+          if (info.operatingSystem === 'ios') {
+            this.notificationService.saveAPNToken({device_token: token.value});
+          } else {
+            this.notificationService.saveFCMToken({device_token: token.value});
           }
-        }
+        });
       });
 
-      pushObject.on('error').subscribe(error => console.warn(error));
+      // Show us the notification payload if the app is open on our device
+      PushNotifications.addListener('pushNotificationReceived',
+        (notification) => {
+         console.log(notification);
+        }
+      );
+
+    } else {
+      this.swPush.requestSubscription({
+        serverPublicKey: environment.publicKey
+      }).then(token => {
+        console.log(token);
+        this.notificationService.saveFCMToken({device_token: token});
+      }).catch(err => console.error('Could not register notifications', err));
+
     }
   }
 }

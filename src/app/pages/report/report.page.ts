@@ -22,11 +22,16 @@ export class ReportPage implements OnInit {
 
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(t => {
       t.present();
     });

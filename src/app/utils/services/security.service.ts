@@ -17,8 +17,7 @@ export class SecurityService {
               private storage: Storage) { }
 
   public updatePassword(body) {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -28,13 +27,11 @@ export class SecurityService {
           return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/password`, body, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 
   public getSessions() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -44,13 +41,11 @@ export class SecurityService {
           return this.httpClient.get<SessionResponse>(`${API_ADDRESS}/sessions`, authHeader)
             .toPromise()
             .then((res: SessionResponse) => res);
-        })
-    );
+        });
   }
 
   public killAll() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -60,13 +55,11 @@ export class SecurityService {
           return this.httpClient.get<UpdateResponse>(`${API_ADDRESS}/destroy`, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 
   public deactivateAccount() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -76,13 +69,11 @@ export class SecurityService {
           return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/deactivate`, '', authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 
   public deleteAccount() {
-    return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
         .then(token => {
           const authHeader: AuthorizationToken = {
             headers: {
@@ -92,7 +83,6 @@ export class SecurityService {
           return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/delete`, {reason: ''}, authHeader)
             .toPromise()
             .then((res: UpdateResponse) => res);
-        })
-    );
+        });
   }
 }

@@ -1,32 +1,47 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {IonSearchbar, ModalController} from '@ionic/angular';
+import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {IonSearchbar, ModalController, ToastController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
-import { Subject, BehaviorSubject } from 'rxjs';
+import {Subject, Subscription} from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {ChatService} from '../../utils/services/chat.service';
+import {Searchable} from '../../utils/interfaces/searchable';
 
 @Component({
   selector: 'search',
   templateUrl: './search.page.html',
   styleUrls: ['./search.page.scss'],
 })
-export class SearchPage implements OnInit {
-  users;
+export class SearchPage implements OnInit, OnDestroy {
+
+  @Input() isChat = false;
+
+  users: Searchable[];
   query;
-  query_length = undefined;
-  // Holds results
-  public people$: Subject<any> = new Subject();
+  queryLength = undefined;
 
   // Observable for debouncing input changes
-  private searchDecouncer$: Subject<string> = new Subject();
+  private searchDebouncerSubject: Subject<string> = new Subject();
+  private searchDebouncerSub: Subscription;
   // @ts-ignore
   @ViewChild(IonSearchbar) searchBar: IonSearchbar;
 
-  constructor(private modalCtrl: ModalController, private friendService: FriendsService, private router: Router) { }
+  constructor(private modalCtrl: ModalController,
+              private friendService: FriendsService,
+              private router: Router,
+              private toastCtrl: ToastController,
+              private chatService: ChatService) { }
 
   ngOnInit() {
-    setTimeout(() => this.searchBar.setFocus(), 350);
     this.setupSearchDebouncer();
+    if (this.isChat) {
+      this.friendService.getMyFriends()
+        .then(res => (res.length > 0) ? this.users = res : undefined);
+    }
+  }
+
+  ngOnDestroy() {
+    this.searchDebouncerSub.unsubscribe();
   }
 
   async closeSearchPage() {
@@ -35,34 +50,83 @@ export class SearchPage implements OnInit {
 
   handleSearch() {
     // console.log(this.query);
-    this.friendService.searchUsers(this.query).subscribe(res => {
+    this.friendService.searchUsers(this.query).then(res => {
       this.users = res;
       // console.log(this.users);
     });
   }
 
   goToUserProfile(id) {
-    this.closeSearchPage();
-    this.router.navigate(['/app/profile', id]);
+    this.closeSearchPage()
+      .then(() => this.router.navigate(['/app/profile', id]));
   }
 
   public onSearchInputChange(term: string): void {
     // `onSearchInputChange` is called whenever the input is changed.
     // We have to send the value to debouncing observable
-    this.searchDecouncer$.next(term);
+    this.searchDebouncerSubject.next(term);
   }
 
   private setupSearchDebouncer(): void {
-    // Subscribe to `searchDecouncer$` values,
+    // Subscribe to `searchDebouncerSubject` values,
     // but pipe through `debounceTime` and `distinctUntilChanged`
-    this.searchDecouncer$.pipe(
+    this.searchDebouncerSub = this.searchDebouncerSubject.pipe(
       debounceTime(250),
       distinctUntilChanged(),
     ).subscribe((term: string) => {
-      this.friendService.searchUsers(term).subscribe(res => {
+      this.friendService.searchUsers(term).then(res => {
         this.users = res;
-        this.query_length = this.users.length;
+        this.queryLength = this.users.length;
       });
     });
+  }
+
+  async presentToast(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'dark',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
+
+  async errorMessage(message) {
+    await this.toastCtrl.create({
+      message,
+      position: 'top',
+      duration: 2500,
+      color: 'danger',
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
+    }).then(toast => {
+      toast.present();
+    });
+  }
+
+  startChat(username) {
+    this.chatService.startChat(username)
+      .then(res => {
+        this.router.navigate(['/app/room', res.id]);
+      })
+      .catch(error => {
+      this.errorMessage(error.statusText);
+    });
+  }
+
+  goToChatRoom(user: Searchable) {
+    this.closeSearchPage()
+      .then(() => this.startChat(user.username));
   }
 }

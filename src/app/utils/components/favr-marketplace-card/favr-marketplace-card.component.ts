@@ -1,13 +1,14 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MainMarketplaceTask} from '../../interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {Events, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {ChatService} from '../../services/chat.service';
 import {MarketplaceService} from '../../services/marketplace.service';
 import {TaskActions, TaskStatus} from '../../../providers/constants';
 import {PastJob} from '../../interfaces/user';
 import {RequestPage} from '../../../pages/request/request.page';
+import {Events} from '../../services/events';
 
 @Component({
   selector: 'favr-marketplace-card',
@@ -24,7 +25,6 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   mainMarketTask: MainMarketplaceTask;
   pastJob: PastJob;
   TaskStatus = TaskStatus;
-  profileImgLoaded = false;
 
   constructor(private photoViewer: PhotoViewer,
               private loadingCtrl: LoadingController,
@@ -35,6 +35,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
               private changeRef: ChangeDetectorRef,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
+              private alertCtrl: AlertController,
               private events: Events) {
     this.events.subscribe('task-action', (action, taskID) => {
       if (this.mainMarketplaceTask.id === taskID) {
@@ -82,13 +83,40 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
       .then(() => loadingMarketplaceDetail.dismiss());
   }
 
+  async alertConfirmCustomerCancel() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      // tslint:disable-next-line:max-line-length
+      message: 'You are about to <strong>cancel</strong> this request. Your request <strong>will be DELETED</strong>.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes',
+          handler: () => {
+            this.customerCancelTask();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async presentToast(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'dark',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
       this.marketplaceService.getSingleMainMarketplaceRequest(this.mainMarketplaceTask.id)
@@ -101,18 +129,23 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   async errorMessage(message) {
     await this.toastCtrl.create({
-      message: message,
+      message,
       position: 'top',
       duration: 2500,
       color: 'danger',
-      showCloseButton: true
+      buttons: [
+        {
+          text: 'Done',
+          role: 'cancel'
+        }
+      ]
     }).then(toast => {
       toast.present();
     });
   }
 
   startChat(username) {
-    this.chatService.startChat(username).subscribe(res => {
+    this.chatService.startChat(username).then(res => {
       this.router.navigate(['/app/room', res.id]);
     }, error => {
       this.presentToast(error.error.message);
@@ -151,7 +184,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   async customerEditTask(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
-      componentProps: {'isModal': true}
+      componentProps: {isModal: true}
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({

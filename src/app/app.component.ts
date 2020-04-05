@@ -1,45 +1,45 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { SwUpdate } from '@angular/service-worker';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Router} from '@angular/router';
+import {SwUpdate} from '@angular/service-worker';
 
-import {Config, Events, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
+import {Config, IonRouterOutlet, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
 
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-import { Storage } from '@ionic/storage';
-
-import { UserData } from './providers/user-data';
+import {Storage} from '@ionic/storage';
 import {StorageKeys} from './providers/constants';
 import {toggleDarkTheme} from './pages/settings/settings.page';
-import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
 import {TabsPage} from './pages/tabs-page/tabs-page';
-import {RequestPage} from './pages/request/request.page';
 import {SearchPage} from './pages/search/search.page';
-import {popInAnimation} from './utils/animations/enter.animation';
-import {popOutAnimation} from './utils/animations/leave.animation';
 import {CustomerTutorialPage} from './pages/customer-tutorial/customer-tutorial.page';
+import {Subscription} from 'rxjs';
+
+import {
+  Plugins,
+  StatusBarStyle,
+  Capacitor
+} from '@capacitor/core';
+
+const {StatusBar, SplashScreen} = Plugins;
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [ScreenOrientation, TabsPage, RequestPage, SearchPage, CustomerTutorialPage],
+  providers: [ScreenOrientation, TabsPage, IonRouterOutlet, SearchPage, CustomerTutorialPage],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   profileId: number;
   profileImage: string;
+  swUpdateSub: Subscription;
+  statusBarAvailable = Capacitor.isPluginAvailable('StatusBar');
+  splashScreenAvailable = Capacitor.isPluginAvailable('SplashScreen');
 
   constructor(
-    private events: Events,
     private menu: MenuController,
     private platform: Platform,
     public router: Router,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
     private storage: Storage,
-    private userData: UserData,
     private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
     private screenOrientation: ScreenOrientation,
@@ -63,12 +63,19 @@ export class AppComponent implements OnInit {
           this.profileImage = profile.image;
         }
       });
-    this.swUpdate.available.subscribe(async res => {
+    this.swUpdateSub = this.swUpdate.available.subscribe(async res => {
       const toast = await this.toastCtrl.create({
         message: 'Update available!',
-        showCloseButton: true,
         position: 'bottom',
-        closeButtonText: `Reload`
+        buttons: [
+          {
+            text: 'Reload',
+            role: 'cancel',
+            handler: () => {
+              this.initializeApp();
+            }
+          }
+        ]
       });
 
       await toast.present();
@@ -80,22 +87,33 @@ export class AppComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    this.swUpdateSub.unsubscribe();
+  }
+
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.overlaysWebView(false);
-      this.splashScreen.hide();
+      if (this.splashScreenAvailable) {
+        SplashScreen.hide();
+      }
       this.storage.get(StorageKeys.THEME_PREFERENCE)
         .then((prefersDark: boolean) => {
           if (prefersDark == null) {
-            this.statusBar.backgroundColorByHexString('#222428');
+            if (this.statusBarAvailable) {
+              StatusBar.setStyle({style: StatusBarStyle.Dark});
+            }
             this.storage.set(StorageKeys.THEME_PREFERENCE, true)
               .then(() => toggleDarkTheme(true));
           } else {
             if (prefersDark) {
-              this.statusBar.backgroundColorByHexString('#222428');
+              if (this.statusBarAvailable) {
+                StatusBar.setStyle({style: StatusBarStyle.Dark});
+              }
               toggleDarkTheme(prefersDark);
             } else {
-              this.statusBar.backgroundColorByHexString('#ff6500');
+              if (this.statusBarAvailable) {
+                StatusBar.setStyle({style: StatusBarStyle.Light});
+              }
               toggleDarkTheme(false);
             }
           }
@@ -110,12 +128,12 @@ export class AppComponent implements OnInit {
   async openSearchModal() {
     const modal = await this.modalCtrl.create({
       component: SearchPage,
-      componentProps: {'isModal': true},
+      componentProps: {isModal: true},
       cssClass: 'transparent-modal',
-      enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
-      leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
+      // enterAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popInAnimation : undefined,
+      // leaveAnimation: (this.platform.is('mobile') || this.platform.is('pwa')) ? popOutAnimation : undefined
     });
 
-    modal.present();
+    await modal.present();
   }
 }

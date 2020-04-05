@@ -14,10 +14,10 @@ ion-textarea {
 ion-footer {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.11);
   background-color: #fff;
-  height: inherit;
-  @media (max-width: $iphoneSe) {
-    height: 55px!important;
-  }
+  height: 61px;
+  //@media (max-width: $iphoneSe) {
+  //  height: 55px;
+  //}
 }
 
 .send-button.ios {
