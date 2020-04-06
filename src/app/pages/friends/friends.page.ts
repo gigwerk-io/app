@@ -7,6 +7,7 @@ import {IonRouterOutlet, NavController, ToastController} from '@ionic/angular';
 import {AuthService} from '../../utils/services/auth.service';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'friends',
@@ -23,16 +24,18 @@ export class FriendsPage implements OnInit {
   noImage = false;
   segment = 'friends';
 
-  constructor(private friendService: FriendsService,
-              private chatService: ChatService,
-              private router: Router,
-              private toastController: ToastController,
-              private changeRef: ChangeDetectorRef,
-              private authService: AuthService,
-              private storage: Storage,
-              private navCtrl: NavController,
-              public routerOutlet: IonRouterOutlet
-  ) { }
+  constructor(
+    private friendService: FriendsService,
+    private chatService: ChatService,
+    private router: Router,
+    private changeRef: ChangeDetectorRef,
+    private authService: AuthService,
+    private storage: Storage,
+    private navCtrl: NavController,
+    private routerOutlet: IonRouterOutlet,
+    private utils: UtilsService
+  ) {
+  }
 
   ngOnInit() {
     this.segmentChanged();
@@ -47,17 +50,17 @@ export class FriendsPage implements OnInit {
         this.users = res;
       })
       .catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken().then(res => {
-          if (!res.response) {
-            this.presentToast('You have been logged out.');
-            this.storage.remove(StorageKeys.PROFILE);
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.navCtrl.navigateRoot('/welcome');
-          }
-        });
-      }
-    });
+        if (error.status === 401) {
+          this.authService.isValidToken().then(res => {
+            if (!res.response) {
+              this.utils.presentToast('You have been logged out.', 'success');
+              this.storage.remove(StorageKeys.PROFILE);
+              this.storage.remove(StorageKeys.ACCESS_TOKEN);
+              this.navCtrl.navigateRoot('/welcome');
+            }
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
+        }
+      });
   }
 
   segmentChanged() {
@@ -78,34 +81,17 @@ export class FriendsPage implements OnInit {
     }
   }
 
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
   showRecommendedFriends() {
     this.btnClass = 'person-add';
     this.secondButton = false;
     this.friendService.getRecommendedFriends().then(res => {
       this.users = res;
       this.changeRef.detectChanges();
-    }, error => {
+    }).catch(error => {
       if (error.status === 401) {
         this.authService.isValidToken().then(res => {
           if (!res.response) {
-            this.presentToast('You have been logged out.');
+            this.utils.presentToast('You have been logged out.', 'success');
             this.storage.remove(StorageKeys.PROFILE);
             this.storage.remove(StorageKeys.ACCESS_TOKEN);
             this.navCtrl.navigateRoot('/welcome');
@@ -124,17 +110,17 @@ export class FriendsPage implements OnInit {
         this.changeRef.detectChanges();
       })
       .catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken().then(res => {
-          if (!res.response) {
-            this.presentToast('You have been logged out.');
-            this.storage.remove(StorageKeys.PROFILE);
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.navCtrl.navigateRoot('/welcome');
-          }
-        });
-      }
-    });
+        if (error.status === 401) {
+          this.authService.isValidToken().then(res => {
+            if (!res.response) {
+              this.utils.presentToast('You have been logged out.', 'success');
+              this.storage.remove(StorageKeys.PROFILE);
+              this.storage.remove(StorageKeys.ACCESS_TOKEN);
+              this.navCtrl.navigateRoot('/welcome');
+            }
+          });
+        }
+      });
   }
 
   showMyFriendRequests() {
@@ -146,17 +132,17 @@ export class FriendsPage implements OnInit {
         this.changeRef.detectChanges();
       })
       .catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken().then(res => {
-          if (!res.response) {
-            this.presentToast('You have been logged out.');
-            this.storage.remove(StorageKeys.PROFILE);
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.navCtrl.navigateRoot('/welcome');
-          }
-        });
-      }
-    });
+        if (error.status === 401) {
+          this.authService.isValidToken().then(res => {
+            if (!res.response) {
+              this.utils.presentToast('You have been logged out.', 'success');
+              this.storage.remove(StorageKeys.PROFILE);
+              this.storage.remove(StorageKeys.ACCESS_TOKEN);
+              this.navCtrl.navigateRoot('/welcome');
+            }
+          });
+        }
+      });
   }
 
   goToUserProfile(id) {
@@ -171,24 +157,22 @@ export class FriendsPage implements OnInit {
 
   sendFriendRequest(id) {
     this.friendService.sendFriendRequest(id).then(res => {
-      this.presentToast(res);
-    }, error => {
-      // console.log(error);
-    });
+      this.utils.presentToast(res, 'success');
+    }).catch(error => this.utils.presentToast(error.message, 'danger'));
   }
 
   acceptFriendRequest(id) {
     this.friendService.acceptFriendRequest(id).then(res => {
-      this.presentToast(res);
+      this.utils.presentToast(res, 'success');
       this.showMyFriendRequests();
-    });
+    }).catch(error => this.utils.presentToast(error.message, 'danger'));
   }
 
   rejectFriendRequest(id) {
     this.friendService.rejectFriendRequest(id).then(res => {
-      this.presentToast(res);
+      this.utils.presentToast(res, 'success');
       this.showMyFriendRequests();
-    });
+    }).catch(error => this.utils.presentToast(error.message, 'danger'));
   }
 
   handleClick(user, i) {

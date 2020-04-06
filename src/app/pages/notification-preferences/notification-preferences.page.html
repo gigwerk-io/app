@@ -8,8 +8,8 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="notificationPreferences.sms && notificationPreferences.push && notificationPreferences.email; else skeletonList">
-    <ion-list class="ion-padding">
+  <ng-container *ngIf="notificationPreferences.sms !== undefined && notificationPreferences.push !== undefined && notificationPreferences.email !== undefined; else skeletonList">
+    <ion-list>
       <ion-item>
         <ion-label> Email Notifications </ion-label>
         <ion-note><ion-toggle color="primary" [(ngModel)]="this.notificationPreferences.email" (click)="updateSettings('email')"></ion-toggle></ion-note>

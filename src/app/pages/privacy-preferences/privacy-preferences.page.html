@@ -8,8 +8,8 @@
 </ion-header>
 
 <ion-content>
-  <ng-container *ngIf="displayDescription && displayRating && displayReceipts; else skeletonList">
-    <ion-list class="ion-padding">
+  <ng-container *ngIf="displayDescription !== undefined && displayRating !== undefined && displayReceipts !== undefined && scope !== undefined; else skeletonList">
+    <ion-list>
       <ion-item>
         <ion-label> Default Scope </ion-label>
         <ion-select #select [value]="scope" (ionChange)="scopeChange(select.value)" >

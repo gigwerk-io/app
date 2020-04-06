@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {ReferralService} from '../../utils/services/referral.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'customer-referral',
@@ -18,28 +19,16 @@ export class CustomerReferralPage implements OnInit {
     email: undefined
   };
   submitted = false;
-  constructor(private activatedRoute: ActivatedRoute,
-              private referralService: ReferralService,
-              private router: Router,
-              private toastController: ToastController) { }
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private referralService: ReferralService,
+    private router: Router,
+    private utils: UtilsService) {
+  }
 
   ngOnInit() {
     this.getReferralProfile();
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => toast.present());
   }
 
   public getReferralProfile() {
@@ -49,9 +38,9 @@ export class CustomerReferralPage implements OnInit {
         this.location = res.data.city.city + ', ' + res.data.city.state;
         this.image = res.data.profile.image;
         this.username = res.data.username;
-      }, error => {
+      }).catch(error => {
         if (error.status === 400) {
-          this.presentToast(error.error.message);
+          this.utils.presentToast(error.error.message, 'danger');
           this.router.navigateByUrl('welcome');
         }
       });
@@ -62,7 +51,7 @@ export class CustomerReferralPage implements OnInit {
     this.submitted = true;
     if (form.valid) {
       this.referralService.submitCustomerReferral(this.newReferral, this.username).then(res => {
-        this.presentToast(res.message);
+        this.utils.presentToast(res.message, 'success');
         this.router.navigateByUrl('welcome');
       });
     }

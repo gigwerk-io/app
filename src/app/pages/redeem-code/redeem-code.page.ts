@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FinanceService} from '../../utils/services/finance.service';
 import {AlertController, ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'redeem-code',
@@ -8,43 +9,24 @@ import {AlertController, ToastController} from '@ionic/angular';
   styleUrls: ['./redeem-code.page.scss'],
 })
 export class RedeemCodePage implements OnInit {
+
   code;
+
   constructor(private financeService: FinanceService,
-              private toastController: ToastController,
-              private alertController: AlertController) { }
+              private alertController: AlertController,
+              private utils: UtilsService) { }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() { }
 
   redeem() {
     if (this.code === undefined) {
       this.presentAlert('Please fill out the code field.');
     } else {
       const body = {code: this.code};
-      this.financeService.redeemCredit(body).then(res => {
-        this.presentToast(res.message);
-      }, error => {
-        this.presentAlert(error.error.message);
-      });
+      this.financeService.redeemCredit(body)
+        .then(res => this.utils.presentToast(res.message, 'success'))
+        .catch(error => this.utils.presentToast(error.error.message, 'danger'));
     }
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 
   async presentAlert(message) {

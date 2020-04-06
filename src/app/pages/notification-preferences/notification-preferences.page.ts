@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 interface NotificationPreferences {
   sms: boolean;
@@ -21,7 +22,7 @@ export class NotificationPreferencesPage implements OnInit {
     push: undefined
   };
 
-  constructor(private preferences: PreferencesService, private toastController: ToastController) { }
+  constructor(private preferences: PreferencesService, private utils: UtilsService) { }
 
   ngOnInit() {
     this.preferences.getSettings().then(res => {
@@ -31,39 +32,22 @@ export class NotificationPreferencesPage implements OnInit {
     });
   }
 
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
   updateSettings(type) {
     switch (type) {
       case 'email':
-        this.preferences.updateNotificationPreferences(this.notificationPreferences.email).then(res => {
-          this.presentToast(res.message);
-        });
+        this.preferences.updateNotificationPreferences(this.notificationPreferences.email)
+          .then(res => this.utils.presentToast('<b>Success!</b> Your email preference was updated.', 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
       case 'sms':
-        this.preferences.updateNotificationPreferences(this.notificationPreferences.sms).then(res => {
-          this.presentToast(res.message);
-        });
+        this.preferences.updateNotificationPreferences(this.notificationPreferences.sms)
+          .then(res => this.utils.presentToast('<b>Success!</b> Your sms preference was updated.', 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
       case 'push':
-        this.preferences.updateNotificationPreferences(this.notificationPreferences.push).then(res => {
-          this.presentToast(res.message);
-        });
+        this.preferences.updateNotificationPreferences(this.notificationPreferences.push)
+          .then(res => this.utils.presentToast('<b>Success!</b> Your push preference was updated.', 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
     }
   }

@@ -48,7 +48,11 @@ import { PushNotificationsModule } from 'ng-push';
     }),
     RequestPageModule,
     SearchPageModule,
-    IonicStorageModule.forRoot(),
+    IonicStorageModule.forRoot({
+      name: '_favrDB',
+      storeName: '__favrKV',
+      description: 'FAVR client side storage'
+    }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     }),

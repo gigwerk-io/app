@@ -13,6 +13,7 @@ import {
 } from '@capacitor/core';
 import {SwPush} from '@angular/service-worker';
 import {environment} from '../../../environments/environment';
+import {UtilsService} from '../../utils/services/utils.service';
 
 const {PushNotifications, Device} = Plugins;
 
@@ -34,12 +35,11 @@ export class LoginPage {
     public navCtrl: NavController,
     private notificationService: NotificationService,
     private platform: Platform,
-    private toastController: ToastController,
+    private utils: UtilsService,
     private router: Router,
     private badge: Badge,
     private swPush: SwPush
-  ) {
-  }
+  ) { }
 
   onLogin(form: NgForm) {
     this.submitted = true;
@@ -49,27 +49,10 @@ export class LoginPage {
           this.navCtrl.navigateRoot('/app/tabs/marketplace').then(res => {
             this.initPushNotification();
           });
-        }, error => {
-          this.presentToast(error.error.message);
+        }).catch(error => {
+          this.utils.presentToast(error.error.message, 'danger');
         });
     }
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 5000,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 
   initPushNotification() {

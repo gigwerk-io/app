@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {SecurityService} from '../../utils/services/security.service';
 import {Sessions} from '../../utils/interfaces/auth/sessions';
 import {ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'remembered-devices',
@@ -12,41 +13,23 @@ export class RememberedDevicesPage implements OnInit {
 
   sessions: Sessions[];
 
-  constructor(private securityService: SecurityService,
-              private toastController: ToastController) { }
+  constructor(
+    private securityService: SecurityService,
+    private utils: UtilsService
+  ) { }
 
   ngOnInit() {
     this.getSessions();
   }
 
   getSessions() {
-    this.securityService.getSessions().then(res => {
-      this.sessions = res.sessions;
-      // console.log(this.sessions);
-    });
+    this.securityService.getSessions().then(res => this.sessions = res.sessions);
   }
 
   killAll() {
     this.securityService.killAll().then(res => {
-      this.presentToast(res.message);
+      this.utils.presentToast('<strong>Success!</strong> all other sessions destroyed.', 'success');
       this.getSessions();
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
     });
   }
 }

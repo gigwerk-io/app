@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {Location} from '@angular/common';
 import {ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'add-location',
@@ -14,7 +15,7 @@ export class AddLocationPage implements OnInit {
   state: string;
   zip: number;
 
-  constructor(private preferences: PreferencesService, private location: Location, private toastCtrl: ToastController) { }
+  constructor(private preferences: PreferencesService, private location: Location, private utils: UtilsService) { }
 
   ngOnInit() {  }
 
@@ -25,41 +26,7 @@ export class AddLocationPage implements OnInit {
       state: this.state,
       zip: this.zip,
     };
-    this.preferences.addLocation(body).then(res => this.presentToast(res.message))
-      .catch(error => this.errorMessage(error.message));
-  }
-
-  async errorMessage(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'danger',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
+    this.preferences.addLocation(body).then(res => this.utils.presentToast('<strong>Success!</strong> Location saved.', 'success'))
+      .catch(error => this.utils.presentToast(error.message, 'danger'));
   }
 }
