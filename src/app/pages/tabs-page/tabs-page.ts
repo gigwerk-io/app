@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {RequestPage} from '../request/request.page';
 import {IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
@@ -10,6 +9,7 @@ import {Angulartics2GoogleAnalytics} from 'angulartics2/ga';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
+import {RequestPage} from '../request/request.page';
 
 @Component({
   templateUrl: './tabs-page.html',
