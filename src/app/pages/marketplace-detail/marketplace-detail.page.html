@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="arrow-back" mode="md" defaultHref=""></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back" mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title>Task Details</ion-title>
     <ion-buttons slot="end">
@@ -86,8 +86,8 @@
         <ion-row
           *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE || mainMarketplaceTask.status != TaskStatus.REQUESTED && isOwner"
           routerLink="/app/profile/{{mainMarketplaceTask.proposals[0].user_id}}" routerDirection="forward">
-          <ion-col size="3">
-            <ion-avatar>
+          <ion-col size="3" class="ion-padding-start">
+            <ion-avatar class="ion-padding-start ion-margin-top">
               <favr-img
                 [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : 'assets/img/user.png'"
                 spinnerSrc="assets/img/user.png"
@@ -113,7 +113,7 @@
         </ion-row>
       </ng-container>
 
-      <ion-row padding-bottom>
+      <ion-row class="ion-padding-bottom">
         <ion-col *ngIf="mainMarketplaceTask.action === 2" class="ion-text-center">
           <ion-button
             (click)="freelancerAcceptTask()"

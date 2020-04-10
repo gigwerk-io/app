@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MainMarketplaceTask} from '../../interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {AlertController, LoadingController, ModalController, NavController} from '@ionic/angular';
+import {AlertController, IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {ChatService} from '../../services/chat.service';
 import {MarketplaceService} from '../../services/marketplace.service';
@@ -21,6 +21,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   @Input() mainMarketplaceTask: MainMarketplaceTask;
   @Input() freelancerPastTask: PastJob;
+  @Input() routerOutlet: IonRouterOutlet;
   @Output() taskActionTaken: EventEmitter<string> = new EventEmitter();
 
   mainMarketTask: MainMarketplaceTask;
@@ -146,7 +147,9 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   async customerEditTask(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
-      componentProps: {isModal: true}
+      componentProps: {isModal: true},
+      swipeToClose: false,
+      presentingElement: this.routerOutlet.nativeEl
     });
 
     const loadingRequestPage = await this.loadingCtrl.create({

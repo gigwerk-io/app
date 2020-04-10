@@ -122,6 +122,7 @@
       <ng-template #tasks>
         <favr-marketplace-card *ngFor="let task of profile.user.user.main_marketplace"
                                [mainMarketplaceTask]="task"
+                               [routerOutlet]="routerOutlet"
         ></favr-marketplace-card>
       </ng-template>
     </ng-container>
@@ -136,6 +137,7 @@
       <ng-template #tasks>
         <favr-marketplace-card *ngFor="let task of profile.user.past_jobs"
                                [freelancerPastTask]="task"
+                               [routerOutlet]="routerOutlet"
         ></favr-marketplace-card>
       </ng-template>
     </ng-container>
