@@ -1,8 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
-
-import {MenuController, IonSlides, NavController} from '@ionic/angular';
-
+import {IonSlides, NavController} from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import {AuthService} from '../../utils/services/auth.service';
 import {StorageKeys} from '../../providers/constants';
@@ -13,11 +11,10 @@ import {Subscription} from 'rxjs';
   templateUrl: 'tutorial.html',
   styleUrls: ['./tutorial.scss'],
 })
-export class TutorialPage implements OnInit, OnDestroy {
+export class TutorialPage implements OnInit {
   showSkip = true;
 
   @ViewChild('slides', { static: true }) slides: IonSlides;
-  private authServiceSub: Subscription;
 
   constructor(
     private navCtrl: NavController,
@@ -27,7 +24,7 @@ export class TutorialPage implements OnInit, OnDestroy {
   ) {}
 
   startApp() {
-    this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {
+    this.authService.isLoggedIn().toPromise().then(loggedIn => {
       if (loggedIn) {
         this.navCtrl.navigateRoot('/app/tabs/marketplace')
           .then(() => this.storage.set(StorageKeys.PLATFORM_TUTORIAL, true));
@@ -47,7 +44,7 @@ export class TutorialPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.storage.get(StorageKeys.PLATFORM_TUTORIAL).then(res => {
       if (res === true) {
-        this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {
+        this.authService.isLoggedIn().toPromise().then(loggedIn => {
           if (loggedIn) {
             this.navCtrl.navigateRoot('/app/tabs/marketplace');
           } else {
@@ -56,9 +53,5 @@ export class TutorialPage implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  ngOnDestroy() {
-    this.authServiceSub.unsubscribe();
   }
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {City} from '../../utils/interfaces/locations/city';
 import {PreferencesService} from '../../utils/services/preferences.service';
-import {ToastController} from '@ionic/angular';
 import {FavrDataService} from '../../utils/services/favr-data.service';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'select-city',
@@ -14,7 +14,7 @@ export class SelectCityPage implements OnInit {
   cities: City[];
   current;
   constructor(private preferencesService: PreferencesService,
-              private toastController: ToastController,
+              private utils: UtilsService,
               private favrService: FavrDataService) { }
 
   ngOnInit() {
@@ -27,30 +27,13 @@ export class SelectCityPage implements OnInit {
   selectCity(city: City) {
     this.preferencesService.selectCity(city.id).then(res => {
       this.current = city.id;
-      this.presentToast(res.message);
+      this.utils.presentToast(res.message, 'success');
     });
   }
 
   getCurrentCity() {
     this.preferencesService.currentCity().then(res => {
       this.current = res.id;
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
     });
   }
 }

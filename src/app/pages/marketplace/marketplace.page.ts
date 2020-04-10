@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
 import {Events} from '../../utils/services/events';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'marketplace',
@@ -36,7 +37,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private events: Events,
               private router: Router,
-              private toastController: ToastController,
+              private utils: UtilsService,
               private geolocation: Geolocation,
               public routerOutlet: IonRouterOutlet) {  }
 
@@ -73,31 +74,14 @@ export class MarketplacePage implements OnInit, OnDestroy {
         if (error.status === 401) {
           this.authService.isValidToken().then(res => {
             if (!res.response) {
-              this.presentToast('You have been logged out.');
+              this.utils.presentToast('You have been logged out.', 'success');
               this.storage.remove(StorageKeys.PROFILE);
               this.storage.remove(StorageKeys.ACCESS_TOKEN);
               this.navCtrl.navigateRoot('/welcome');
             }
-          });
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
         }
       });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 
   getMyMarketplaceRequests() {
@@ -109,12 +93,12 @@ export class MarketplacePage implements OnInit, OnDestroy {
         if (error.status === 401) {
           this.authService.isValidToken().then(res => {
             if (!res.response) {
-              this.presentToast('You have been logged out.');
+              this.utils.presentToast('You have been logged out.', 'success');
               this.storage.remove(StorageKeys.PROFILE);
               this.storage.remove(StorageKeys.ACCESS_TOKEN);
               this.navCtrl.navigateRoot('/welcome');
             }
-          });
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
         }
       });
   }
@@ -129,12 +113,12 @@ export class MarketplacePage implements OnInit, OnDestroy {
         if (error.status === 401) {
           this.authService.isValidToken().then(res => {
             if (!res.response) {
-              this.presentToast('You have been logged out.');
+              this.utils.presentToast('You have been logged out.', 'success');
               this.storage.remove(StorageKeys.PROFILE);
               this.storage.remove(StorageKeys.ACCESS_TOKEN);
               this.navCtrl.navigateRoot('/welcome');
             }
-          });
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
         }
       });
   }

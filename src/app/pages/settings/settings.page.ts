@@ -62,7 +62,6 @@ export class SettingsPage implements OnInit {
           .then(res => {
             this.storage.remove(StorageKeys.ACCESS_TOKEN);
             this.storage.remove(StorageKeys.PROFILE);
-            this.storage.clear();
             this.navCtrl.navigateRoot('/welcome');
           })
           .catch(error => {

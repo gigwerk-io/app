@@ -1,7 +1,7 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MainMarketplaceTask} from '../../interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {AlertController, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {AlertController, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {ChatService} from '../../services/chat.service';
 import {MarketplaceService} from '../../services/marketplace.service';
@@ -9,6 +9,7 @@ import {TaskActions, TaskStatus} from '../../../providers/constants';
 import {PastJob} from '../../interfaces/user';
 import {RequestPage} from '../../../pages/request/request.page';
 import {Events} from '../../services/events';
+import {UtilsService} from '../../services/utils.service';
 
 @Component({
   selector: 'favr-marketplace-card',
@@ -31,7 +32,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
               private router: Router,
               private marketplaceService: MarketplaceService,
               private chatService: ChatService,
-              private toastCtrl: ToastController,
+              private utils: UtilsService,
               private changeRef: ChangeDetectorRef,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
@@ -105,61 +106,22 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-      this.marketplaceService.getSingleMainMarketplaceRequest(this.mainMarketplaceTask.id)
-        .then((task) => {
-          this.mainMarketplaceTask = task;
-          this.changeRef.detectChanges();
-        });
-    });
-  }
-
-  async errorMessage(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'danger',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
   startChat(username) {
     this.chatService.startChat(username).then(res => {
       this.router.navigate(['/app/room', res.id]);
-    }, error => {
-      this.presentToast(error.error.message);
+    }).catch(error => {
+      this.utils.presentToast(error.error.message, 'danger');
     });
   }
 
   freelancerAcceptTask() {
     this.marketplaceService.freelancerAcceptMainMarketplaceRequest(this.mainMarketplaceTask.id)
       .then((res: string) => {
-        this.presentToast(res)
+        this.utils.presentToast(res, 'success')
           .then(() => this.taskActionTaken.emit('freelancerAcceptTask'));
       })
       .catch((err) => {
-        this.errorMessage(err.error.message).then(() => {
+        this.utils.presentToast(err.error.message, 'danger').then(() => {
           setTimeout(() => this.router.navigateByUrl('app/connect-bank-account'), 550);
         });
       });
@@ -169,7 +131,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
     const freelancerWithdrawTask = await this.marketplaceService.freelancerWithdrawMainMarketplaceRequest(this.mainMarketplaceTask.id)
       .then((res: string) => res)
       .catch((err: any) => err.error.message);
-    this.presentToast(freelancerWithdrawTask)
+    this.utils.presentToast(freelancerWithdrawTask, 'success')
       .then(() => this.taskActionTaken.emit('freelancerWithdrawTask'));
   }
 
@@ -177,7 +139,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
     const cancelTask = await this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
       .then((res: string) => res)
       .catch((err: any) => err.error.message);
-    this.presentToast(cancelTask)
+    this.utils.presentToast(cancelTask, 'success')
       .then(() => this.taskActionTaken.emit('customerCancelTask'));
   }
 

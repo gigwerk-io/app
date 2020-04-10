@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {RequestPage} from '../request/request.page';
-import {IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {Storage} from '@ionic/storage';
@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
 import {Angulartics2GoogleAnalytics} from 'angulartics2/ga';
 import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
 import {Events} from '../../utils/services/events';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   templateUrl: './tabs-page.html',
@@ -27,11 +28,11 @@ export class TabsPage implements OnInit {
               private notificationService: NotificationService,
               private pusher: PusherServiceProvider,
               private navCtrl: NavController,
-              private toastController: ToastController,
+              private utils: UtilsService,
               private events: Events,
               private storage: Storage,
               private router: Router,
-              public routerOutlet: IonRouterOutlet,
+              private routerOutlet: IonRouterOutlet,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     if (window.innerWidth >= 1025) {
       this.tabSlot = 'top';
@@ -63,7 +64,7 @@ export class TabsPage implements OnInit {
           const channel = this.pusher.user(profile.user.id);
           // Bind Notification Channel
           channel.bind('notification', data => {
-            this.presentToast(data.message);
+            this.utils.presentToast(data.message);
             this.notificationCount = data.badges.notifications;
             this.friendCount = data.badges.friends;
           });
@@ -174,25 +175,6 @@ export class TabsPage implements OnInit {
             .then(() => loadingRequestPage.dismiss());
         }
       }, 0);
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 4000,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'View',
-          handler: () => {
-            this.router.navigateByUrl('/app/tabs/notifications');
-          }
-        }
-      ]
-    }).then(toast => {
-      toast.present();
     });
   }
 

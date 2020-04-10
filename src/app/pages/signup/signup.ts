@@ -19,6 +19,7 @@ import {SwPush} from '@angular/service-worker';
 
 const {PushNotifications, Device} = Plugins;
 import {environment} from '../../../environments/environment';
+import {UtilsService} from '../../utils/services/utils.service';
 
 export interface PageStack {
   pageTitle: string;
@@ -77,7 +78,8 @@ export class SignupPage {
     private router: Router,
     private favrService: FavrDataService,
     private phonePipe: PhonePipe,
-    private swPush: SwPush
+    private swPush: SwPush,
+    private utils: UtilsService
   ) {
     this.favrService.getCities().then(res => {
       this.cities = res.cities;
@@ -97,26 +99,9 @@ export class SignupPage {
           });
         })
         .catch(error => {
-          this.presentToast(error.error.message);
+          this.utils.presentToast(error.error.message, 'danger');
         });
     }
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 
   updateProgress() {

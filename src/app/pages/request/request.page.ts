@@ -8,7 +8,6 @@ import {
   ModalController,
   NavController,
   Platform,
-  ToastController,
 } from '@ionic/angular';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
@@ -26,6 +25,7 @@ import {FavrDataService} from '../../utils/services/favr-data.service';
 import {PageStack} from '../signup/signup';
 import {FinanceService} from '../../utils/services/finance.service';
 import {Events} from '../../utils/services/events';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'request',
@@ -86,7 +86,6 @@ export class RequestPage implements OnInit, OnDestroy {
               private imagePicker: ImagePicker,
               private camera: Camera,
               private marketplaceService: MarketplaceService,
-              private toastCtrl: ToastController,
               private router: Router,
               private events: Events,
               private preferences: PreferencesService,
@@ -97,7 +96,8 @@ export class RequestPage implements OnInit, OnDestroy {
               private favrService: FavrDataService,
               private financeService: FinanceService,
               private loadingCtrl: LoadingController,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private utils: UtilsService) {
     this.events.subscribe('task-edit', (taskRequest: MainMarketplaceTask) => {
       if (taskRequest) {
         this.isTaskEdit = true;
@@ -183,7 +183,7 @@ export class RequestPage implements OnInit, OnDestroy {
           this.taskRequest.state = location.state;
           this.taskRequest.zip = location.zip;
 
-          this.presentToast('Location set!');
+          this.utils.presentToast('Location set!', 'success');
         }
       }, {
         text: 'Remove',
@@ -192,7 +192,7 @@ export class RequestPage implements OnInit, OnDestroy {
         handler: () => {
           this.preferences.deleteLocation(location.id).then(res => {
             this.getLocations();
-            this.presentToast(res.message);
+            this.utils.presentToast(res.message, 'success');
           });
         }
       }, {
@@ -250,7 +250,7 @@ export class RequestPage implements OnInit, OnDestroy {
         .then((res) => {
           this.closeRequestPage()
             .then(() => {
-              this.presentToast(res);
+              this.utils.presentToast(res);
               if (this.previousRoute.getCurrentUrl() !== '/app/tabs/marketplace') {
                 this.router.navigateByUrl('app/tabs/marketplace');
               }
@@ -263,7 +263,7 @@ export class RequestPage implements OnInit, OnDestroy {
               this.router.navigateByUrl('app/set-up-payments')
                 .then(() => {
                   this.events.publish('task-request', this.taskRequest);
-                  this.errorMessage(error.error.message);
+                  this.utils.presentToast(error.error.message, 'danger');
                 });
             });
           loadingPage.dismiss();
@@ -274,40 +274,6 @@ export class RequestPage implements OnInit, OnDestroy {
   setDifficulty(intensity: string) {
     this.taskRequest.intensity = intensity;
     this.updateProgress();
-  }
-
-  async errorMessage(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'danger',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 
   async onUpdateTaskRequest() {
@@ -323,14 +289,14 @@ export class RequestPage implements OnInit, OnDestroy {
     this.marketplaceService.editMainMarketplaceRequest(this.taskRequest)
       .then((res) => {
         this.closeRequestPage();
-        this.presentToast(res);
+        this.utils.presentToast(res, 'success');
         this.navCtrl.navigateBack(`app/marketplace-detail/${this.taskRequest.id}`);
         this.events.publish('task-action', TaskActions.CUSTOMER_UPDATE_TASK);
         loadingPage.dismiss();
       })
       .catch(error => {
         this.closeRequestPage();
-        this.presentToast(error.error.message);
+        this.utils.presentToast(error.error.message, 'danger');
         loadingPage.dismiss();
       });
   }

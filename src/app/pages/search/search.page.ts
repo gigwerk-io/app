@@ -1,11 +1,12 @@
 import {Component, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {IonSearchbar, ModalController, ToastController} from '@ionic/angular';
+import {IonSearchbar, ModalController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import {ChatService} from '../../utils/services/chat.service';
 import {Searchable} from '../../utils/interfaces/searchable';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'search',
@@ -29,7 +30,7 @@ export class SearchPage implements OnInit, OnDestroy {
   constructor(private modalCtrl: ModalController,
               private friendService: FriendsService,
               private router: Router,
-              private toastCtrl: ToastController,
+              private utils: UtilsService,
               private chatService: ChatService) { }
 
   ngOnInit() {
@@ -81,47 +82,13 @@ export class SearchPage implements OnInit, OnDestroy {
     });
   }
 
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
-  async errorMessage(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'danger',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
   startChat(username) {
     this.chatService.startChat(username)
       .then(res => {
         this.router.navigate(['/app/room', res.id]);
       })
       .catch(error => {
-      this.errorMessage(error.statusText);
+      this.utils.presentToast(error.statusText, 'danger');
     });
   }
 

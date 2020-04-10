@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {ToastController} from '@ionic/angular';
 import {AuthService} from '../../utils/services/auth.service';
 import {NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
-import Util = jasmine.Util;
 import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({

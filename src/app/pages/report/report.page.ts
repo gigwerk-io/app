@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, ToastController} from '@ionic/angular';
 import {ProfileService} from '../../utils/services/profile.service';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'report',
@@ -14,28 +15,11 @@ export class ReportPage implements OnInit {
   description: string;
 
   constructor(private modalCtrl: ModalController,
-              private toastCtrl: ToastController,
               private profileService: ProfileService,
-              private marketplaceService: MarketplaceService) { }
+              private marketplaceService: MarketplaceService,
+              private utils: UtilsService) { }
 
   ngOnInit() {}
-
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(t => {
-      t.present();
-    });
-  }
 
   closeReportPage() {
     this.modalCtrl.dismiss();
@@ -45,12 +29,12 @@ export class ReportPage implements OnInit {
     switch (this.type) {
       case 'User':
         this.profileService.reportUser(this.extra.user.user_id, this.description)
-          .then((res: string) => this.presentToast(res));
+          .then((res: string) => this.utils.presentToast(res));
         this.closeReportPage();
         break;
       case 'Task':
         this.marketplaceService.mainMarketplaceReportTask(this.extra.id, this.description)
-          .then((res: string) => this.presentToast(res));
+          .then((res: string) => this.utils.presentToast(res));
         this.closeReportPage();
         break;
     }
