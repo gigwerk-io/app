@@ -31,7 +31,7 @@ export class NotificationsPage implements OnInit {
               private platform: Platform,
               private badge: Badge,
               private navCtrl: NavController,
-              private routerOutlet: IonRouterOutlet,
+              public routerOutlet: IonRouterOutlet,
               private utils: UtilsService) { }
 
   ngOnInit() {
