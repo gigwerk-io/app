@@ -156,7 +156,7 @@
         </ion-col>
 
         <ion-col *ngIf="mainMarketplaceTask.action === 6" class="ion-text-center">
-          <ion-button (click)="completeTask(true)"
+          <ion-button (click)="openCompleteTaskModal(true)"
                       fill="outline"
                       size="small"
                       color="primary">
@@ -174,7 +174,7 @@
 
         <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
           <!--TODO: work on approval system instead of this work around-->
-          <ion-button (click)="customerApproveFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
+          <ion-button (click)="customerAcceptFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
                       size="small" color="primary">
             <ion-icon name="thumbs-up" slot="start"></ion-icon>
             Approve
@@ -190,7 +190,7 @@
         </ion-col>
 
         <ion-col *ngIf="mainMarketplaceTask.action === 10" class="ion-text-center">
-          <ion-button (click)="completeTask(false)" fill="outline" size="small" color="primary">
+          <ion-button (click)="openCompleteTaskModal(false)" fill="outline" size="small" color="primary">
             <ion-icon name="checkmark" slot="start"></ion-icon>
             Complete My Task
           </ion-button>
