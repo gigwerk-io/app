@@ -157,7 +157,7 @@ export class MarketplaceService {
       });
   }
 
-  public customerApproveFreelancer(taskID: number, freelancerID: number): Promise<string> {
+  public customerAcceptFreelancer(taskID: number, freelancerID: number): Promise<string> {
     return this.storage.get(StorageKeys.ACCESS_TOKEN)
       .then(token => {
         const authHeader: AuthorizationToken = {

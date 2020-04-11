@@ -2,6 +2,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {LocationAddress} from '../../utils/interfaces/settings/preferences';
 import {ActionSheetController, ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'saved-locations',
@@ -12,8 +13,8 @@ export class SavedLocationsPage implements OnInit {
 
   locations: LocationAddress[] = [];
   constructor(private preferences: PreferencesService,
-              public actionSheetCtrl: ActionSheetController,
-              private toastCtrl: ToastController) { }
+              private actionSheetCtrl: ActionSheetController,
+              private utils: UtilsService) { }
 
   ngOnInit() {
     this.getLocations();
@@ -28,8 +29,8 @@ export class SavedLocationsPage implements OnInit {
         handler: () => {
           this.preferences.makeDefaultLocation(id).then(res => {
             this.getLocations();
-            this.presentToast(res.message);
-          });
+            this.utils.presentToast('<strong>Success!</strong> Location is now default.', 'success');
+          }).catch(error => this.utils.presentToast(error.message, 'danger'));
         }
       }, {
         text: 'Remove',
@@ -38,8 +39,8 @@ export class SavedLocationsPage implements OnInit {
         handler: () => {
           this.preferences.deleteLocation(id).then(res => {
             this.getLocations();
-            this.presentToast(res.message);
-          });
+            this.utils.presentToast('<strong>Success!</strong> Location is now deleted.', 'success');
+          }).catch(error => this.utils.presentToast(error.message, 'danger'));
         }
       }, {
         text: 'Close',
@@ -48,23 +49,6 @@ export class SavedLocationsPage implements OnInit {
       }]
     });
     await actionSheet.present();
-  }
-
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 
   getLocations() {

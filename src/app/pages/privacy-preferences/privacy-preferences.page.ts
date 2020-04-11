@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {ToastController} from '@ionic/angular';
+import {UtilsService} from '../../utils/services/utils.service';
 
 
 @Component({
@@ -13,7 +14,8 @@ export class PrivacyPreferencesPage implements OnInit {
   displayDescription;
   displayRating;
   displayReceipts;
-  constructor(private preferences: PreferencesService, private toastController: ToastController) { }
+
+  constructor(private preferences: PreferencesService, private utils: UtilsService) { }
 
   ngOnInit() {
     this.preferences.getSettings().then(res => {
@@ -24,42 +26,25 @@ export class PrivacyPreferencesPage implements OnInit {
     });
   }
 
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
   updateSettings(type) {
     switch (type) {
       case 'description':
         const description = {display_description: !this.displayDescription};
-        this.preferences.updatePrivacyPreferences(description).then(res => {
-          this.presentToast(res.message);
-        });
+        this.preferences.updatePrivacyPreferences(description)
+          .then(res => this.utils.presentToast('<b>Success!</b> Your description preference was updated.', 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
       case 'rating':
         const rating = {display_rating: !this.displayRating};
-        this.preferences.updatePrivacyPreferences(rating).then(res => {
-          this.presentToast(res.message);
-        });
+        this.preferences.updatePrivacyPreferences(rating)
+          .then(res => this.utils.presentToast('<b>Success!</b> Your rating preference was updated.', 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
       case 'receipts':
         const receipts = {display_receipts: !this.displayReceipts};
-        this.preferences.updatePrivacyPreferences(receipts).then(res => {
-          this.presentToast(res.message);
-        });
+        this.preferences.updatePrivacyPreferences(receipts)
+          .then(res => this.utils.presentToast('<b>Success!</b> Your display receipts preference was updated.', 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
     }
   }
@@ -67,9 +52,9 @@ export class PrivacyPreferencesPage implements OnInit {
   scopeChange(val) {
     if (this.scope !== val) {
       const scope = {scope: val};
-      this.preferences.updatePrivacyPreferences(scope).then(res => {
-        this.presentToast(res.message);
-      });
+      this.preferences.updatePrivacyPreferences(scope)
+        .then(res => this.utils.presentToast('<b>Success!</b> Your scope preference was updated.', 'success'))
+        .catch(error => this.utils.presentToast(error.message, 'danger'));
     }
   }
 

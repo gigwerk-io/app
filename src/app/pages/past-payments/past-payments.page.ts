@@ -3,6 +3,7 @@ import {FinanceService} from '../../utils/services/finance.service';
 import {Payments} from '../../utils/interfaces/finance/payments';
 import {ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'past-payments',
@@ -12,7 +13,11 @@ import {Router} from '@angular/router';
 export class PastPaymentsPage implements OnInit {
   payments: Payments[];
   isNone = false;
-  constructor(private financeService: FinanceService, private toastController: ToastController, private router: Router) { }
+  constructor(
+    private financeService: FinanceService,
+    private router: Router,
+    private utils: UtilsService
+  ) { }
 
   ngOnInit() {
     this.getPayments();
@@ -24,27 +29,10 @@ export class PastPaymentsPage implements OnInit {
       if (res.payments.length === 0) {
         this.isNone = true;
       }
-    }, error => {
-      this.presentToast(error.error.message).then(() => {
+    }).catch(error => {
+      this.utils.presentToast(error.error.message, 'danger').then(() => {
         this.router.navigateByUrl('app/set-up-payments');
       });
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
     });
   }
 

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ReferralService} from '../../utils/services/referral.service';
 import {Platform, ToastController} from '@ionic/angular';
 import {ORIGIN, StorageKeys} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {SocialSharing} from '@ionic-native/social-sharing/ngx';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'refer-a-customer',
@@ -12,11 +13,13 @@ import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 })
 export class ReferACustomerPage implements OnInit {
 
-  constructor(private referralService: ReferralService,
-              private toastController: ToastController,
-              private storage: Storage,
-              private platform: Platform,
-              private socialSharing: SocialSharing) { }
+  constructor(
+    private referralService: ReferralService,
+    private storage: Storage,
+    private platform: Platform,
+    private socialSharing: SocialSharing,
+    private utils: UtilsService
+  ) { }
 
   ngOnInit() {
   }
@@ -45,22 +48,7 @@ export class ReferACustomerPage implements OnInit {
       selBox.select();
       document.execCommand('copy');
       document.body.removeChild(selBox);
-      this.presentToast('Copied to clipboard.');
+      this.utils.presentToast('Copied to clipboard.');
     });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'bottom',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => toast.present());
   }
 }

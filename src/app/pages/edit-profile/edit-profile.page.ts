@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
 import {PreferencesService} from '../../utils/services/preferences.service';
-import {ToastController} from '@ionic/angular';
 import {ProfileService} from '../../utils/services/profile.service';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'edit-profile',
@@ -24,7 +24,7 @@ export class EditProfilePage implements OnInit {
 
   constructor(private storage: Storage,
               private preferences: PreferencesService,
-              private toastController: ToastController,
+              private utils: UtilsService,
               private profileService: ProfileService) { }
 
   ngOnInit() {
@@ -45,7 +45,6 @@ export class EditProfilePage implements OnInit {
     });
   }
 
-
   updateProfileInfo() {
     const body: any = {
       description: this.description,
@@ -63,28 +62,11 @@ export class EditProfilePage implements OnInit {
       this.profileService.getProfile(this.userId).then(result => {
         // Update Storage Info
         this.storage.set(StorageKeys.PROFILE, result.user).then(response => {
-          this.presentToast('Your profile has been updated.');
+          this.utils.presentToast('<strong>Success</strong> Your profile has been updated.', 'success');
         });
       });
     }).catch(err => {
-      this.presentToast('An error has occurred while updating your profile');
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
+      this.utils.presentToast('<strong>Error!</strong> An error has occurred while updating your profile', 'danger');
     });
   }
 

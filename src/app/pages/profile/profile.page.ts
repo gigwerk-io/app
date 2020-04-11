@@ -12,6 +12,8 @@ import {Subscription} from 'rxjs';
 import {AuthService} from '../../utils/services/auth.service';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {ReportPage} from '../report/report.page';
+import {UtilsService} from '../../utils/services/utils.service';
+import {errorObject} from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'profile',
@@ -39,12 +41,12 @@ export class ProfilePage implements OnInit, OnDestroy {
               private marketplaceService: MarketplaceService,
               private router: Router,
               private photoViewer: PhotoViewer,
-              public toastController: ToastController,
               private actionSheetCtrl: ActionSheetController,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
               private authService: AuthService,
-              public routerOutlet: IonRouterOutlet) {}
+              public routerOutlet: IonRouterOutlet,
+              private utils: UtilsService) {}
 
   ngOnInit() {
     this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
@@ -69,17 +71,17 @@ export class ProfilePage implements OnInit, OnDestroy {
                 this.taskFeed = 'freelancer';
               }
             });
-        }, error => {
-          if (error.status === 401) {
-            this.authService.isValidToken().then(res => {
-              if (!res.response) {
-                this.presentToast('You have been logged out.');
-                this.storage.clear();
-                this.router.navigateByUrl('welcome');
-                this.navCtrl.setDirection('root');
-              }
-            });
-          }
+        }).catch(error => {
+        if (error.status === 401) {
+          this.authService.isValidToken().then(res => {
+            if (!res.response) {
+              this.utils.presentToast('You have been logged out.', 'success');
+              this.storage.remove(StorageKeys.PROFILE);
+              this.storage.remove(StorageKeys.ACCESS_TOKEN);
+              this.navCtrl.navigateRoot('/welcome');
+            }
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
+        }
         });
     });
   }
@@ -127,8 +129,9 @@ export class ProfilePage implements OnInit, OnDestroy {
       icon: 'remove-circle',
       handler: () => {
         this.friendService.unfriend(this.profile.user.user_id)
-          .then(message => this.presentToast(message)
-            .then(() => this.doRefresh()));
+          .then(message => this.utils.presentToast(message, 'success')
+            .then(() => this.doRefresh()))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
       }
     }, {
       text: 'Report User',
@@ -221,23 +224,6 @@ export class ProfilePage implements OnInit, OnDestroy {
     }
   }
 
-  async presentToast(message) {
-    const toast = await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(t => {
-      t.present();
-    });
-  }
-
   handleFriendButtonClick() {
     switch (this.profile.user.friend_status) {
       case 'friend':
@@ -246,16 +232,14 @@ export class ProfilePage implements OnInit, OnDestroy {
         break;
       case 'respond':
         this.friendService.acceptFriendRequest(this.profile.user.user_id)
-          .then(res => {
-            this.presentToast(res);
-          });
+          .then(res => this.utils.presentToast(res, 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
       case 'not_friend':
         this.friendButton.disable = true;
         this.friendService.sendFriendRequest(this.profile.user.user_id)
-          .then(res => {
-            this.presentToast(res);
-          });
+          .then(res => this.utils.presentToast(res, 'success'))
+          .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
     }
   }

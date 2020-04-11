@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-list class="ion-padding">
+  <ion-list>
     <ion-item class="no-inner-border-width">
       <input type="file" accept="image/*" (change)="uploadImage($event)" #file style="display:none">
       <ion-avatar class="image-center">
@@ -51,7 +51,7 @@
       <ion-datetime [(ngModel)]="birthday" placeholder="Select Birthday"></ion-datetime>
     </ion-item>
 
-    <div class="ion-padding-top form-submit-button">
+    <div class="ion-padding form-submit-button">
       <ion-button expand="block" type="submit" (click)="updateProfileInfo()">Save Changes</ion-button>
     </div>
   </ion-list>

@@ -3,6 +3,7 @@ import {SecurityService} from '../../utils/services/security.service';
 import {AlertController, ToastController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {Storage} from '@ionic/storage';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'account-options',
@@ -15,10 +16,11 @@ export class AccountOptionsPage implements OnInit {
               private alertController: AlertController,
               private storage: Storage,
               private router: Router,
-              private toastController: ToastController) { }
+              private utils: UtilsService) { }
 
   ngOnInit() {
   }
+
   async deactivateAccount() {
     const alert = await this.alertController.create({
       header: 'Account Deactivation',
@@ -31,11 +33,11 @@ export class AccountOptionsPage implements OnInit {
         }, {
           text: 'Yes',
           handler: () => {
-            this.securityService.deactivateAccount().then(res => {
+            this.securityService.deactivateAccount().then(() => {
               this.storage.clear();
-              this.presentToast(res.message);
+              this.utils.presentToast('<strong>Success!</strong> Account is now deactivated. You can reactivate your account by returning within 50 days otherwise you will need to register a new account.', 'success');
               this.router.navigateByUrl('welcome');
-            });
+            }).catch(error => this.utils.presentToast(error.message, 'danger'));
           }
         }
       ]
@@ -56,33 +58,16 @@ export class AccountOptionsPage implements OnInit {
         }, {
           text: 'Yes',
           handler: () => {
-            this.securityService.deleteAccount().then(res => {
+            this.securityService.deleteAccount().then(() => {
               this.storage.clear();
-              this.presentToast(res.message);
+              this.utils.presentToast('<strong>Success!</strong> Your account has been deleted.', 'success');
               this.router.navigateByUrl('welcome');
-            });
+            }).catch(error => this.utils.presentToast(error.message, 'danger'));
           }
         }
       ]
     });
 
     await alert.present();
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 }

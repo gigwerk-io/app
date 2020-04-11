@@ -5,8 +5,7 @@ import {
   IonRouterOutlet,
   LoadingController,
   ModalController,
-  NavController,
-  ToastController
+  NavController
 } from '@ionic/angular';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
@@ -25,6 +24,7 @@ import {FinanceService} from '../../utils/services/finance.service';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 import {Subscription} from 'rxjs';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'marketplace-detail',
@@ -48,7 +48,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
   constructor(private modalCtrl: ModalController,
               private loadingCtrl: LoadingController,
-              private toastCtrl: ToastController,
               private storage: Storage,
               private router: Router,
               private photoViewer: PhotoViewer,
@@ -63,28 +62,18 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private favrService: FavrDataService,
               private financeService: FinanceService,
               private geolocation: Geolocation,
-              public routerOutlet: IonRouterOutlet) {
-    this.favrService.getCategories().then(res => {
-      this.Categories = res.categories;
-    });
-    this.events.subscribe('task-action', (action) => {
-      if (action === TaskActions.FREELANCER_COMPLETE_TASK ||
-          action === TaskActions.CUSTOMER_COMPLETE_TASK ||
-          action === TaskActions.CUSTOMER_UPDATE_TASK) {
-        this.doRefresh();
-      }
-    });
+              public routerOutlet: IonRouterOutlet,
+              private utils: UtilsService) {
+    this.favrService.getCategories().then(res => this.Categories = res.categories);
+    this.events.subscribe('task-action', (action) => this.doRefresh());
   }
 
   ngOnInit() {
     this.geolocation.getCurrentPosition().then(res => {
       const coords = {lat: res.coords.latitude, long: res.coords.longitude};
-      // GEt job details with location
+      // Get job details with location
       this.getJobDetails(coords);
-    }).catch(err => {
-      // Get job details without location
-      this.getJobDetails();
-    });
+    }).catch(err => this.getJobDetails());
     this.getCreditBalance();
   }
 
@@ -94,7 +83,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     this.events.unsubscribe('task-action');
   }
 
-  public getJobDetails(coords?: any) {
+  getJobDetails(coords?: any) {
     this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       this.taskID = parseInt(data.get('id'), 10);
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID, coords)
@@ -146,37 +135,10 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
         }
       }, {
         text: 'Close',
-        role: 'cancel',
-        handler: () => {
-          // console.log('Cancel clicked');
-        }
+        role: 'cancel'
       }]
     });
     await actionSheet.present();
-  }
-
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-      this.marketplaceService.getSingleMainMarketplaceRequest(this.mainMarketplaceTask.id)
-        .then((task) => {
-          this.mainMarketplaceTask = task;
-          this.taskStatusDisplay = (this.mainMarketplaceTask.status === TaskStatus.PAID) ?
-            'Freelancer En-Route'
-            : this.mainMarketplaceTask.status;
-        });
-    });
   }
 
   startChat(username) {
@@ -185,7 +147,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
         this.router.navigate(['/app/room', res.id]);
       })
       .catch(error => {
-      this.presentToast(error.error.message);
+      this.utils.presentToast(error.error.message, 'danger');
     });
   }
 
@@ -193,7 +155,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     const freelancerAcceptedTask = await this.marketplaceService.freelancerAcceptMainMarketplaceRequest(this.mainMarketplaceTask.id)
       .then((res: string) => res)
       .catch((err: any) => err.error.message);
-    this.presentToast(freelancerAcceptedTask)
+    this.utils.presentToast(freelancerAcceptedTask)
       .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ACCEPT_TASK, this.mainMarketplaceTask.id));
   }
 
@@ -201,7 +163,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     const freelancerWithdrawTask = await this.marketplaceService.freelancerWithdrawMainMarketplaceRequest(this.mainMarketplaceTask.id)
       .then((res: string) => res)
       .catch((err: any) => err.error.message);
-    this.presentToast(freelancerWithdrawTask)
+    this.utils.presentToast(freelancerWithdrawTask)
       .then(() => this.events.publish('task-action', TaskActions.FREELANCER_WITHDRAW_TASK, this.mainMarketplaceTask.id));
   }
 
@@ -209,11 +171,38 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     const freelancerArriveTask = await this.marketplaceService.freelancerArrivedAtTaskSite(this.mainMarketplaceTask.id)
       .then((res: string) => res)
       .catch((err: any) => err.error.message);
-    this.presentToast(freelancerArriveTask)
+    this.utils.presentToast(freelancerArriveTask)
       .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ARRIVE_TASK, this.mainMarketplaceTask.id));
   }
 
-  async completeTask(isFreelancer: boolean) {
+  async customerCancelTask() {
+    const cancelTask = await this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
+      .then((res: string) => res)
+      .catch((err: any) => err.error.message);
+    this.utils.presentToast(cancelTask)
+      .then(() => {
+        this.events.publish('task-action', TaskActions.CUSTOMER_CANCEL_TASK, this.mainMarketplaceTask.id);
+        this.navCtrl.back();
+      });
+  }
+
+  async customerAcceptFreelancer(freelancerID: number) {
+    const customerApproveFreelancer = await this.marketplaceService.customerAcceptFreelancer(this.mainMarketplaceTask.id, freelancerID)
+      .then((res: string) => res)
+      .catch((err: any) => err.error.message);
+    this.utils.presentToast(customerApproveFreelancer)
+      .then(() => this.events.publish('task-action', TaskActions.CUSTOMER_ACCEPT_FREELANCER, this.mainMarketplaceTask.id));
+  }
+
+  async customerRejectFreelancer(freelancerID: number) {
+    const customerDenyFreelancer = await this.marketplaceService.customerDenyFreelancer(this.mainMarketplaceTask.id, freelancerID)
+      .then((res: string) => res)
+      .catch((err: any) => err.error.message);
+    this.utils.presentToast(customerDenyFreelancer)
+      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ACCEPT_TASK, this.mainMarketplaceTask.id));
+  }
+
+  async openCompleteTaskModal(isFreelancer: boolean) {
     const modal = await this.modalCtrl.create({
       component: CompleteTaskPage,
       componentProps: {taskID: this.mainMarketplaceTask.id, isFreelancer},
@@ -246,66 +235,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async customerCancelTask() {
-    const cancelTask = await this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.presentToast(cancelTask)
-      .then(() => {
-        this.events.publish('task-action', TaskActions.CUSTOMER_CANCEL_TASK, this.mainMarketplaceTask.id);
-        this.navCtrl.back();
-      });
-  }
-
-  async customerApproveFreelancer(freelancerID: number) {
-    const customerApproveFreelancer = await this.marketplaceService.customerApproveFreelancer(this.mainMarketplaceTask.id, freelancerID)
-      .then((res: string) => {
-        // console.log('success -> ' + res);
-        return res;
-      })
-      .catch((err: any) => {
-        // console.log('fail -> ' + JSON.stringify(err.error));
-        return err.error.message;
-      });
-    this.presentToast(customerApproveFreelancer)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ACCEPT_TASK, this.mainMarketplaceTask.id));
-  }
-
-  async customerRejectFreelancer(freelancerID: number) {
-    const customerDenyFreelancer = await this.marketplaceService.customerDenyFreelancer(this.mainMarketplaceTask.id, freelancerID)
-      .then((res: string) => {
-        // console.log('success -> ' + res);
-        return res;
-      })
-      .catch((err: any) => {
-        // console.log('fail -> ' + err);
-        return err.error.message;
-      });
-    this.presentToast(customerDenyFreelancer)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ACCEPT_TASK, this.mainMarketplaceTask.id));
-  }
-
-  async doRefresh(event?) {
-    setTimeout(() => {
-      this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID)
-        .then((task: MainMarketplaceTask) => {
-          this.mainMarketplaceTask = task;
-          this.taskStatusDisplay = (this.mainMarketplaceTask.status === 'Paid') ? 'Freelancer En-Route' : this.mainMarketplaceTask.status;
-          this.storage.get(StorageKeys.PROFILE)
-            .then(prof => {
-              this.userRole = prof.user.role;
-              this.isOwner = prof.user_id === task.customer_id;
-              this.isFreelancer = (this.userRole === Role.VERIFIED_FREELANCER)
-                ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
-                : false;
-            });
-        });
-      if (event) {
-        event.target.complete();
-      }
-    }, 1000);
-  }
-
   async editTaskRequest(task: MainMarketplaceTask) {
     const modal = await this.modalCtrl.create({
       component: RequestPage,
@@ -328,7 +257,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
       });
 
       await loadingPage.present();
-      loadingPage.dismiss();
+      await loadingPage.dismiss();
     });
 
     await modal.present()
@@ -336,6 +265,27 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
         this.events.publish('task-edit', task);
         return loadingRequestPage.dismiss();
       });
+  }
+
+  async doRefresh(event?) {
+    setTimeout(() => {
+      this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID)
+        .then((task: MainMarketplaceTask) => {
+          this.mainMarketplaceTask = task;
+          this.taskStatusDisplay = (this.mainMarketplaceTask.status === 'Paid') ? 'Freelancer En-Route' : this.mainMarketplaceTask.status;
+          this.storage.get(StorageKeys.PROFILE)
+            .then(prof => {
+              this.userRole = prof.user.role;
+              this.isOwner = prof.user_id === task.customer_id;
+              this.isFreelancer = (this.userRole === Role.VERIFIED_FREELANCER)
+                ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
+                : false;
+            });
+        });
+      if (event) {
+        event.target.complete();
+      }
+    }, 1000);
   }
 
   openLocation() {

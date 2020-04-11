@@ -2,20 +2,25 @@ import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import { Storage } from '@ionic/storage';
 import {StorageKeys} from './constants';
+import {AuthService} from '../utils/services/auth.service';
+import {UtilsService} from '../utils/services/utils.service';
 @Injectable({
   providedIn: 'root'
 })
 export class CheckAuth implements CanActivate {
   constructor(private storage: Storage,
-              private router: Router) {}
+              private router: Router,
+              private auth: AuthService,
+              private utils: UtilsService) {}
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
+    return this.auth.isValidToken()
       .then(token => {
-        if (token) {
+        if (token.response) {
+          console.log(token.response);
           switch (state.url) {
             case '/app':
               this.router.navigateByUrl('/app/tabs/marketplace');
@@ -42,6 +47,12 @@ export class CheckAuth implements CanActivate {
           }
         }
         return true;
+      })
+      .catch(error => {
+        if (!(state.url === '/welcome')) {
+          this.router.navigateByUrl('/welcome');
+        }
+        return false;
       });
   }
 }

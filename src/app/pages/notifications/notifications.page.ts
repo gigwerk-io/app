@@ -3,10 +3,11 @@ import {NotificationService} from '../../utils/services/notification.service';
 import {Notification} from '../../utils/interfaces/notification/notification';
 import {Router} from '@angular/router';
 import {AuthService} from '../../utils/services/auth.service';
-import {IonRouterOutlet, NavController, Platform, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, NavController, Platform} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import {Badge} from '@ionic-native/badge/ngx';
 import {StorageKeys} from '../../providers/constants';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'notifications',
@@ -27,11 +28,11 @@ export class NotificationsPage implements OnInit {
               private changeRef: ChangeDetectorRef,
               private authService: AuthService,
               private storage: Storage,
-              private toastController: ToastController,
               private platform: Platform,
               private badge: Badge,
               private navCtrl: NavController,
-              public routerOutlet: IonRouterOutlet) { }
+              public routerOutlet: IonRouterOutlet,
+              private utils: UtilsService) { }
 
   ngOnInit() {
     this.segmentChanged();
@@ -53,16 +54,16 @@ export class NotificationsPage implements OnInit {
         this.changeRef.detectChanges();
       })
       .catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken().then(res => {
-          if (!res.response) {
-            this.presentToast('You have been logged out.');
-            this.storage.remove(StorageKeys.PROFILE);
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.navCtrl.navigateRoot('/welcome');
-          }
-        });
-      }
+        if (error.status === 401) {
+          this.authService.isValidToken().then(res => {
+            if (!res.response) {
+              this.utils.presentToast('You have been logged out.', 'success');
+              this.storage.remove(StorageKeys.PROFILE);
+              this.storage.remove(StorageKeys.ACCESS_TOKEN);
+              this.navCtrl.navigateRoot('/welcome');
+            }
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
+        }
     });
   }
 
@@ -73,16 +74,16 @@ export class NotificationsPage implements OnInit {
         this.changeRef.detectChanges();
       })
       .catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken().then(res => {
-          if (!res.response) {
-            this.presentToast('You have been logged out.');
-            this.storage.remove(StorageKeys.PROFILE);
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.navCtrl.navigateRoot('/welcome');
-          }
-        });
-      }
+        if (error.status === 401) {
+          this.authService.isValidToken().then(res => {
+            if (!res.response) {
+              this.utils.presentToast('You have been logged out.', 'success');
+              this.storage.remove(StorageKeys.PROFILE);
+              this.storage.remove(StorageKeys.ACCESS_TOKEN);
+              this.navCtrl.navigateRoot('/welcome');
+            }
+          }).catch(e => this.utils.presentToast(e.message, 'danger'));
+        }
     });
   }
 
@@ -107,22 +108,5 @@ export class NotificationsPage implements OnInit {
     this.router.navigate([notification.action.page, notification.action.params]);
     this.notifications.splice(index, 1);
     this.notificationService.markNotificationAsRead(notification.id);
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 }

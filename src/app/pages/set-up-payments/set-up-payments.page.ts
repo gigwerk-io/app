@@ -2,14 +2,15 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Stripe } from '@ionic-native/stripe/ngx';
 import {STRIPE_PUBLIC} from '../../providers/constants';
 import {FinanceService} from '../../utils/services/finance.service';
-import {AlertController, LoadingController, ToastController} from '@ionic/angular';
-import {FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {AlertController, LoadingController} from '@ionic/angular';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import { CreditCardValidator } from 'angular-cc-library';
 import {Validators} from '@angular/forms';
 import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Router} from '@angular/router';
 import {Events} from '../../utils/services/events';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'set-up-payments',
@@ -23,13 +24,13 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
 
   constructor(private stripe: Stripe,
               private financeService: FinanceService,
-              private toastCtrl: ToastController,
               private alertController: AlertController,
               private marketplaceService: MarketplaceService,
               private router: Router,
               private fb: FormBuilder,
               private events: Events,
-              private loadCtrl: LoadingController) {
+              private loadCtrl: LoadingController,
+              private utils: UtilsService) {
     this.events.subscribe('task-request', (taskRequest) => {
       this.task = taskRequest;
     });
@@ -73,50 +74,18 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
           if (this.task) {
             setTimeout(() => {
               this.marketplaceService.createMainMarketplaceRequest(this.task)
-                .then(resp => this.presentToast(resp));
+                .then(resp => this.utils.presentToast(resp, 'success'));
             }, 1000);
             this.router.navigateByUrl('app/tabs/marketplace');
             this.events.unsubscribe('task-request');
           } else {
-            this.presentToast(res.message);
+            this.utils.presentToast(res.message, 'success');
           }
         });
-      }).catch(error => this.errorMessage(error.message));
+      }).catch(error => this.utils.presentToast(error.message, 'danger'));
     }
 
     await loadingCtrl.dismiss();
-  }
-
-  async errorMessage(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'danger',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
-  }
-
-  async presentToast(message) {
-    await this.toastCtrl.create({
-      message,
-      position: 'top',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => toast.present());
   }
 
   async presentAlert() {

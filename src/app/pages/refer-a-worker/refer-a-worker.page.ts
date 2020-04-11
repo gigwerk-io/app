@@ -3,8 +3,9 @@ import {ReferralService} from '../../utils/services/referral.service';
 import {ReferralSteps} from '../../utils/interfaces/referrals/ReferralSteps';
 import {Platform, ToastController} from '@ionic/angular';
 import {ORIGIN, StorageKeys} from '../../providers/constants';
-import { Storage } from '@ionic/storage';
+import {Storage} from '@ionic/storage';
 import {SocialSharing} from '@ionic-native/social-sharing/ngx';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'refer-a-worker',
@@ -12,13 +13,17 @@ import {SocialSharing} from '@ionic-native/social-sharing/ngx';
   styleUrls: ['./refer-a-worker.page.scss'],
 })
 export class ReferAWorkerPage implements OnInit {
+
   remainingSteps: ReferralSteps = {has_profile_description: false, has_profile_photo: false, has_bank_account: false};
-  constructor(private referralService: ReferralService,
-              private toastController: ToastController,
-              private changeRef: ChangeDetectorRef,
-              private storage: Storage,
-              private socialSharing: SocialSharing,
-              private platform: Platform) { }
+
+  constructor(
+    private referralService: ReferralService,
+    private changeRef: ChangeDetectorRef,
+    private storage: Storage,
+    private socialSharing: SocialSharing,
+    private platform: Platform,
+    private utils: UtilsService
+  ) { }
 
   ngOnInit() {
   }
@@ -55,23 +60,8 @@ export class ReferAWorkerPage implements OnInit {
       selBox.select();
       document.execCommand('copy');
       document.body.removeChild(selBox);
-      this.presentToast('Copied to clipboard.');
+      this.utils.presentToast('Copied to clipboard.', 'dark', 'bottom');
     });
-  }
-
-  async presentToast(message) {
-    await this.toastController.create({
-      message,
-      position: 'bottom',
-      duration: 2500,
-      color: 'dark',
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => toast.present());
   }
 
   async doRefresh(event?: any) {

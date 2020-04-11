@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Router } from '@angular/router';
 
-import {MenuController, IonSlides, NavController} from '@ionic/angular';
+import {IonSlides, NavController} from '@ionic/angular';
 
 import { Storage } from '@ionic/storage';
 import {AuthService} from '../../utils/services/auth.service';

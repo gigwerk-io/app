@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import {ToastController} from '@ionic/angular';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../utils/services/auth.service';
 import {NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
+import {UtilsService} from '../../utils/services/utils.service';
 
 @Component({
   selector: 'forgot-password',
@@ -12,9 +12,13 @@ import {Router} from '@angular/router';
 export class ForgotPasswordPage implements OnInit {
   email;
   submitted = false;
-  constructor(private toastController: ToastController,
-              private authService: AuthService,
-              private router: Router) { }
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private utils: UtilsService
+  ) {
+  }
 
   ngOnInit() {
   }
@@ -23,33 +27,16 @@ export class ForgotPasswordPage implements OnInit {
     this.submitted = true;
     if (form.valid) {
       this.authService.forgotPassword(this.email).then(res => {
-        this.presentToast(res.message).then(() => {
+        this.utils.presentToast(res.message).then(() => {
           this.router.navigateByUrl('login');
         });
-      }, error => {
+      }).catch(error => {
         if (error.status === 422) {
-          this.presentToast(error.error.email[0], 'danger');
+          this.utils.presentToast(error.error.email[0], 'danger');
         } else {
-          this.presentToast(error.error.message, 'danger');
+          this.utils.presentToast(error.error.message, 'danger');
         }
       });
     }
-  }
-
-  async presentToast(message, color = 'dark') {
-    await this.toastController.create({
-      message,
-      position: 'top',
-      duration: 3000,
-      color,
-      buttons: [
-        {
-          text: 'Done',
-          role: 'cancel'
-        }
-      ]
-    }).then(toast => {
-      toast.present();
-    });
   }
 }

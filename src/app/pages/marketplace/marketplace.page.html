@@ -4,7 +4,7 @@
   [routerOutlet]="routerOutlet"
 >
 </favr-page-header>
-<ion-content>
+<ion-content #ionContent>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -30,7 +30,11 @@
   </ng-template>
 
   <ng-container>
-    <favr-marketplace-card *ngFor="let task of marketplaceTasks" [mainMarketplaceTask]="task" (taskActionTaken)="doRefresh($event)"></favr-marketplace-card>
+    <favr-marketplace-card *ngFor="let task of marketplaceTasks"
+                           [mainMarketplaceTask]="task"
+                           (taskActionTaken)="doRefresh($event)"
+                           [routerOutlet]="routerOutlet"
+    ></favr-marketplace-card>
   </ng-container>
 
 </ion-content>
