@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {Router} from '@angular/router';
+import {Router, RoutesRecognized} from '@angular/router';
 import {SwUpdate} from '@angular/service-worker';
 
 import {Config, IonRouterOutlet, MenuController, ModalController, Platform, ToastController} from '@ionic/angular';
@@ -18,6 +18,8 @@ import {
   StatusBarStyle,
   Capacitor
 } from '@capacitor/core';
+import {filter, pairwise} from 'rxjs/operators';
+import {PreviousRouteService} from './providers/previous-route.service';
 
 const {StatusBar, SplashScreen} = Plugins;
 
@@ -34,6 +36,7 @@ export class AppComponent implements OnInit, OnDestroy {
   swUpdateSub: Subscription;
   statusBarAvailable = Capacitor.isPluginAvailable('StatusBar');
   splashScreenAvailable = Capacitor.isPluginAvailable('SplashScreen');
+  previousRouteSub: Subscription;
 
   constructor(
     private menu: MenuController,
@@ -45,7 +48,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private screenOrientation: ScreenOrientation,
     public tabsPage: TabsPage,
     private modalCtrl: ModalController,
-    private config: Config
+    private config: Config,
+    private previousRouteService: PreviousRouteService
   ) {
     this.initializeApp();
   }
@@ -89,6 +93,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.swUpdateSub.unsubscribe();
+    this.previousRouteSub.unsubscribe();
   }
 
   initializeApp() {
@@ -122,6 +127,15 @@ export class AppComponent implements OnInit, OnDestroy {
       if (this.platform.is('cordova')) {
         this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
       }
+
+      this.previousRouteSub = this.router.events
+        .pipe(filter((evt: any) => evt instanceof RoutesRecognized), pairwise())
+        .subscribe((events: RoutesRecognized[]) => {
+          // console.log('previous url', events[0].urlAfterRedirects);
+          // console.log('current url', events[1].urlAfterRedirects);
+          this.previousRouteService.setPreviousUrl(events[0].urlAfterRedirects);
+          this.previousRouteService.setCurrentUrl(events[1].urlAfterRedirects);
+        });
     });
   }
 

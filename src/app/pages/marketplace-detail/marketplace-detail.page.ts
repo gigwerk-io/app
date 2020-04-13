@@ -25,6 +25,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 import {Subscription} from 'rxjs';
 import {UtilsService} from '../../utils/services/utils.service';
+import {PreviousRouteService} from '../../providers/previous-route.service';
 
 @Component({
   selector: 'marketplace-detail',
@@ -63,6 +64,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private financeService: FinanceService,
               private geolocation: Geolocation,
               public routerOutlet: IonRouterOutlet,
+              private previousRoute: PreviousRouteService,
               private utils: UtilsService) {
     this.favrService.getCategories().then(res => this.Categories = res.categories);
     this.events.subscribe('task-action', (action) => this.doRefresh());
@@ -299,5 +301,10 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
    this.launchNavigator.navigate(locationAddress, options)
       .then(success => {})
       .catch(error => window.open('https://maps.google.com/?q=' + locationAddress));
+  }
+
+  navigateBack() {
+    const prevRoute = this.previousRoute.getPreviousUrl();
+    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/marketplace');
   }
 }

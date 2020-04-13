@@ -81,7 +81,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
     await loadingMarketplaceDetail.present();
 
-    return this.router.navigateByUrl('/app/marketplace-detail/' + id)
+    return this.navCtrl.navigateForward('/app/marketplace-detail/' + id)
       .then(() => loadingMarketplaceDetail.dismiss());
   }
 
@@ -109,7 +109,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   startChat(username) {
     this.chatService.startChat(username).then(res => {
-      this.router.navigate(['/app/room', res.id]);
+      this.navCtrl.navigateForward(['/app/room', res.id]);
     }).catch(error => {
       this.utils.presentToast(error.error.message, 'danger');
     });
@@ -123,7 +123,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
       })
       .catch((err) => {
         this.utils.presentToast(err.error.message, 'danger').then(() => {
-          setTimeout(() => this.router.navigateByUrl('app/connect-bank-account'), 550);
+          setTimeout(() => this.navCtrl.navigateForward('app/connect-bank-account'), 550);
         });
       });
   }

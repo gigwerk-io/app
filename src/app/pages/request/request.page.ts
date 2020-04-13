@@ -301,7 +301,7 @@ export class RequestPage implements OnInit, OnDestroy {
       });
   }
 
-  goBack() {
+  navigateBack() {
     this.pageStack.pop(); // remove current page
     const prevPage = this.pageStack[this.pageStack.length - 1];
     this.backPage = prevPage.page;

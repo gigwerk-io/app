@@ -11,7 +11,9 @@
   <ion-header [ngClass]="!isModal ? 'animated slideInRight' : ''">
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button color="primary" icon="arrow-back"  mode="md" (click)="goBack()" defaultHref></ion-back-button>
+        <ion-button class="bg-transparent" (click)="navigateBack()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
         <ion-button class="nav-button" (click)="openSubPage('request-index')">
