@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
@@ -15,13 +15,14 @@ import {RequestPage} from '../request/request.page';
   templateUrl: './tabs-page.html',
   styleUrls: ['./tabs-page.scss']
 })
-export class TabsPage implements OnInit {
+export class TabsPage implements OnInit, OnDestroy {
 
   tabSlot: string;
   notificationCount = 0;
   friendCount = 0;
   profileImage: string;
   profileId: number;
+  requestButtonIcon = 'assets/brand/favr_logo_white.png';
 
   constructor(private modalCtrl: ModalController,
               private loadingCtrl: LoadingController,
@@ -40,9 +41,22 @@ export class TabsPage implements OnInit {
       this.tabSlot = 'bottom';
     }
     this.getBadges();
+    this.events.subscribe('prefersDark', (prefDark: boolean) => {
+      if (prefDark) {
+        this.requestButtonIcon = 'assets/brand/favr_logo_blk.png';
+      } else {
+        this.requestButtonIcon = 'assets/brand/favr_logo_white.png';
+      }
+    });
   }
 
   ngOnInit(): void {
+    this.storage.get(StorageKeys.THEME_PREFERENCE)
+      .then(prefDark => {
+        if (prefDark) {
+          this.requestButtonIcon = 'assets/brand/favr_logo_blk.png';
+        }
+      });
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
         if (profile) {
@@ -52,6 +66,10 @@ export class TabsPage implements OnInit {
           this.angulartics2GoogleAnalytics.startTracking();
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.events.unsubscribe('prefersDark');
   }
 
   getBadges() {

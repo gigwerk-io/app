@@ -11,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import {AuthModule} from './auth/auth.module';
 import {FormsModule, FormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {PusherServiceProvider} from './providers/pusher.service';
 import {MomentModule} from 'ngx-moment';
@@ -33,7 +32,6 @@ import { PushNotificationsModule } from 'ng-push';
 
 @NgModule({
   imports: [
-    AuthModule,
     AppRoutingModule,
     Angulartics2Module.forRoot(),
     BrowserModule,

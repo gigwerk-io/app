@@ -1,4 +1,11 @@
 <ion-tabs>
+  <ion-buttons>
+    <ion-button (click)="openRequestPage()" class="icon-button">
+      <ion-img [src]="requestButtonIcon"></ion-img>
+    </ion-button>
+  </ion-buttons>
+
+
   <ion-tab-bar *ngIf="tabSlot === 'bottom'" slot="bottom">
 
     <ion-tab-button tab="marketplace" (click)="scrollToTop()">
@@ -13,7 +20,7 @@
     </ion-tab-button>
 
     <ion-tab-button (click)="openRequestPage()">
-      <ion-icon name="add-circle-outline" class="icon-button"></ion-icon>
+      <ion-icon></ion-icon>
       <ion-label>Request</ion-label>
     </ion-tab-button>
 
