@@ -33,8 +33,8 @@
         <ion-note slot="end">
           <small>{{room.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
         </ion-note>
-        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
         <ion-badge color="primary" slot="end" *ngIf="room.unread > 0">{{room.unread}}</ion-badge>
+        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ng-template #noRooms>

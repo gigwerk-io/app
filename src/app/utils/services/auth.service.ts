@@ -6,15 +6,18 @@ import { Storage } from '@ionic/storage';
 import {AuthResponse, SignOutResponse, ValidateTokenResponse} from '../interfaces/auth/auth-response';
 import {AuthorizationToken, UserOptions, UserRegistrationOptions} from '../interfaces/user-options';
 import {API_ADDRESS, StorageKeys} from '../../providers/constants';
+import {RESTService} from './rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService extends RESTService {
   authSubject = new BehaviorSubject(false);
 
-  constructor(private httpClient: HttpClient,
-              private storage: Storage) { }
+  constructor(public httpClient: HttpClient,
+              public storage: Storage) {
+    super(httpClient, storage);
+  }
 
   register(user: UserRegistrationOptions): Promise<AuthResponse> {
     return this.httpClient.post<AuthResponse>(`${API_ADDRESS}/register`, user).pipe(
@@ -58,17 +61,8 @@ export class AuthService {
   }
 
   isValidToken() {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<ValidateTokenResponse>(API_ADDRESS + '/validate', authHeader)
-            .toPromise()
-            .then((res) => res);
-        });
+    return this.makeHttpRequest<ValidateTokenResponse>('validate', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   forgotPassword(email): Promise<SignOutResponse> {

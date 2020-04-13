@@ -20,7 +20,7 @@ const {StatusBar} = Plugins;
 export class SettingsPage implements OnInit {
 
   seeCredit: boolean;
-  darkMode = true;
+  darkMode = false;
   isFreelancer: boolean;
   COPY_YEAR = (new Date()).getFullYear();
   VERSION = environment.version;
