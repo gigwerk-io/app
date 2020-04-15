@@ -1,15 +1,15 @@
 import {ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {MainMarketplaceTask} from '../../interfaces/main-marketplace/main-marketplace-task';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import {AlertController, IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
+import {AlertController, IonRouterOutlet, ModalController, NavController} from '@ionic/angular';
 import {Router} from '@angular/router';
-import {ChatService} from '../../services/chat.service';
 import {MarketplaceService} from '../../services/marketplace.service';
-import {TaskActions, TaskStatus} from '../../../providers/constants';
-import {PastJob} from '../../interfaces/user';
+import {Role, StorageKeys, TaskActions, TaskStatus} from '../../../providers/constants';
+import {PastJob, Profile} from '../../interfaces/user';
 import {RequestPage} from '../../../pages/request/request.page';
 import {Events} from '../../services/events';
 import {UtilsService} from '../../services/utils.service';
+import {Storage} from '@ionic/storage';
 
 @Component({
   selector: 'favr-marketplace-card',
@@ -26,19 +26,20 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   mainMarketTask: MainMarketplaceTask;
   pastJob: PastJob;
+  userProfile: Profile;
   TaskStatus = TaskStatus;
+  Role = Role;
 
   constructor(private photoViewer: PhotoViewer,
-              private loadingCtrl: LoadingController,
               private router: Router,
               private marketplaceService: MarketplaceService,
-              private chatService: ChatService,
               private utils: UtilsService,
               private changeRef: ChangeDetectorRef,
               private modalCtrl: ModalController,
               private navCtrl: NavController,
               private alertCtrl: AlertController,
-              private events: Events) {
+              private events: Events,
+              private storage: Storage) {
     this.events.subscribe('task-action', (action, taskID) => {
       if (this.mainMarketplaceTask.id === taskID) {
         switch (action) {
@@ -60,8 +61,12 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     setTimeout(() => {
-      this.mainMarketTask = this.mainMarketplaceTask;
-      this.pastJob = this.freelancerPastTask;
+      this.storage.get(StorageKeys.PROFILE)
+        .then(prof => {
+          this.userProfile = prof;
+          this.mainMarketTask = this.mainMarketplaceTask;
+          this.pastJob = this.freelancerPastTask;
+        });
     }, 2000);
   }
 
@@ -73,16 +78,8 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
     this.photoViewer.show(url, (photoTitle) ? photoTitle : '');
   }
 
-  async loadMarketplaceDetail(id: number): Promise<boolean> {
-    const loadingMarketplaceDetail = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      translucent: true
-    });
-
-    await loadingMarketplaceDetail.present();
-
-    return this.navCtrl.navigateForward('/app/marketplace-detail/' + id)
-      .then(() => loadingMarketplaceDetail.dismiss());
+  async openMarketplaceDetail(id: number): Promise<boolean> {
+    return this.navCtrl.navigateForward('/app/marketplace-detail/' + id);
   }
 
   async alertConfirmCustomerCancel() {
@@ -108,11 +105,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).then(res => {
-      this.navCtrl.navigateForward(['/app/room', res.id]);
-    }).catch(error => {
-      this.utils.presentToast(error.error.message, 'danger');
-    });
+    this.utils.startChat(username);
   }
 
   freelancerAcceptTask() {
@@ -145,34 +138,13 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   }
 
   async customerEditTask(task: MainMarketplaceTask) {
-    const modal = await this.modalCtrl.create({
+    const requestPageModal = await this.modalCtrl.create({
       component: RequestPage,
       componentProps: {isModal: true},
       swipeToClose: false,
       presentingElement: this.routerOutlet.nativeEl
     });
-
-    const loadingRequestPage = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      translucent: true
-    });
-
-    await loadingRequestPage.present();
-
-    modal.onDidDismiss().then(async () => {
-      const loadingPage = await this.loadingCtrl.create({
-        message: 'Please wait...',
-        translucent: true
-      });
-
-      await loadingPage.present();
-      loadingPage.dismiss();
-    });
-
-    await modal.present()
-      .then(() => {
-        this.events.publish('task-edit', task);
-        return loadingRequestPage.dismiss();
-      });
+    await requestPageModal.present()
+      .then(() => this.events.publish('task-edit', task));
   }
 }

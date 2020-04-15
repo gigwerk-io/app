@@ -31,17 +31,21 @@ hr {
 }
 
 .no-tasks {
-  @media screen and (max-width: $iphoneSe){
-    margin-top: 200px;
-  }
-
-  @media screen and (max-width: $iphone678){
-    margin-top: 150px;
-  }
-
-  @media screen and (min-width: 376px){
-    margin-top: 100px;
-  }
+  //@media screen and (max-width: $iphoneSe){
+  //  margin-top: 200px;
+  //}
+  //
+  //@media screen and (max-width: $iphone678){
+  //  margin-top: 150px;
+  //}
+  //
+  //@media screen and (min-width: 376px){
+  //  margin-top: 100px;
+  //}
+  margin-top: 20%;
+  position: absolute;
+  left: 50%;
+  margin-left: -71.74px;
 }
 
 .star {

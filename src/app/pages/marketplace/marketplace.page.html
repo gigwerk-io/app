@@ -9,14 +9,14 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ion-segment (ionChange)="segmentChanged()" [(ngModel)]="segment">
-    <ion-segment-button value="all">
-      <ion-label>Feed</ion-label>
+    <ion-segment-button *ngIf="userRole === Role.VERIFIED_FREELANCER" value="jobs">
+      <ion-label>My Jobs</ion-label>
     </ion-segment-button>
     <ion-segment-button value="me">
       <ion-label>My Tasks</ion-label>
     </ion-segment-button>
-    <ion-segment-button *ngIf="userRole === Role.VERIFIED_FREELANCER" value="jobs">
-      <ion-label>My Jobs</ion-label>
+    <ion-segment-button value="all">
+      <ion-label>Public Feed</ion-label>
     </ion-segment-button>
   </ion-segment>
 

@@ -13,7 +13,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Storage} from '@ionic/storage';
 import {Role, StorageKeys, TaskActions, TaskStatus} from '../../providers/constants';
-import {ChatService} from '../../utils/services/chat.service';
 import {Events} from '../../utils/services/events';
 import {CompleteTaskPage} from '../complete-task/complete-task.page';
 import {LaunchNavigator, LaunchNavigatorOptions} from '@ionic-native/launch-navigator/ngx';
@@ -57,7 +56,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private marketplaceService: MarketplaceService,
               private actionSheetCtrl: ActionSheetController,
               private alertCtrl: AlertController,
-              private chatService: ChatService,
               private events: Events,
               private launchNavigator: LaunchNavigator,
               private favrService: FavrDataService,
@@ -102,6 +100,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
                 ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
                 : false;
             });
+          console.log(this.mainMarketplaceTask);
         });
     });
   }
@@ -144,13 +143,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username)
-      .then(res => {
-        this.router.navigate(['/app/room', res.id]);
-      })
-      .catch(error => {
-      this.utils.presentToast(error.error.message, 'danger');
-    });
+    this.utils.startChat(username);
   }
 
   async freelancerAcceptTask() {

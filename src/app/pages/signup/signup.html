@@ -9,11 +9,18 @@
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-back-button color="primary" icon="arrow-back"  mode="md" (click)="goBack()" defaultHref="/signup"></ion-back-button>
+        <ion-button class="bg-transparent" (click)="navigateBack()">
+          <ion-icon name="arrow-back"></ion-icon>
+        </ion-button>
       </ion-buttons>
       <ion-title class="animated fadeIn">
         {{subPageTitle}}
       </ion-title>
+      <ion-buttons slot="end">
+        <ion-button class="nav-button" (click)="openSubPage('signup-index')">
+          <ion-icon name="list"></ion-icon>
+        </ion-button>
+      </ion-buttons>
       <ion-progress-bar *ngIf="progress" [value]="progress" [ngClass]="progress == 1 ? 'green-progress' : ''"></ion-progress-bar>
     </ion-toolbar>
   </ion-header>
@@ -75,7 +82,7 @@
         </div>
       </ion-list>
 
-      <ion-list *ngSwitchCase="'personal-info'">
+      <ion-list *ngSwitchCase="'personal-info'" [ngClass]="(backPage == 'personal-info') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
         <ion-item class="input-item">
           <ion-label position="stacked">First Name</ion-label>
           <ion-input [(ngModel)]="signup.first_name"
@@ -202,7 +209,7 @@
         </ion-button>
       </ion-list>
 
-      <ion-list *ngSwitchCase="'set-up-password'">
+      <ion-list *ngSwitchCase="'set-up-password'" [ngClass]="(backPage == 'set-up-password') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
         <ion-item>
           <ion-label position="stacked">Password</ion-label>
           <ion-input [(ngModel)]="signup.password"
@@ -249,31 +256,28 @@
         </ion-button>
       </ion-list>
 
-      <ion-list *ngSwitchCase="'select-city'">
-        <ion-card *ngFor="let city of cities" style="border-radius: 2rem!important;">
-          <ion-item style="padding-right: 0!important;">
-            <h2>
-              {{city.city}}, {{city.state}}
-            </h2>
-          </ion-item>
+      <ion-list *ngSwitchCase="'select-city'" [ngClass]="(backPage == 'select-city') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
+        <ion-card *ngFor="let city of cities">
 
-          <ion-slides>
-            <ion-slide style="max-height: 200px;overflow-y: hidden;overflow-x: hidden;">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="assets/img/{{city.image}}">
-            </ion-slide>
-          </ion-slides>
+          <img src="assets/img/{{city.image}}" alt="{{city.city}}">
+
+          <ion-card-header>
+            <ion-card-title>
+              <h3 class="text-bold">{{city.city}}, {{city.state}}</h3>
+            </ion-card-title>
+          </ion-card-header>
 
           <ion-card-content>
             <p>{{city.description}}</p>
           </ion-card-content>
 
-          <ion-row class="ion-padding-top">
+          <ion-row class="ion-padding">
             <ion-col class="ion-text-center">
               <ion-button  *ngIf="signup.city_id == city.id" color="success" expand="block" shape="round" disabled>
                 <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
                 Selected
               </ion-button>
-              <ion-button  *ngIf="signup.city_id  != city.id" color="success" expand="block" shape="round" (click)="selectCity(city)">
+              <ion-button  *ngIf="signup.city_id != city.id" color="success" expand="block" shape="round" (click)="selectCity(city)">
                 <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
                 Select City
               </ion-button>

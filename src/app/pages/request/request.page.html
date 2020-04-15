@@ -121,12 +121,16 @@
 
     <div *ngSwitchCase="'task-information'" [ngClass]="(backPage == 'task-information') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
       <ion-list>
-        <ion-item class="ion-padding-top ion-margin-top">
+        <ion-item class="ion-margin-top">
+          <ion-label position="stacked">
+            Task Description
+          </ion-label>
           <ion-textarea
             placeholder="Please Describe Your Job"
             (ionChange)="onTextboxChange()"
             [(ngModel)]="taskRequest.description"
             name="description"
+            autoGrow
           ></ion-textarea>
         </ion-item>
 

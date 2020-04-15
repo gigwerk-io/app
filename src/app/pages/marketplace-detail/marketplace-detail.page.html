@@ -84,10 +84,10 @@
 
       <ng-container *ngIf="mainMarketplaceTask.proposals">
         <ion-row
-          *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE || mainMarketplaceTask.status != TaskStatus.REQUESTED && isOwner"
+          *ngIf="mainMarketplaceTask.status == TaskStatus.COMPLETE || mainMarketplaceTask.status != TaskStatus.REQUESTED && isOwner"
           routerLink="/app/profile/{{mainMarketplaceTask.proposals[0].user_id}}" routerDirection="forward">
           <ion-col size="3" class="ion-padding-start">
-            <ion-avatar class="ion-padding-start ion-margin-top">
+            <ion-avatar class="ion-margin-top">
               <favr-img
                 [src]="mainMarketplaceTask.proposals[0].user.profile.image ? mainMarketplaceTask.proposals[0].user.profile.image : 'assets/img/user.png'"
                 spinnerSrc="assets/img/user.png"
@@ -98,7 +98,7 @@
             </ion-avatar>
           </ion-col>
           <ion-col size="9" class="ion-padding-top">
-            <ng-container *ngIf="mainMarketplaceTask.status === TaskStatus.COMPLETE; else proposedBy">
+            <ng-container *ngIf="mainMarketplaceTask.status == TaskStatus.COMPLETE; else proposedBy">
               <b>Completed By:</b>
               <br>
               {{mainMarketplaceTask.proposals[0].user.first_name}}
@@ -107,103 +107,127 @@
             <ng-template #proposedBy>
               <b>{{mainMarketplaceTask.proposals[0].user.first_name}}</b>
               <br>
-              {{(mainMarketplaceTask.status === TaskStatus.PENDING_APPROVAL) ? 'Has Accepted!' : 'is working this task.'}}
+              {{(mainMarketplaceTask.status == TaskStatus.PENDING_APPROVAL) ? 'your freelancer has accepted to work this task.' : 'your freelancer is working this task.'}}
             </ng-template>
           </ion-col>
         </ion-row>
       </ng-container>
 
-      <ion-row class="ion-padding-bottom">
-        <ion-col *ngIf="mainMarketplaceTask.action === 2" class="ion-text-center">
-          <ion-button
-            (click)="freelancerAcceptTask()"
-            fill="outline"
-            size="small"
-            color="primary">
-            <ion-icon name="thumbs-up" slot="start"></ion-icon>
-            Accept
-          </ion-button>
-        </ion-col>
+      <!-- begin task actions-->
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 3 || mainMarketplaceTask.action === 5" class="ion-text-center">
-          <ion-button (click)="freelancerWithdrawTask()"
-                      fill="outline"
-                      size="small"
-                      color="primary">
-            <ion-icon name="thumbs-down" slot="start"></ion-icon>
-            Withdraw
-          </ion-button>
-        </ion-col>
+      <ion-row class="ion-padding-bottom" *ngIf="isOwner || isFreelancer">
+        <!-- Begin freelancer task actions-->
+        <ng-container *ngIf="isFreelancer">
+          <ion-col *ngIf="mainMarketplaceTask.action == 2" class="ion-text-center">
+            <ion-button
+              (click)="freelancerAcceptTask()"
+              fill="outline"
+              size="small"
+              color="primary">
+              <ion-icon name="thumbs-up" slot="start"></ion-icon>
+              Accept
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 5 || mainMarketplaceTask.action === 6" class="ion-text-center">
-          <ion-button fill="outline"
-                      size="small"
-                      color="primary"
-                      (click)="startChat(mainMarketplaceTask.customer.username)">
-            <ion-icon name="chatbubble" slot="start"></ion-icon>
-            Contact
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 3 || mainMarketplaceTask.action == 5" class="ion-text-center">
+            <ion-button (click)="freelancerWithdrawTask()"
+                        fill="outline"
+                        size="small"
+                        color="primary">
+              <ion-icon name="thumbs-down" slot="start"></ion-icon>
+              Withdraw
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 5" class="ion-text-center">
-          <ion-button (click)="freelancerArriveTask()"
-                      fill="outline"
-                      size="small"
-                      color="primary">
-            <ion-icon mode="md" name="hand-right" slot="start"></ion-icon>
-            Arrive
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 5 || mainMarketplaceTask.action == 6" class="ion-text-center">
+            <ion-button fill="outline"
+                        size="small"
+                        color="primary"
+                        (click)="startChat(mainMarketplaceTask.customer.username)">
+              <ion-icon name="chatbubble" slot="start"></ion-icon>
+              Chat
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 6" class="ion-text-center">
-          <ion-button (click)="openCompleteTaskModal(true)"
-                      fill="outline"
-                      size="small"
-                      color="primary">
-            <ion-icon name="checkmark" slot="start"></ion-icon>
-            Complete Task
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 5" class="ion-text-center">
+            <ion-button (click)="freelancerArriveTask()"
+                        fill="outline"
+                        size="small"
+                        color="primary">
+              <ion-icon mode="md" name="hand-right" slot="start"></ion-icon>
+              Arrive
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 1" class="ion-text-center">
-          <ion-button (click)="editTaskRequest(mainMarketplaceTask)" fill="outline" size="small" color="primary">
-            <ion-icon name="create" slot="start"></ion-icon>
-            Edit
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 6" class="ion-text-center">
+            <ion-button (click)="openCompleteTaskModal(true)"
+                        fill="outline"
+                        size="small"
+                        color="primary">
+              <ion-icon name="checkmark" slot="start"></ion-icon>
+              Complete Task
+            </ion-button>
+          </ion-col>
+        </ng-container>
+        <!-- End freelancer task actions-->
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
-          <!--TODO: work on approval system instead of this work around-->
-          <ion-button (click)="customerAcceptFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
-                      size="small" color="primary">
-            <ion-icon name="thumbs-up" slot="start"></ion-icon>
-            Approve
-          </ion-button>
-        </ion-col>
+        <!-- Start task owner actions -->
+        <ng-container *ngIf="isOwner">
+          <ion-col *ngIf="mainMarketplaceTask.action == 1" class="ion-text-center">
+            <ion-button (click)="editTaskRequest(mainMarketplaceTask)" fill="outline" size="small" color="primary">
+              <ion-icon name="create" slot="start"></ion-icon>
+              Edit
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 7" class="ion-text-center">
-          <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
-                      size="small" color="primary">
-            <ion-icon name="thumbs-down" slot="start"></ion-icon>
-            Reject
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 7" class="ion-text-center">
+            <!--TODO: work on approval system instead of this work around-->
+            <ion-button (click)="customerAcceptFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
+                        size="small" color="primary">
+              <ion-icon name="thumbs-up" slot="start"></ion-icon>
+              Approve
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 10" class="ion-text-center">
-          <ion-button (click)="openCompleteTaskModal(false)" fill="outline" size="small" color="primary">
-            <ion-icon name="checkmark" slot="start"></ion-icon>
-            Complete My Task
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 7" class="ion-text-center">
+            <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
+                        size="small" color="primary">
+              <ion-icon name="thumbs-down" slot="start"></ion-icon>
+              Reject
+            </ion-button>
+          </ion-col>
 
-        <ion-col *ngIf="mainMarketplaceTask.action === 1 || mainMarketplaceTask.action === 7" class="ion-text-center">
-          <ion-button (click)="alertConfirmCustomerCancel()"
-                      fill="outline" size="small" color="primary">
-            <ion-icon name="close" mode="md" slot="start"></ion-icon>
-            Cancel
-          </ion-button>
-        </ion-col>
+          <ion-col *ngIf="mainMarketplaceTask.action == 10" class="ion-text-center">
+            <ion-button (click)="openCompleteTaskModal(false)" fill="outline" size="small" color="primary">
+              <ion-icon name="checkmark" slot="start"></ion-icon>
+              Complete My Task
+            </ion-button>
+          </ion-col>
+
+          <ion-col *ngIf="mainMarketplaceTask.action == 1 || mainMarketplaceTask.action == 7" class="ion-text-center">
+            <ion-button (click)="alertConfirmCustomerCancel()"
+                        fill="outline" size="small" color="primary">
+              <ion-icon name="close" mode="md" slot="start"></ion-icon>
+              Cancel
+            </ion-button>
+          </ion-col>
+
+
+
+          <ion-col *ngIf="mainMarketplaceTask.proposals" class="ion-text-center">
+            <ion-button fill="outline"
+                        size="small"
+                        color="primary"
+                        (click)="startChat(mainMarketplaceTask.proposals[0].user.username)">
+              <ion-icon name="chatbubble" slot="start"></ion-icon>
+              Chat
+            </ion-button>
+          </ion-col>
+        </ng-container>
+        <!-- End task owner actions -->
       </ion-row>
+
+      <!-- end task actions -->
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3">
@@ -333,13 +357,13 @@
         <ion-col size="9">
           <b>Intensity:</b>
           <br>
-          <div *ngIf="mainMarketplaceTask.intensity === 'Easy'"
+          <div *ngIf="mainMarketplaceTask.intensity == 'Easy'"
                id="easy-button">Easy 👌
           </div>
-          <div *ngIf="mainMarketplaceTask.intensity === 'Medium'"
+          <div *ngIf="mainMarketplaceTask.intensity == 'Medium'"
                id="medium-button">Medium 💪🏿
           </div>
-          <div *ngIf="mainMarketplaceTask.intensity === 'Hard'"
+          <div *ngIf="mainMarketplaceTask.intensity == 'Hard'"
                id="hard-button">Hard 🔥
           </div>
         </ion-col>

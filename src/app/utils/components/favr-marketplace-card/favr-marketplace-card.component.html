@@ -47,7 +47,7 @@
 
           <ng-template #completedTime>
             <div class="complete-by-time">Completed
-              on {{mainMarketTask.proposals[0].complete_at | amFromUtc | amLocal | date: 'MMM dd, yyyy'}}</div>
+              on {{mainMarketTask.proposals[0].complete_at | amFromUtc | amLocal | date}}</div>
           </ng-template>
           <ion-note class="note posted-time">
             Posted {{mainMarketTask.postedFormat | date}}
@@ -70,11 +70,11 @@
     <div id="taskDescription" [innerHTML]="mainMarketplaceTask.description.length > 100 ? mainMarketTask.description.slice(0, 100) + '...' : mainMarketplaceTask.description"></div>
   </ion-card-content>
 
-  <!--task actions-->
+<!-- begin task actions -->
 
   <ion-row *ngIf="mainMarketTask.action == 2 || mainMarketTask.action == 3"
            class="ion-no-padding ion-justify-content-center">
-    <ion-col class="ion-text-center">
+    <ion-col class="ion-text-center" *ngIf="userProfile.user.role == Role.VERIFIED_FREELANCER && userProfile.user_id != mainMarketTask.customer_id">
       <ion-button *ngIf="mainMarketTask.action == 2"
                   (click)="freelancerAcceptTask()"
                   fill="outline"
@@ -95,7 +95,7 @@
     </ion-col>
 
     <ion-col class="ion-text-center">
-      <ion-button fill="outline" size="small" color="primary" (click)="loadMarketplaceDetail(mainMarketTask.id)"
+      <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
                   routerDirection="forward">
         <ion-icon name="eye" slot="start"></ion-icon>
         View
@@ -108,7 +108,7 @@
     <!--class="ion-text-center">-->
     <!--<ion-button fill="outline" size="small" color="primary" (click)="startChat(mainMarketTask.customer.username)">-->
     <!--<ion-icon name="chatbubbles" slot="start"></ion-icon>-->
-    <!--Contact-->
+    <!--Chat-->
     <!--</ion-button>-->
     <!--</ion-col>-->
   </ion-row>
@@ -122,7 +122,7 @@
       </ion-button>
     </ion-col>
     <ion-col class="ion-text-center">
-      <ion-button fill="outline" size="small" color="primary" (click)="loadMarketplaceDetail(mainMarketTask.id)"
+      <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
                   routerDirection="forward">
         <ion-icon name="eye" slot="start"></ion-icon>
         View
@@ -141,13 +141,15 @@
     *ngIf="mainMarketTask.action == 4 || mainMarketTask.action == undefined || mainMarketTask.action == 9 || mainMarketTask.action == 11"
     class="ion-no-padding ion-justify-content-center">
     <ion-col size="12" class="ion-text-center">
-      <ion-button fill="outline" size="small" color="primary" (click)="loadMarketplaceDetail(mainMarketTask.id)"
+      <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
                   routerDirection="forward">
         <ion-icon name="eye" slot="start"></ion-icon>
         View
       </ion-button>
     </ion-col>
   </ion-row>
+
+<!--  end task actions-->
 </ion-card>
 
 <ng-template #freelancerPastJob>
@@ -194,43 +196,64 @@
       <ion-item detail="false" lines="isNone">
         <div slot="start">
           <small>
-            <div class="complete-by-time">Completed
-              on {{pastJob.complete_at | amFromUtc | amLocal | date: 'MMM dd, yyyy'}}</div>
+            <ng-container *ngIf="pastJob.complete_at; else completeOnTime">
+              <div class="complete-by-time">Completed
+                on {{pastJob.complete_at | amFromUtc | amLocal | date}}</div>
+            </ng-container>
+
+            <ng-template #completeOnTime>
+              <div class="complete-by-time">Needs Complete by {{pastJob.marketplace.isoFormat | date}}</div>
+            </ng-template>
+
             <ion-note class="note posted-time">
               Posted {{pastJob.marketplace.postedFormat | date}}
             </ion-note>
           </small>
         </div>
         <div slot="end" class="marketplace-card-distance-away">
-          <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+          <ion-icon *ngIf="pastJob.complete_at; else inProgress" size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+          <ng-template #inProgress>
+            <ion-icon size="large" color="warning" name="time" ariaLabel="task in progress"></ion-icon>
+          </ng-template>
         </div>
       </ion-item>
     </ion-card-header>
 
-    <ion-card-content class="ion-text-center">
-      <ng-template #star let-fill="fill">
+    <ng-container *ngIf="pastJob.rating; else taskDescription">
+      <ion-card-content class="ion-text-center">
+        <ng-template #star let-fill="fill">
         <span class="star" [class.full]="fill === 100">
           <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
         </span>
-      </ng-template>
+        </ng-template>
 
-      <ngb-rating [(rate)]="pastJob.rating" [starTemplate]="star" [readonly]="true" max="5"></ngb-rating>
-      <h1 *ngIf="pastJob.review"
-          [style.font-size.%]="pastJob.review.length > 1000 ? 50 : ((pastJob.review.length > 100) ? 100 : 150)">
-        <i>"{{pastJob.review}}"</i>
-      </h1>
-    </ion-card-content>
+        <ngb-rating [(rate)]="pastJob.rating" [starTemplate]="star" [readonly]="true" max="5"></ngb-rating>
+        <h1 *ngIf="pastJob.review"
+            [style.font-size.%]="pastJob.review.length > 1000 ? 50 : ((pastJob.review.length > 100) ? 100 : 150)">
+          <i>"{{pastJob.review}}"</i>
+        </h1>
+      </ion-card-content>
+    </ng-container>
 
-    <!--task actions-->
+    <ng-template #taskDescription>
+      <ion-card-content>
+        <div [innerHTML]="pastJob.marketplace.description.length > 100 ? pastJob.marketplace.description.slice(0, 100) + '...' : pastJob.marketplace.description"></div>
+      </ion-card-content>
+    </ng-template>
+
+<!--   begin task actions-->
+
     <ion-row>
       <ion-col class="ion-text-center">
-        <ion-button fill="outline" size="small" color="primary" (click)="loadMarketplaceDetail(pastJob.marketplace.id)"
+        <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(pastJob.marketplace.id)"
                     routerDirection="forward">
           <ion-icon name="eye" slot="start"></ion-icon>
           View
         </ion-button>
       </ion-col>
     </ion-row>
+
+<!--    end task actions-->
   </ion-card>
 </ng-template>
 

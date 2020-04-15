@@ -167,30 +167,7 @@ export class TabsPage implements OnInit, OnDestroy {
             presentingElement: this.routerOutlet.nativeEl
           });
 
-          const loadingRequestPage = await this.loadingCtrl.create({
-            message: 'Please wait...',
-            translucent: true
-          });
-
-          await loadingRequestPage.present();
-
-          taskRequestModal.onDidDismiss().then(async () => {
-            const loadingMarketplacePage = await this.loadingCtrl.create({
-              message: 'Please wait...',
-              translucent: true
-            });
-
-            await loadingMarketplacePage.present();
-
-            // this.marketplaceService.getMainMarketplaceRequests('all')
-            //   .then(tasks => this.marketplaceTasks = tasks);
-            // this.marketplaceService.getMainMarketplaceRequests('me')
-            //   .then(tasks => this.marketplaceTasks = tasks);
-            loadingMarketplacePage.dismiss();
-          });
-
-          await taskRequestModal.present()
-            .then(() => loadingRequestPage.dismiss());
+          await taskRequestModal.present();
         }
       }, 0);
     });

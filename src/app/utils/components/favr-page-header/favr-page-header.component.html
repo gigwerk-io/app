@@ -18,14 +18,14 @@
   <ion-toolbar class="search-area">
     <ion-row class="page-title-header">
       <ion-col *ngIf="pageTitle" class="page-title-area">
-        <h2 class="page-title">
+        <h3 class="page-title">
           <ng-container *ngIf="pageTitle === 'Marketplace'; else title">
             <img src="assets/brand/favr_logo_rd.png" alt="favr logo" class="favr-logo">
           </ng-container>
           <ng-template #title>
             {{pageTitle}}
           </ng-template>
-        </h2>
+        </h3>
       </ion-col>
       <ion-col>
         <ion-buttons class="page-header-buttons mobile-only">
