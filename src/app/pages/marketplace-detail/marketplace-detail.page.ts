@@ -231,35 +231,15 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
   async editTaskRequest(task: MainMarketplaceTask) {
-    const modal = await this.modalCtrl.create({
+    const requestPageModal = await this.modalCtrl.create({
       component: RequestPage,
       componentProps: {isModal: true},
       swipeToClose: false,
       presentingElement: this.routerOutlet.nativeEl
     });
 
-    const loadingRequestPage = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      translucent: true
-    });
-
-    await loadingRequestPage.present();
-
-    modal.onDidDismiss().then(async () => {
-      const loadingPage = await this.loadingCtrl.create({
-        message: 'Please wait...',
-        translucent: true
-      });
-
-      await loadingPage.present();
-      await loadingPage.dismiss();
-    });
-
-    await modal.present()
-      .then(() => {
-        this.events.publish('task-edit', task);
-        return loadingRequestPage.dismiss();
-      });
+    await requestPageModal.present()
+      .then(() => this.events.publish('task-edit', task));
   }
 
   async doRefresh(event?) {
