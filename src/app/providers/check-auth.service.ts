@@ -20,7 +20,6 @@ export class CheckAuth implements CanActivate {
     return this.auth.isValidToken()
       .then(token => {
         if (token.response) {
-          console.log(token.response);
           switch (state.url) {
             case '/app':
               this.router.navigateByUrl('/app/tabs/marketplace');

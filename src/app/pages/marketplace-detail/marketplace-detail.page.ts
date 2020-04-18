@@ -13,7 +13,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Storage} from '@ionic/storage';
 import {Role, StorageKeys, TaskActions, TaskStatus} from '../../providers/constants';
-import {ChatService} from '../../utils/services/chat.service';
 import {Events} from '../../utils/services/events';
 import {CompleteTaskPage} from '../complete-task/complete-task.page';
 import {LaunchNavigator, LaunchNavigatorOptions} from '@ionic-native/launch-navigator/ngx';
@@ -25,6 +24,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {MainCategory} from '../../utils/interfaces/main-marketplace/main-category';
 import {Subscription} from 'rxjs';
 import {UtilsService} from '../../utils/services/utils.service';
+import {PreviousRouteService} from '../../providers/previous-route.service';
 
 @Component({
   selector: 'marketplace-detail',
@@ -56,13 +56,13 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private marketplaceService: MarketplaceService,
               private actionSheetCtrl: ActionSheetController,
               private alertCtrl: AlertController,
-              private chatService: ChatService,
               private events: Events,
               private launchNavigator: LaunchNavigator,
               private favrService: FavrDataService,
               private financeService: FinanceService,
               private geolocation: Geolocation,
               public routerOutlet: IonRouterOutlet,
+              private previousRoute: PreviousRouteService,
               private utils: UtilsService) {
     this.favrService.getCategories().then(res => this.Categories = res.categories);
     this.events.subscribe('task-action', (action) => this.doRefresh());
@@ -100,6 +100,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
                 ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
                 : false;
             });
+          console.log(this.mainMarketplaceTask);
         });
     });
   }
@@ -142,13 +143,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username)
-      .then(res => {
-        this.router.navigate(['/app/room', res.id]);
-      })
-      .catch(error => {
-      this.utils.presentToast(error.error.message, 'danger');
-    });
+    this.utils.startChat(username);
   }
 
   async freelancerAcceptTask() {
@@ -299,5 +294,10 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
    this.launchNavigator.navigate(locationAddress, options)
       .then(success => {})
       .catch(error => window.open('https://maps.google.com/?q=' + locationAddress));
+  }
+
+  navigateBack() {
+    const prevRoute = this.previousRoute.getPreviousUrl();
+    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/marketplace');
   }
 }

@@ -11,246 +11,93 @@ import {
   MainMarketplaceRouteResponse,
   MainMarketplaceTask, ReportTaskResponse
 } from '../interfaces/main-marketplace/main-marketplace-task';
-import {Observable, from} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
-import {API_ADDRESS, StorageKeys} from '../../providers/constants';
-import {AuthorizationToken} from '../interfaces/user-options';
 import {MainProposal} from '../interfaces/main-marketplace/main-proposal';
+import {RESTService} from './rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MarketplaceService {
+export class MarketplaceService extends RESTService {
 
-  constructor(private httpClient: HttpClient,
-              private storage: Storage) {
+  constructor(public httpClient: HttpClient,
+              public storage: Storage) {
+    super(httpClient, storage);
   }
 
   public getSingleMainMarketplaceRequest(id: number, coords?: any): Promise<MainMarketplaceTask> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader = {
-            headers: {
-              Authorization: (token) ? token : ''
-            },
-            params: coords
-          };
-          return this.httpClient.get<MainMarketplaceTask>(`${API_ADDRESS}/marketplace/main/request/${id}`, authHeader)
-            .toPromise()
-            .then((res: MainMarketplaceTask) => res);
-        });
+    return this.makeHttpRequest<MainMarketplaceTask>(`marketplace/main/request/${id}`, 'GET', {params: coords})
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getMainMarketplaceRequests(filter?: string, coords?: any) {
+  public getMainMarketplaceRequests(filter?: string, coords?: any): Promise<MainMarketplaceTask[]> {
     switch (filter) {
       case 'all':
-        return this.storage.get(StorageKeys.ACCESS_TOKEN)
-            .then(token => {
-              const authHeader = {
-                headers: {
-                  Authorization: (token) ? token : ''
-                },
-                params: coords
-              };
-              return this.httpClient.get<MainMarketplaceRouteResponse>(`${API_ADDRESS}/marketplace/main/feed`, authHeader)
-                .toPromise()
-                .then((res: MainMarketplaceRouteResponse) => res.requests);
-            });
+        return this.makeHttpRequest<MainMarketplaceRouteResponse>('marketplace/main/feed', 'GET', {params: coords})
+          .then(httpRes => httpRes.toPromise().then(res => res.requests));
       case 'me':
-        return this.storage.get(StorageKeys.ACCESS_TOKEN)
-            .then(token => {
-              const authHeader: AuthorizationToken = {
-                headers: {
-                  Authorization: (token) ? token : ''
-                }
-              };
-              return this.httpClient.get<MainMarketplaceRouteResponse>(`${API_ADDRESS}/marketplace/main/me`, authHeader)
-                .toPromise()
-                .then((res: MainMarketplaceRouteResponse) => res.requests);
-            });
+        return this.makeHttpRequest<MainMarketplaceRouteResponse>('marketplace/main/me', 'GET', {params: coords})
+          .then(httpRes => httpRes.toPromise().then(res => res.requests));
       case 'proposals':
-        return this.storage.get(StorageKeys.ACCESS_TOKEN)
-            .then(token => {
-              const authHeader: AuthorizationToken = {
-                headers: {
-                  Authorization: (token) ? token : ''
-                }
-              };
-              return this.httpClient.get<MainMarketplaceRouteResponse>(`${API_ADDRESS}/marketplace/main/proposals`, authHeader)
-                .toPromise()
-                .then((res: MainMarketplaceRouteResponse) => res.requests);
-            });
+        return this.makeHttpRequest<MainMarketplaceRouteResponse>('marketplace/main/proposals', 'GET', {params: coords})
+          .then(httpRes => httpRes.toPromise().then(res => res.requests));
     }
   }
 
   public createMainMarketplaceRequest(req: MainMarketplaceTask): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        return this.httpClient.post<MainMarketplaceRequestRouteResponse>(`${API_ADDRESS}/marketplace/main/request`, req, authHeader)
-          .toPromise()
-          .then((res: MainMarketplaceRequestRouteResponse) => res.message);
-      });
+    return this.makeHttpRequest<MainMarketplaceRequestRouteResponse>('marketplace/main/request', 'POST', req)
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public editMainMarketplaceRequest(req: MainMarketplaceTask): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        return this.httpClient.post<MainMarketplaceRequestRouteResponse>(`${API_ADDRESS}/marketplace/main/edit/${req.id}`, req, authHeader)
-          .toPromise()
-          .then((res: MainMarketplaceRequestRouteResponse) => res.message);
-      });
+    return this.makeHttpRequest<MainMarketplaceRequestRouteResponse>(`marketplace/main/edit/${req.id}`, 'POST', req)
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public freelancerAcceptMainMarketplaceRequest(id: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        // tslint:disable-next-line
-        return this.httpClient.get<FreelancerAcceptMainMarketplaceTaskRouteResponse>(`${API_ADDRESS}/marketplace/main/accept/${id}`, authHeader)
-          .toPromise()
-          .then((res: FreelancerAcceptMainMarketplaceTaskRouteResponse) => res.message);
-      });
+    return this.makeHttpRequest<FreelancerAcceptMainMarketplaceTaskRouteResponse>(`marketplace/main/accept/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public freelancerWithdrawMainMarketplaceRequest(id: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        // tslint:disable-next-line
-        return this.httpClient.get<FreelancerWithdrawMainMarketplaceTaskRouteResponse>(`${API_ADDRESS}/marketplace/main/freelancer/withdraw/${id}`, authHeader)
-          .toPromise()
-          .then((res: FreelancerWithdrawMainMarketplaceTaskRouteResponse) => res.message);
-      });
+    return this.makeHttpRequest<FreelancerWithdrawMainMarketplaceTaskRouteResponse>(`marketplace/main/freelancer/withdraw/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public customerCancelMainMarketplaceRequest(id: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        return this.httpClient.get<CustomerCancelTaskResponse>(`${API_ADDRESS}/marketplace/main/request/cancel/${id}`, authHeader)
-          .toPromise()
-          .then((res: CustomerCancelTaskResponse) => res.message);
-      });
+    return this.makeHttpRequest<CustomerCancelTaskResponse>(`marketplace/main/request/cancel/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public customerAcceptFreelancer(taskID: number, freelancerID: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        // tslint:disable-next-line
-        return this.httpClient.get<CustomerApproveFreelancerResponse>(`${API_ADDRESS}/marketplace/main/${taskID}/accept/${freelancerID}`, authHeader)
-          .toPromise()
-          .then((res: CustomerApproveFreelancerResponse) => res.message);
-      });
+    return this.makeHttpRequest<CustomerApproveFreelancerResponse>(`marketplace/main/${taskID}/accept/${freelancerID}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public customerDenyFreelancer(taskID: number, freelancerID: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        // tslint:disable-next-line
-        return this.httpClient.get<CustomerDenyFreelancerResponse>(`${API_ADDRESS}/marketplace/main/${taskID}/deny/${freelancerID}`, authHeader)
-          .toPromise()
-          .then((res: CustomerDenyFreelancerResponse) => res.message);
-      });
+    return this.makeHttpRequest<CustomerDenyFreelancerResponse>(`marketplace/main/${taskID}/deny/${freelancerID}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public freelancerArrivedAtTaskSite(id: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        // tslint:disable-next-line
-        return this.httpClient.get<FreelancerArrivedResponse>(`${API_ADDRESS}/marketplace/main/freelancer/arrive/${id}`, authHeader)
-          .toPromise()
-          .then((res: FreelancerArrivedResponse) => res.message);
-      });
+    return this.makeHttpRequest<FreelancerArrivedResponse>(`marketplace/main/freelancer/arrive/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public freelancerCompleteTask(id: number, ratingAndReview: {rating: number, review: string}): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        // tslint:disable-next-line
-        return this.httpClient.post<FreelancerCompleteTaskResponse>(`${API_ADDRESS}/marketplace/main/freelancer/complete/${id}`, ratingAndReview, authHeader)
-          .toPromise()
-          .then((res: FreelancerCompleteTaskResponse) => res.message);
-      });
+    return this.makeHttpRequest<FreelancerCompleteTaskResponse>(`marketplace/main/freelancer/complete/${id}`, 'POST', ratingAndReview)
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public customerCompleteTask(id: number, ratingAndReview: {rating: number, review: string}): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        // tslint:disable-next-line
-        return this.httpClient.post<CustomerCompleteTaskResponse>(`${API_ADDRESS}/marketplace/main/request/complete/${id}`, ratingAndReview, authHeader)
-          .toPromise()
-          .then((res: CustomerCompleteTaskResponse) => res.message);
-      });
+    return this.makeHttpRequest<CustomerCompleteTaskResponse>(`marketplace/main/request/complete/${id}`, 'POST', ratingAndReview)
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public mainMarketplaceReportTask(id: number, description: string): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-
-        return this.httpClient.post<ReportTaskResponse>(`${API_ADDRESS}/report/main/marketplace/${id}`,
-          {description}, authHeader)
-          .toPromise()
-          .then((res: ReportTaskResponse) => res.message);
-      });
+    return this.makeHttpRequest<ReportTaskResponse>(`report/main/marketplace/${id}`, 'POST', {description})
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
   public checkIsTaskFreelancer(userID: number, task: MainMarketplaceTask): boolean {

@@ -61,6 +61,7 @@ export class SignupPage {
   pageTitle = 'Sign Up';
   subPageTitle = 'Sign Up';
   subPage = 'signup-index';
+  backPage: string;
   pageStack: PageStack[] = [
     {
       pageTitle: 'Sign Up',
@@ -161,9 +162,10 @@ export class SignupPage {
     }
   }
 
-  goBack() {
+  navigateBack() {
     this.pageStack.pop(); // remove current page
     const prevPage = this.pageStack[this.pageStack.length - 1];
+    this.backPage = prevPage.page;
     this.subPage = prevPage.page;
     this.subPageTitle = prevPage.pageTitle;
   }
@@ -185,5 +187,6 @@ export class SignupPage {
     }
     this.pageStack.push({pageTitle: this.subPageTitle, page});
     this.subPage = page;
+    this.backPage = this.pageStack[this.pageStack.length - 2].page;
   }
 }

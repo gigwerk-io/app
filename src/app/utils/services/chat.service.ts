@@ -1,76 +1,40 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
-import { HttpClient, HttpHeaders} from '@angular/common/http';
-import {API_ADDRESS, StorageKeys} from '../../providers/constants';
-import {from} from 'rxjs/index';
+import { HttpClient} from '@angular/common/http';
+import {from} from 'rxjs';
 import {Storage} from '@ionic/storage';
-import {AuthorizationToken} from '../interfaces/user-options';
 import {CreateChatResponse, Room} from '../interfaces/chat/room';
+import {RESTService} from './rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
-  constructor(private http: HttpClient, private storage: Storage) { }
+export class ChatService extends RESTService {
+  constructor(public http: HttpClient, public storage: Storage) {
+    super(http, storage);
+  }
 
   public getChatRooms(): Promise<Room[]> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<Room[]>(API_ADDRESS + '/rooms', authHeader)
-            .toPromise()
-            .then((res: Room[]) => res)
-            .catch(() => []);
-        });
+    return this.makeHttpRequest<Room[]>('rooms', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public getChatRoom(uuid): Observable<Room> {
     return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<Room>(`${API_ADDRESS}/room/${uuid}`, authHeader)
-            .toPromise()
-            .then((res: Room) => res);
-        })
+      this.makeHttpRequest<Room>(`room/${uuid}`, 'GET')
+        .then(httpRes => httpRes.toPromise().then((res: Room) => res))
     );
   }
 
   public sendMessage(uuid, text) {
     return from(
-      this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.post(`${API_ADDRESS}/message/${uuid}`, { message: text }, authHeader)
-            .toPromise()
-            .then((res) => res);
-        })
+      this.makeHttpRequest(`message/${uuid}`, 'POST', {message: text})
+        .then(httpRes => httpRes.toPromise().then(res => res))
     );
   }
 
   public startChat(username): Promise<CreateChatResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<CreateChatResponse>(`${API_ADDRESS}/chat/${username}`, authHeader)
-            .toPromise()
-            .then((res) => res);
-        });
+    return this.makeHttpRequest<CreateChatResponse>(`chat/${username}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 }

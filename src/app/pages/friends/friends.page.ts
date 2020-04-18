@@ -2,8 +2,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {Searchable} from '../../utils/interfaces/searchable';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
-import {ChatService} from '../../utils/services/chat.service';
-import {IonRouterOutlet, NavController, ToastController} from '@ionic/angular';
+import {IonRouterOutlet, NavController} from '@ionic/angular';
 import {AuthService} from '../../utils/services/auth.service';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
@@ -26,7 +25,6 @@ export class FriendsPage implements OnInit {
 
   constructor(
     private friendService: FriendsService,
-    private chatService: ChatService,
     private router: Router,
     private changeRef: ChangeDetectorRef,
     private authService: AuthService,
@@ -149,12 +147,6 @@ export class FriendsPage implements OnInit {
     this.router.navigate(['/app/profile', id]);
   }
 
-  startChat(username) {
-    this.chatService.startChat(username).then(res => {
-      this.router.navigate(['/app/room', res.id]);
-    });
-  }
-
   sendFriendRequest(id) {
     this.friendService.sendFriendRequest(id).then(res => {
       this.utils.presentToast(res, 'success');
@@ -177,9 +169,6 @@ export class FriendsPage implements OnInit {
 
   handleClick(user, i) {
     switch (this.clickType) {
-      case 'friends':
-        this.startChat(user.username);
-        break;
       case 'recommended':
         this.users.splice(i);
         this.sendFriendRequest(user.id);
@@ -192,7 +181,7 @@ export class FriendsPage implements OnInit {
         this.goToUserProfile(user.id);
         break;
       default:
-        this.startChat(user.username);
+        this.utils.startChat(user.username);
     }
   }
 }

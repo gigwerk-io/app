@@ -1,156 +1,65 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
-import {API_ADDRESS, StorageKeys} from '../../providers/constants';
-import {AuthorizationToken} from '../interfaces/user-options';
 import {UpdateResponse, Settings, MyLocationsResponse, CurrentCityResponse} from '../interfaces/settings/preferences';
+import {RESTService} from './rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PreferencesService {
+export class PreferencesService extends RESTService {
 
-  constructor(private httpClient: HttpClient,
-              private storage: Storage) {
+  constructor(public httpClient: HttpClient, public storage: Storage) {
+    super(httpClient, storage);
   }
 
-  public updateNotificationPreferences(body) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/notifications`, body, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public updateNotificationPreferences(body): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>('notifications', 'POST', body)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getSettings() {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<Settings>(`${API_ADDRESS}/settings`, authHeader)
-            .toPromise()
-            .then((res: Settings) => res);
-        });
+  public getSettings(): Promise<Settings> {
+    return this.makeHttpRequest<Settings>('settings', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public updatePrivacyPreferences(body) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/privacy`, body, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public updatePrivacyPreferences(body): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>('privacy', 'POST', body)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public addLocation(body): Promise<UpdateResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/locations`, body, authHeader)
-          .toPromise()
-          .then((res: UpdateResponse) => res);
-      });
+    return this.makeHttpRequest<UpdateResponse>('locations', 'POST', body)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getMyLocations() {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<MyLocationsResponse>(`${API_ADDRESS}/locations`, authHeader)
-            .toPromise()
-            .then((res: MyLocationsResponse) => res);
-        });
+  public getMyLocations(): Promise<MyLocationsResponse> {
+    return this.makeHttpRequest<MyLocationsResponse>('locations', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public makeDefaultLocation(id) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.put<UpdateResponse>(`${API_ADDRESS}/location/${id}`, null, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public makeDefaultLocation(id): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>(`location/${id}`, 'PUT', null)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public deleteLocation(id) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.delete<UpdateResponse>(`${API_ADDRESS}/location/${id}`, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public deleteLocation(id): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>(`location/${id}`, 'DELETE')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public updateProfile(body) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/profile`, body, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public updateProfile(body): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>('profile', 'POST', body)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public selectCity(id): Promise<UpdateResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/select-city`, {city_id: id}, authHeader)
-          .toPromise()
-          .then((res: UpdateResponse) => res);
-      });
+    return this.makeHttpRequest<UpdateResponse>('select-city', 'POST', {city_id: id})
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public currentCity(): Promise<CurrentCityResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<CurrentCityResponse>(`${API_ADDRESS}/current-city`, authHeader)
-            .toPromise()
-            .then((res: CurrentCityResponse) => res);
-        });
+    return this.makeHttpRequest<CurrentCityResponse>('current-city', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 }

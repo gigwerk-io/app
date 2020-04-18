@@ -33,14 +33,14 @@
         <ion-note slot="end">
           <small>{{room.updated_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
         </ion-note>
-        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
         <ion-badge color="primary" slot="end" *ngIf="room.unread > 0">{{room.unread}}</ion-badge>
+        <ion-icon size="small" name="chevron-forward-outline" slot="end"></ion-icon>
       </ion-item>
     </ion-list>
     <ng-template #noRooms>
-      <ion-title>
-        <ion-note>No chats open.</ion-note>
-      </ion-title>
+      <ion-label color="medium" class="no-chats">
+        No Chats Open To Display.
+      </ion-label>
     </ng-template>
   </ng-container>
 

@@ -114,9 +114,9 @@
   <ng-container [ngSwitch]="taskFeed">
     <ng-container *ngSwitchCase="'customer'">
       <ng-container class="ion-text-center" *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
-        <ion-title color="medium" class="no-tasks">
+        <ion-label color="medium" class="no-tasks">
           No Tasks To Display
-        </ion-title>
+        </ion-label>
       </ng-container>
 
       <ng-template #tasks>
@@ -129,9 +129,9 @@
 
     <ng-container *ngSwitchCase="'freelancer'">
       <ng-container class="ion-text-center" *ngIf="profile.user.past_jobs.length === 0; else tasks">
-        <ion-title color="medium" class="no-tasks">
+        <ion-label color="medium" class="no-tasks">
           No Past Jobs To Display
-        </ion-title>
+        </ion-label>
       </ng-container>
 
       <ng-template #tasks>

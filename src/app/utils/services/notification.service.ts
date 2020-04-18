@@ -1,102 +1,46 @@
 import { Injectable } from '@angular/core';
 import {Storage} from '@ionic/storage';
 import {HttpClient} from '@angular/common/http';
-import {AuthorizationToken} from '../interfaces/user-options';
-import {from} from 'rxjs/index';
-import {API_ADDRESS, StorageKeys} from '../../providers/constants';
 import {Badge, NotificationsResponse} from '../interfaces/notification/notification';
 import {UpdateResponse} from '../interfaces/settings/preferences';
+import {RESTService} from './rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationService {
+export class NotificationService extends RESTService {
 
-  constructor(private httpClient: HttpClient,
-              private storage: Storage
-  ) { }
+  constructor(public httpClient: HttpClient, public storage: Storage) {
+    super(httpClient, storage);
+  }
 
   public getBadgeCount(): Promise<Badge> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<Badge>(`${API_ADDRESS}/badges`, authHeader)
-            .toPromise()
-            .then((res: Badge) => res);
-        });
+    return this.makeHttpRequest<Badge>('badges', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public getNewNotifications(): Promise<NotificationsResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<NotificationsResponse>(`${API_ADDRESS}/notifications/new`, authHeader)
-            .toPromise()
-            .then((res: NotificationsResponse) => res);
-        });
+    return this.makeHttpRequest<NotificationsResponse>('notifications/new', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public getAllNotifications(): Promise<NotificationsResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<NotificationsResponse>(`${API_ADDRESS}/notifications/all`, authHeader)
-            .toPromise()
-            .then((res: NotificationsResponse) => res);
-        });
+    return this.makeHttpRequest<NotificationsResponse>('notifications/all', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public markNotificationAsRead(id): Promise<void> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get(`${API_ADDRESS}/notification/${id}`, authHeader)
-            .toPromise()
-            .then();
-        });
+    return this.makeHttpRequest<void>(`notification/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then());
   }
 
-  public saveFCMToken(body) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/fcm_token`, body, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public saveFCMToken(body): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>('fcm_token', 'POST', body)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public saveAPNToken(body) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.post<UpdateResponse>(`${API_ADDRESS}/apn_token`, body, authHeader)
-            .toPromise()
-            .then((res: UpdateResponse) => res);
-        });
+  public saveAPNToken(body): Promise<UpdateResponse> {
+    return this.makeHttpRequest<UpdateResponse>('apn_token', 'POST', body)
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 }

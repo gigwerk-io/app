@@ -1,54 +1,34 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import {
   FriendRequestsResponse,
   MyFriendsResponse,
   RecommendedFriendsResponse,
   Searchable, GenericResponse, SearchResponse,
 } from '../interfaces/searchable';
-import {from, Observable} from 'rxjs/index';
 import {Storage} from '@ionic/storage';
-import {API_ADDRESS, StorageKeys} from '../../providers/constants';
-import {AuthorizationToken} from '../interfaces/user-options';
+import {RESTService} from './rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FriendsService {
-  constructor(private http: HttpClient, private storage: Storage) { }
+export class FriendsService extends RESTService {
+
+  constructor(public http: HttpClient, public storage: Storage) {
+    super(http, storage);
+  }
 
   /**
    * Show current friends of a user.
    */
   public getMyFriends(): Promise<Searchable[]> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<MyFriendsResponse>(API_ADDRESS + '/friends', authHeader)
-            .toPromise()
-            .then((res: MyFriendsResponse) => res.friends);
-        });
+    return this.makeHttpRequest<MyFriendsResponse>('friends', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.friends));
   }
 
   public searchUsers(query): Promise<Searchable[]> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const options = {
-            headers: {
-              Authorization: (token)
-            },
-            params: {
-              search: query
-            }
-          };
-          return this.http.get<SearchResponse>(API_ADDRESS + '/search', options)
-            .toPromise()
-            .then((res: SearchResponse) => res.users);
-        });
+    return this.makeHttpRequest<SearchResponse>('search', 'GET', {search: query})
+      .then(httpRes => httpRes.toPromise().then(res => res.users));
   }
 
   /**
@@ -56,90 +36,36 @@ export class FriendsService {
    *
    */
   public getRecommendedFriends(): Promise<Searchable[]> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<RecommendedFriendsResponse>(API_ADDRESS + '/friend/recommend', authHeader)
-            .toPromise()
-            .then((res: RecommendedFriendsResponse) => res.recommendations);
-        });
+    return this.makeHttpRequest<RecommendedFriendsResponse>('friend/recommend', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.recommendations));
   }
 
   /**
    * Show a users friend requests.
    *
    */
-  public getFriendRequests() {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<FriendRequestsResponse>(API_ADDRESS + '/friend/requests', authHeader)
-            .toPromise()
-            .then((res: FriendRequestsResponse) => res.requests);
-        });
+  public getFriendRequests(): Promise<Searchable[]> {
+    return this.makeHttpRequest<FriendRequestsResponse>('friend/requests', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.requests));
   }
 
-  public sendFriendRequest(id) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<GenericResponse>(API_ADDRESS + `/friend/send/${id}`, authHeader)
-            .toPromise()
-            .then((res: GenericResponse) => res.message);
-        });
+  public sendFriendRequest(id): Promise<string> {
+    return this.makeHttpRequest<GenericResponse>(`friend/send/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
-  public acceptFriendRequest(id) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<GenericResponse>(API_ADDRESS + `/friend/accept/${id}`, authHeader)
-            .toPromise()
-            .then((res: GenericResponse) => res.message);
-        });
+  public acceptFriendRequest(id): Promise<string> {
+    return this.makeHttpRequest<GenericResponse>(`friend/accept/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
-  public rejectFriendRequest(id) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<GenericResponse>(API_ADDRESS + `/friend/deny/${id}`, authHeader)
-            .toPromise()
-            .then((res: GenericResponse) => res.message);
-        });
+  public rejectFriendRequest(id): Promise<string> {
+    return this.makeHttpRequest<GenericResponse>(`friend/deny/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
-  public unfriend(id) {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.http.get<GenericResponse>(API_ADDRESS + `/friend/delete/${id}`, authHeader)
-            .toPromise()
-            .then((res: GenericResponse) => res.message);
-        });
+  public unfriend(id): Promise<string> {
+    return this.makeHttpRequest<GenericResponse>(`friend/delete/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 }
