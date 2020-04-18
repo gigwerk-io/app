@@ -129,6 +129,14 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
       .then(() => this.taskActionTaken.emit('freelancerWithdrawTask'));
   }
 
+  async freelancerArriveTask() {
+    const freelancerArriveTask = await this.marketplaceService.freelancerArrivedAtTaskSite(this.mainMarketplaceTask.id)
+      .then((res: string) => res)
+      .catch((err: any) => err.error.message);
+    this.utils.presentToast(freelancerArriveTask)
+      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ARRIVE_TASK, this.mainMarketplaceTask.id));
+  }
+
   async customerCancelTask() {
     const cancelTask = await this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
       .then((res: string) => res)

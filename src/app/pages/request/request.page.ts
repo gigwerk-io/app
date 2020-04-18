@@ -250,7 +250,7 @@ export class RequestPage implements OnInit, OnDestroy {
         .then((res) => {
           this.closeRequestPage()
             .then(() => {
-              this.utils.presentToast(res);
+              this.utils.presentToast(res, 'success');
               if (this.previousRoute.getCurrentUrl() !== '/app/tabs/marketplace') {
                 this.router.navigateByUrl('app/tabs/marketplace');
               }
