@@ -27,23 +27,24 @@ export class MarketplacePage implements OnInit, OnDestroy {
   userRole: string;
   Role = Role;
 
-  constructor(private marketplaceService: MarketplaceService,
-              private modalCtrl: ModalController,
-              private loadingCtrl: LoadingController,
-              private changeRef: ChangeDetectorRef,
-              private storage: Storage,
-              private pusher: PusherServiceProvider,
-              private authService: AuthService,
-              private navCtrl: NavController,
-              private events: Events,
-              private router: Router,
-              private utils: UtilsService,
-              private geolocation: Geolocation,
-              public routerOutlet: IonRouterOutlet) {  }
+  constructor(
+    private marketplaceService: MarketplaceService,
+    private modalCtrl: ModalController,
+    private loadingCtrl: LoadingController,
+    private changeRef: ChangeDetectorRef,
+    private storage: Storage,
+    private pusher: PusherServiceProvider,
+    private authService: AuthService,
+    private navCtrl: NavController,
+    private events: Events,
+    private router: Router,
+    private utils: UtilsService,
+    private geolocation: Geolocation,
+    public routerOutlet: IonRouterOutlet
+  ) {  }
 
   ngOnInit() {
     this.events.subscribe('scroll-top-marketplace', () => this.ionContent.scrollToTop(500));
-    this.segmentChanged();
     this.storage.get(StorageKeys.PROFILE)
       .then(prof => {
         this.userRole = prof.user.role;
@@ -58,6 +59,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
             this.segment = 'all';
             break;
         }
+        this.segmentChanged();
       });
   }
 
@@ -85,17 +87,17 @@ export class MarketplacePage implements OnInit, OnDestroy {
         console.log(this.marketplaceTasks);
         this.changeRef.detectChanges();
       }).catch(error => {
-        if (error.status === 401) {
-          this.authService.isValidToken().then(res => {
-            if (!res.response) {
-              this.utils.presentToast('You have been logged out.', 'success');
-              this.storage.remove(StorageKeys.PROFILE);
-              this.storage.remove(StorageKeys.ACCESS_TOKEN);
-              this.navCtrl.navigateRoot('/welcome');
-            }
-          }).catch(e => this.utils.presentToast(e.message, 'danger'));
-        }
-      });
+      if (error.status === 401) {
+        this.authService.isValidToken().then(res => {
+          if (!res.response) {
+            this.utils.presentToast('You have been logged out.', 'success');
+            this.storage.remove(StorageKeys.PROFILE);
+            this.storage.remove(StorageKeys.ACCESS_TOKEN);
+            this.navCtrl.navigateRoot('/welcome');
+          }
+        }).catch(e => this.utils.presentToast(e.message, 'danger'));
+      }
+    });
   }
 
   getMyMarketplaceRequests() {
@@ -105,17 +107,17 @@ export class MarketplacePage implements OnInit, OnDestroy {
         console.log(this.marketplaceTasks);
         this.changeRef.detectChanges();
       }).catch(error => {
-        if (error.status === 401) {
-          this.authService.isValidToken().then(res => {
-            if (!res.response) {
-              this.utils.presentToast('You have been logged out.', 'success');
-              this.storage.remove(StorageKeys.PROFILE);
-              this.storage.remove(StorageKeys.ACCESS_TOKEN);
-              this.navCtrl.navigateRoot('/welcome');
-            }
-          }).catch(e => this.utils.presentToast(e.message, 'danger'));
-        }
-      });
+      if (error.status === 401) {
+        this.authService.isValidToken().then(res => {
+          if (!res.response) {
+            this.utils.presentToast('You have been logged out.', 'success');
+            this.storage.remove(StorageKeys.PROFILE);
+            this.storage.remove(StorageKeys.ACCESS_TOKEN);
+            this.navCtrl.navigateRoot('/welcome');
+          }
+        }).catch(e => this.utils.presentToast(e.message, 'danger'));
+      }
+    });
   }
 
   getMyJobs() {
