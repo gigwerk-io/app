@@ -14,32 +14,34 @@
 
 
 ## Getting Started
-
-* [Download the installer](https://nodejs.org/) for Node.js 6 or greater.
-* Install the ionic CLI globally: `npm install -g ionic`
-* Clone this repository: `git clone https://github.com/haron68/favr-frontend.git`.
+* Recommended to [use NVM](https://github.com/nvm-sh/nvm)
+* [Download the installer](https://nodejs.org/) use the latest stable LTS.
+* Install the ionic CLI globally: `npm install -g @ionic/cli`
+* Clone this repository: `git clone https://github.com/FAVR-Inc/app.git`.
 * Run `npm install` from the project root.
 * Run `ionic serve` in a terminal from the project root.
 * Profit. :tada:
 
 _Note: See [How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions) if you are running into issues when trying to install packages globally._
 
-## App Preview
+## Development
 
 All app preview screenshots were taken by running `ionic serve --lab` on a retina display.
 
-## Deploying
+### Building
+* Run `ionic build` for testing environment
+* Run `ionic build --prod` for production environment
+
 
 ### Progressive Web App
-
 1. Un-comment [these lines](https://github.com/ionic-team/ionic2-app-base/blob/master/src/index.html#L21)
 2. Run `npm run ionic:build --prod`
 3. Push the `www` folder to your hosting service
 
 ### Android
-
-1. Run `ionic cordova run android --prod`
+1. Run `npx cap copy` or `npx cap sync`
+2. Run `npx cap open android`
 
 ### iOS
-
-1. Run `ionic cordova run ios --prod`
+1. Run `npx cap copy` or `npx cap sync`
+2. Run `npx cap open ios`
