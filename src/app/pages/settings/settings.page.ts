@@ -8,6 +8,7 @@ import {InAppBrowser} from '@ionic-native/in-app-browser/ngx';
 import {environment} from '../../../environments/environment';
 
 import {Capacitor, Plugins, StatusBarStyle} from '@capacitor/core';
+import {Events} from '../../utils/services/events';
 
 const {StatusBar} = Plugins;
 
@@ -20,7 +21,7 @@ const {StatusBar} = Plugins;
 export class SettingsPage implements OnInit {
 
   seeCredit: boolean;
-  darkMode = true;
+  darkMode = false;
   isFreelancer: boolean;
   COPY_YEAR = (new Date()).getFullYear();
   VERSION = environment.version;
@@ -33,7 +34,8 @@ export class SettingsPage implements OnInit {
               private iab: InAppBrowser,
               private changeRef: ChangeDetectorRef,
               private actionSheetController: ActionSheetController,
-              public routerOutlet: IonRouterOutlet) {}
+              public routerOutlet: IonRouterOutlet,
+              private events: Events) {}
 
   ngOnInit() {
     this.storage.get(StorageKeys.THEME_PREFERENCE)
@@ -148,6 +150,7 @@ export class SettingsPage implements OnInit {
     }
     this.storage.set(StorageKeys.THEME_PREFERENCE, this.darkMode)
       .then(() => toggleDarkTheme(this.darkMode));
+    this.events.publish('prefersDark', this.darkMode);
   }
 }
 

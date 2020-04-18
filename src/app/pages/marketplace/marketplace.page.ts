@@ -23,7 +23,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
 
   @ViewChild('ionContent', {static: false}) ionContent: IonContent;
   marketplaceTasks: MainMarketplaceTask[];
-  segment = 'all';
+  segment: string;
   userRole: string;
   Role = Role;
 
@@ -45,7 +45,20 @@ export class MarketplacePage implements OnInit, OnDestroy {
     this.events.subscribe('scroll-top-marketplace', () => this.ionContent.scrollToTop(500));
     this.segmentChanged();
     this.storage.get(StorageKeys.PROFILE)
-      .then(prof => this.userRole = prof.user.role);
+      .then(prof => {
+        this.userRole = prof.user.role;
+        switch (this.userRole) {
+          case Role.VERIFIED_FREELANCER:
+            this.segment = 'jobs';
+            break;
+          case Role.CUSTOMER:
+            this.segment = 'me';
+            break;
+          default:
+            this.segment = 'all';
+            break;
+        }
+      });
   }
 
   ngOnDestroy(): void {

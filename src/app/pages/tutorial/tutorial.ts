@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RoutesRecognized} from '@angular/router';
 
 import {IonSlides, NavController} from '@ionic/angular';
 
@@ -7,6 +7,8 @@ import { Storage } from '@ionic/storage';
 import {AuthService} from '../../utils/services/auth.service';
 import {StorageKeys} from '../../providers/constants';
 import {Subscription} from 'rxjs';
+import {filter, pairwise} from 'rxjs/operators';
+import {PreviousRouteService} from '../../providers/previous-route.service';
 
 @Component({
   selector: 'page-tutorial',
@@ -23,8 +25,8 @@ export class TutorialPage implements OnInit, OnDestroy {
     private navCtrl: NavController,
     private authService: AuthService,
     private router: Router,
-    private storage: Storage
-  ) {}
+    private storage: Storage,
+  ) {  }
 
   startApp() {
     this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {

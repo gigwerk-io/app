@@ -27,4 +27,5 @@ export interface AuthorizationToken {
   headers: {
     Authorization: string;
   };
+  params?: any;
 }

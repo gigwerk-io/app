@@ -279,3 +279,16 @@ ion-modal.transparent-modal {
 ion-segment-button {
   --indicator-color: red;
 }
+
+.ios.segment-button-checked {
+  color: white;
+}
+
+.dark {
+  .ios.segment-button-checked {
+    color: white;
+  }
+  ion-segment-button {
+    color: #dddddd;
+  }
+}

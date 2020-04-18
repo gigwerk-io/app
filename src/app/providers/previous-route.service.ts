@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import {Injectable, OnDestroy, OnInit} from '@angular/core';
+import {Router, NavigationEnd, RoutesRecognized} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {filter, pairwise} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +11,12 @@ export class PreviousRouteService {
   private previousUrl: string;
   private currentUrl: string;
 
-  constructor(private router: Router) {
-    this.currentUrl = this.router.url;
-    router.events.toPromise().then(event => {
-      if (event instanceof NavigationEnd) {
-        this.previousUrl = (this.currentUrl !== event.url) ? this.currentUrl : '/app/tabs/marketplace';
-        this.currentUrl = event.url;
-      }
-    });
+  public setPreviousUrl(url: string) {
+    this.previousUrl = url;
+  }
+
+  public setCurrentUrl(url: string) {
+    this.currentUrl = url;
   }
 
   public getPreviousUrl() {

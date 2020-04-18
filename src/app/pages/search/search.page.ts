@@ -3,8 +3,7 @@ import {IonSearchbar, ModalController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Router} from '@angular/router';
 import {Subject, Subscription} from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import {ChatService} from '../../utils/services/chat.service';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {Searchable} from '../../utils/interfaces/searchable';
 import {UtilsService} from '../../utils/services/utils.service';
 
@@ -27,11 +26,12 @@ export class SearchPage implements OnInit, OnDestroy {
   // @ts-ignore
   @ViewChild(IonSearchbar) searchBar: IonSearchbar;
 
-  constructor(private modalCtrl: ModalController,
-              private friendService: FriendsService,
-              private router: Router,
-              private utils: UtilsService,
-              private chatService: ChatService) { }
+  constructor(
+    private modalCtrl: ModalController,
+    private friendService: FriendsService,
+    private router: Router,
+    private utils: UtilsService,
+  ) { }
 
   ngOnInit() {
     this.setupSearchDebouncer();
@@ -82,18 +82,8 @@ export class SearchPage implements OnInit, OnDestroy {
     });
   }
 
-  startChat(username) {
-    this.chatService.startChat(username)
-      .then(res => {
-        this.router.navigate(['/app/room', res.id]);
-      })
-      .catch(error => {
-      this.utils.presentToast(error.statusText, 'danger');
-    });
-  }
-
   goToChatRoom(user: Searchable) {
     this.closeSearchPage()
-      .then(() => this.startChat(user.username));
+      .then(() => this.utils.startChat(user.username));
   }
 }

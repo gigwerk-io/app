@@ -4,8 +4,7 @@ import {ProfileRouteResponse} from '../../utils/interfaces/user';
 import {ProfileService} from '../../utils/services/profile.service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {Storage} from '@ionic/storage';
-import {ActionSheetController, IonRouterOutlet, ModalController, NavController, ToastController} from '@ionic/angular';
-import {ChatService} from '../../utils/services/chat.service';
+import {ActionSheetController, IonRouterOutlet, ModalController, NavController} from '@ionic/angular';
 import {FriendsService} from '../../utils/services/friends.service';
 import {Role, StorageKeys} from '../../providers/constants';
 import {Subscription} from 'rxjs';
@@ -13,7 +12,6 @@ import {AuthService} from '../../utils/services/auth.service';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {ReportPage} from '../report/report.page';
 import {UtilsService} from '../../utils/services/utils.service';
-import {errorObject} from 'rxjs/internal-compatibility';
 
 @Component({
   selector: 'profile',
@@ -30,13 +28,12 @@ export class ProfilePage implements OnInit, OnDestroy {
   friendButton: any;
   rating: number;
   Role = Role;
-  taskFeed = 'customer';
+  taskFeed = 'freelancer';
   activatedRouteSub: Subscription;
 
   constructor(private activatedRoute: ActivatedRoute,
               private storage: Storage,
               private profileService: ProfileService,
-              private chatService: ChatService,
               private friendService: FriendsService,
               private marketplaceService: MarketplaceService,
               private router: Router,
@@ -65,10 +62,8 @@ export class ProfilePage implements OnInit, OnDestroy {
           this.storage.get(StorageKeys.PROFILE)
             .then((prof: any) => {
               this.isOwner = (prof.user_id === this.profile.user.user_id);
-              if (this.profile.user.user.role !== Role.VERIFIED_FREELANCER || this.isOwner) {
+              if (this.profile.user.user.role !== Role.VERIFIED_FREELANCER) {
                 this.taskFeed = 'customer';
-              } else {
-                this.taskFeed = 'freelancer';
               }
             });
         }).catch(error => {
@@ -187,9 +182,7 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   startChat(username) {
-    this.chatService.startChat(username).then(res => {
-      this.router.navigate(['/app/room', res.id]);
-    });
+    this.utils.startChat(username);
   }
 
   showBadge(status) {

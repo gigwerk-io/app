@@ -1,73 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-import {from, Observable} from 'rxjs';
 import {ProfileRouteResponse} from '../interfaces/user';
-import {API_ADDRESS, StorageKeys} from '../../providers/constants';
-import {AuthorizationToken} from '../interfaces/user-options';
 import {MainProposal} from '../interfaces/main-marketplace/main-proposal';
+import {RESTService} from './rest.service';
+import {GenericResponse} from '../interfaces/searchable';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProfileService {
+export class ProfileService extends RESTService {
 
-  constructor(private httpClient: HttpClient,
-              private storage: Storage) { }
+  constructor(public httpClient: HttpClient, public storage: Storage) {
+    super(httpClient, storage);
+  }
 
   public getProfile(id: number): Promise<ProfileRouteResponse> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<ProfileRouteResponse>(`${API_ADDRESS}/profile/${id}`, authHeader)
-            .toPromise()
-            .then((res: ProfileRouteResponse) => res);
-        });
+    return this.makeHttpRequest<ProfileRouteResponse>(`profile/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
   public getProfileImage(id: number): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        return this.httpClient.get<ProfileRouteResponse>(`${API_ADDRESS}/profile/${id}`, authHeader)
-          .toPromise()
-          .then((res: ProfileRouteResponse) => res.user.image);
-      });
+    return this.getProfile(id).then(prof => prof.user.image);
   }
 
   public getFreelancerProposals(): Promise<MainProposal[]> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-        .then(token => {
-          const authHeader: AuthorizationToken = {
-            headers: {
-              Authorization: (token) ? token : ''
-            }
-          };
-          return this.httpClient.get<{requests: MainProposal[]}>(`${API_ADDRESS}/marketplace/main/proposals`, authHeader)
-            .toPromise()
-            .then((res: {requests: MainProposal[]}) => res.requests);
-        });
+    return this.makeHttpRequest<{requests: MainProposal[]}>('marketplace/main/proposals', 'GET')
+      .then(httpRes => httpRes.toPromise().then(res => res.requests));
   }
 
   public reportUser(id: number, description: string): Promise<string> {
-    return this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeader: AuthorizationToken = {
-          headers: {
-            Authorization: (token) ? token : ''
-          }
-        };
-        return this.httpClient.post<{message: string}>(`${API_ADDRESS}/report/user/${id}`, {description}, authHeader)
-          .toPromise()
-          .then((res: {message: string}) => res.message);
-      });
+    return this.makeHttpRequest<GenericResponse>(`report/user/${id}`, 'POST', {description})
+      .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 }
