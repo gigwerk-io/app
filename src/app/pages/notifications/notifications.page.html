@@ -27,6 +27,8 @@
           <small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
         </ion-note>
       </ion-item>
+      <br>
+      <br>
     </ion-list>
     <ng-template #noNotifications>
       <ion-title class="ion-text-center ion-margin-top">
@@ -52,29 +54,4 @@
       </ion-item>
     </ion-list>
   </ng-template>
-
-  <!--<ion-list class="read">-->
-    <!--<ion-card *ngFor="let notification of notifications; let i = index" [attr.data-index]="i">-->
-      <!--<ion-item-sliding>-->
-        <!--<ion-item [class]="notificationClass">-->
-          <!--<ion-icon name="person"></ion-icon>-->
-          <!--<ion-label>-->
-            <!--<h2>{{notification.type}}</h2>-->
-            <!--<p>{{notification.message}}</p>-->
-          <!--</ion-label>-->
-          <!--<ion-note>-->
-            <!--<small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>-->
-          <!--</ion-note>-->
-        <!--</ion-item>-->
-
-        <!--<ion-item-options side="start" *ngIf="readable">-->
-          <!--<ion-item-option (click)="markRead(notification.id, i)" color="danger">Mark As Read</ion-item-option>-->
-        <!--</ion-item-options>-->
-
-        <!--<ion-item-options side="end">-->
-          <!--<ion-item-option (click)="view(notification.action)" color="success">View</ion-item-option>-->
-        <!--</ion-item-options>-->
-      <!--</ion-item-sliding>-->
-    <!--</ion-card>-->
-  <!--</ion-list>-->
 </ion-content>
