@@ -31,7 +31,7 @@ export class RESTService {
     route: string,
     httpMethod: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
     httpParams?: any,
-    callback?: () => any
+    callback?: (...args) => any
   ): Promise<Observable<T> | undefined> {
     return this.storage.get(StorageKeys.ACCESS_TOKEN)
       .then(token => {

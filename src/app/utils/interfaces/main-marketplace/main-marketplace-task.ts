@@ -37,7 +37,9 @@ export interface MainMarketplaceTask {
 }
 
 export interface MainMarketplaceRouteResponse {
-  requests: MainMarketplaceTask[];
+  success: boolean;
+  message: boolean;
+  data: MainMarketplaceTask[];
 }
 
 export interface MainMarketplaceRequestRouteResponse {

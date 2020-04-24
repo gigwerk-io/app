@@ -84,26 +84,17 @@ export class MarketplacePage implements OnInit, OnDestroy {
             return !duplicate;
           });
         });
-        console.log(this.marketplaceTasks);
+
         this.changeRef.detectChanges();
-      }).catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken();
-      }
-    });
+      });
   }
 
   getMyMarketplaceRequests() {
     this.marketplaceService.getMainMarketplaceRequests('me')
       .then(tasks => {
         this.marketplaceTasks = tasks;
-        console.log(this.marketplaceTasks);
         this.changeRef.detectChanges();
-      }).catch(error => {
-      if (error.status === 401) {
-        this.authService.isValidToken();
-      }
-    });
+      });
   }
 
   getMyJobs() {
@@ -111,11 +102,6 @@ export class MarketplacePage implements OnInit, OnDestroy {
       .then(tasks => {
         this.marketplaceTasks = tasks;
         this.changeRef.detectChanges();
-      })
-      .catch(error => {
-        if (error.status === 401) {
-          this.authService.isValidToken();
-        }
       });
   }
 

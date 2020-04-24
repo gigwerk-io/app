@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {
   CustomerApproveFreelancerResponse,
   CustomerCancelTaskResponse, CustomerCompleteTaskResponse,
@@ -15,14 +15,19 @@ import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {MainProposal} from '../interfaces/main-marketplace/main-proposal';
 import {RESTService} from './rest.service';
+import {Observable} from 'rxjs';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarketplaceService extends RESTService {
 
-  constructor(public httpClient: HttpClient,
-              public storage: Storage) {
+  constructor(
+    public httpClient: HttpClient,
+    public storage: Storage,
+    public authService: AuthService
+  ) {
     super(httpClient, storage);
   }
 
@@ -31,18 +36,41 @@ export class MarketplaceService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getMainMarketplaceRequests(filter?: string, coords?: any): Promise<MainMarketplaceTask[]> {
+  public getMainMarketplaceRequests(filter?: string, coords?: any, callback?: (...args) => any): Promise<MainMarketplaceTask[]> {
+    let route: string;
+
     switch (filter) {
       case 'all':
-        return this.makeHttpRequest<MainMarketplaceRouteResponse>('marketplace/main/feed', 'GET', {params: coords})
-          .then(httpRes => httpRes.toPromise().then(res => res.requests));
+        route = 'marketplace/main/feed';
+        break;
       case 'me':
-        return this.makeHttpRequest<MainMarketplaceRouteResponse>('marketplace/main/me', 'GET', {params: coords})
-          .then(httpRes => httpRes.toPromise().then(res => res.requests));
+        route = 'marketplace/main/me';
+        break;
       case 'proposals':
-        return this.makeHttpRequest<MainMarketplaceRouteResponse>('marketplace/main/proposals', 'GET', {params: coords})
-          .then(httpRes => httpRes.toPromise().then(res => res.requests));
+        route = 'marketplace/main/proposals';
+        break;
     }
+
+    const mainMarketplaceTasks: Promise<Observable<MainMarketplaceRouteResponse>> =
+      this.makeHttpRequest<MainMarketplaceRouteResponse>(
+        route,
+        'GET',
+        {params: coords}
+      );
+
+    return mainMarketplaceTasks.then(httpRes => httpRes.toPromise()
+      .then(res => {
+        if (callback) {
+          callback(res);
+        }
+        return res.data;
+      }))
+      .catch(error => {
+        if (error.status === 401) {
+          this.authService.isValidToken(); // check whether this user has valid authorization rights
+        }
+        return [];
+      });
   }
 
   public createMainMarketplaceRequest(req: MainMarketplaceTask): Promise<string> {
@@ -85,12 +113,12 @@ export class MarketplaceService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
-  public freelancerCompleteTask(id: number, ratingAndReview: {rating: number, review: string}): Promise<string> {
+  public freelancerCompleteTask(id: number, ratingAndReview: { rating: number, review: string }): Promise<string> {
     return this.makeHttpRequest<FreelancerCompleteTaskResponse>(`marketplace/main/freelancer/complete/${id}`, 'POST', ratingAndReview)
       .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
 
-  public customerCompleteTask(id: number, ratingAndReview: {rating: number, review: string}): Promise<string> {
+  public customerCompleteTask(id: number, ratingAndReview: { rating: number, review: string }): Promise<string> {
     return this.makeHttpRequest<CustomerCompleteTaskResponse>(`marketplace/main/request/complete/${id}`, 'POST', ratingAndReview)
       .then(httpRes => httpRes.toPromise().then(res => res.message));
   }
