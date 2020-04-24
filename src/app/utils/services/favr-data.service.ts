@@ -15,7 +15,8 @@ export class FavrDataService {
    * Get the available FAVR categories.
    */
   public getCategories(): Promise<CategoryResponse> {
-    return this.httpClient.get<CategoryResponse>(`${API_ADDRESS}/categories`).toPromise();
+    return this.httpClient.get<CategoryResponse>(`${API_ADDRESS}/categories`).toPromise()
+      .then(res => res);
   }
 
   /**

@@ -11,12 +11,13 @@ import {
   MainMarketplaceRouteResponse,
   MainMarketplaceTask, ReportTaskResponse
 } from '../interfaces/main-marketplace/main-marketplace-task';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {MainProposal} from '../interfaces/main-marketplace/main-proposal';
 import {RESTService} from './rest.service';
 import {Observable} from 'rxjs';
 import {AuthService} from './auth.service';
+import {UtilsService} from './utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,8 @@ export class MarketplaceService extends RESTService {
   constructor(
     public httpClient: HttpClient,
     public storage: Storage,
-    public authService: AuthService
+    public authService: AuthService,
+    public utils: UtilsService
   ) {
     super(httpClient, storage);
   }
@@ -73,14 +75,36 @@ export class MarketplaceService extends RESTService {
       });
   }
 
-  public createMainMarketplaceRequest(req: MainMarketplaceTask): Promise<string> {
+  public createMainMarketplaceRequest(req: MainMarketplaceTask): Promise<MainMarketplaceRequestRouteResponse> {
     return this.makeHttpRequest<MainMarketplaceRequestRouteResponse>('marketplace/main/request', 'POST', req)
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+      .then(httpRes => httpRes.toPromise().then(res => {
+        this.utils.presentToast(res.message, 'success');
+        return res;
+      }))
+      .catch((error: HttpErrorResponse) => {
+        if (error.error) {
+          this.utils.presentToast(error.error.message, 'danger');
+        } else {
+          this.utils.presentToast(error.message, 'danger');
+        }
+        return {success: false, message: '', data: null};
+      });
   }
 
-  public editMainMarketplaceRequest(req: MainMarketplaceTask): Promise<string> {
+  public editMainMarketplaceRequest(req: MainMarketplaceTask): Promise<MainMarketplaceRequestRouteResponse> {
     return this.makeHttpRequest<MainMarketplaceRequestRouteResponse>(`marketplace/main/edit/${req.id}`, 'POST', req)
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+      .then(httpRes => httpRes.toPromise().then(res => {
+        this.utils.presentToast(res.message, 'success');
+        return res;
+      }))
+      .catch((error: HttpErrorResponse) => {
+        if (error.error) {
+          this.utils.presentToast(error.error.message, 'danger');
+        } else {
+          this.utils.presentToast(error.message, 'danger');
+        }
+        return {success: false, message: '', data: null};
+      });
   }
 
   public freelancerAcceptMainMarketplaceRequest(id: number): Promise<string> {

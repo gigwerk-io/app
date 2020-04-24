@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
+import {MainMarketplaceRouteResponse, MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {IonContent, IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
 import {RequestPage} from '../request/request.page';
@@ -26,6 +26,22 @@ export class MarketplacePage implements OnInit, OnDestroy {
   segment: string;
   userRole: string;
   Role = Role;
+  private callback = (res: MainMarketplaceRouteResponse) => {
+    this.marketplaceTasks = res.data;
+    const channel = this.pusher.marketplace();
+    channel.bind('new-request', data => {
+      // Push new job to feed
+      this.marketplaceTasks.push(data.marketplace);
+      // Remove duplicate jobs from the feed.
+      const seen = new Set();
+      this.marketplaceTasks = this.marketplaceTasks.filter(marketplace => {
+        const duplicate = seen.has(marketplace.id);
+        seen.add(marketplace.id);
+        return !duplicate;
+      });
+    });
+    this.changeRef.detectChanges();
+  }
 
   constructor(
     private marketplaceService: MarketplaceService,
@@ -41,7 +57,8 @@ export class MarketplacePage implements OnInit, OnDestroy {
     private utils: UtilsService,
     private geolocation: Geolocation,
     public routerOutlet: IonRouterOutlet
-  ) {  }
+  ) {
+  }
 
   ngOnInit() {
     this.events.subscribe('scroll-top-marketplace', () => this.ionContent.scrollToTop(500));
@@ -68,41 +85,16 @@ export class MarketplacePage implements OnInit, OnDestroy {
   }
 
 
-  getAllMarketplaceRequests(coords?: any) {
-    this.marketplaceService.getMainMarketplaceRequests('all', coords)
-      .then(tasks => {
-        this.marketplaceTasks = tasks;
-        const channel = this.pusher.marketplace();
-        channel.bind('new-request', data => {
-          // Push new job to feed
-          this.marketplaceTasks.push(data.marketplace);
-          // Remove duplicate jobs from the feed.
-          const seen = new Set();
-          this.marketplaceTasks = this.marketplaceTasks.filter(marketplace => {
-            const duplicate = seen.has(marketplace.id);
-            seen.add(marketplace.id);
-            return !duplicate;
-          });
-        });
-
-        this.changeRef.detectChanges();
-      });
+  getAllMarketplaceRequests(coords?: any, callback?: (...args) => any) {
+    this.marketplaceService.getMainMarketplaceRequests('all', coords, callback);
   }
 
-  getMyMarketplaceRequests() {
-    this.marketplaceService.getMainMarketplaceRequests('me')
-      .then(tasks => {
-        this.marketplaceTasks = tasks;
-        this.changeRef.detectChanges();
-      });
+  getMyMarketplaceRequests(callback?: (...args) => any) {
+    this.marketplaceService.getMainMarketplaceRequests('me', {}, callback);
   }
 
-  getMyJobs() {
-    this.marketplaceService.getMainMarketplaceRequests('proposals')
-      .then(tasks => {
-        this.marketplaceTasks = tasks;
-        this.changeRef.detectChanges();
-      });
+  getMyJobs(callback?: (...args) => any) {
+    this.marketplaceService.getMainMarketplaceRequests('proposals', {}, callback);
   }
 
   segmentChanged() {
@@ -112,19 +104,19 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.geolocation.getCurrentPosition().then(res => {
           const coords = {lat: res.coords.latitude, long: res.coords.longitude};
           // Get job details with location
-          this.getAllMarketplaceRequests(coords);
+          this.getAllMarketplaceRequests(coords, this.callback);
         }).catch(err => {
           // Get job details without location
-          this.getAllMarketplaceRequests();
+          this.getAllMarketplaceRequests(this.callback);
         });
         break;
       case 'me':
         this.segment = 'me';
-        this.getMyMarketplaceRequests();
+        this.getMyMarketplaceRequests(this.callback);
         break;
       case 'jobs':
         this.segment = 'jobs';
-        this.getMyJobs();
+        this.getMyJobs(this.callback);
         break;
     }
   }
@@ -149,106 +141,6 @@ export class MarketplacePage implements OnInit, OnDestroy {
       });
   }
 
-  async openRequestPage() {
-    this.storage.get(StorageKeys.CUSTOMER_TUTORIAL).then(res => {
-      setTimeout(async () => {
-        if (!res) {
-          const customerTutorialModal = await this.modalCtrl.create({
-            component: CustomerTutorialPage,
-            componentProps: {isModal: true}
-          });
-
-          const loadingCustomerTutorialPage = await this.loadingCtrl.create({
-            message: 'Please wait...',
-            translucent: true
-          });
-
-          await loadingCustomerTutorialPage.present();
-
-          customerTutorialModal.onDidDismiss().then(async () => {
-            const loadingMarketplacePage = await this.loadingCtrl.create({
-              message: 'Please wait...',
-              translucent: true
-            });
-
-            await loadingMarketplacePage.present();
-            loadingMarketplacePage.dismiss();
-          });
-
-          await customerTutorialModal.present()
-            .then(() => loadingCustomerTutorialPage.dismiss());
-
-          await customerTutorialModal.onDidDismiss()
-            .then(async () => {
-              const taskRequestModal = await this.modalCtrl.create({
-                component: RequestPage,
-                componentProps: {isModal: true},
-                swipeToClose: false,
-                presentingElement: this.routerOutlet.nativeEl
-              });
-
-              const loadingRequestPage = await this.loadingCtrl.create({
-                message: 'Please wait...',
-                translucent: true
-              });
-
-              await loadingRequestPage.present();
-
-              taskRequestModal.onDidDismiss().then(async () => {
-                const loadingMarketplacePage = await this.loadingCtrl.create({
-                  message: 'Please wait...',
-                  translucent: true
-                });
-
-                await loadingMarketplacePage.present();
-
-                // this.marketplaceService.getMainMarketplaceRequests('all')
-                //   .then(tasks => this.marketplaceTasks = tasks);
-                // this.marketplaceService.getMainMarketplaceRequests('me')
-                //   .then(tasks => this.marketplaceTasks = tasks);
-                loadingMarketplacePage.dismiss();
-              });
-
-              await taskRequestModal.present()
-                .then(() => loadingRequestPage.dismiss());
-            });
-        } else {
-          const taskRequestModal = await this.modalCtrl.create({
-            component: RequestPage,
-            componentProps: {isModal: true},
-            swipeToClose: false,
-            presentingElement: this.routerOutlet.nativeEl
-          });
-
-          const loadingRequestPage = await this.loadingCtrl.create({
-            message: 'Please wait...',
-            translucent: true
-          });
-
-          await loadingRequestPage.present();
-
-          taskRequestModal.onDidDismiss().then(async () => {
-            const loadingMarketplacePage = await this.loadingCtrl.create({
-              message: 'Please wait...',
-              translucent: true
-            });
-
-            await loadingMarketplacePage.present();
-
-            // this.marketplaceService.getMainMarketplaceRequests('all')
-            //   .then(tasks => this.marketplaceTasks = tasks);
-            // this.marketplaceService.getMainMarketplaceRequests('me')
-            //   .then(tasks => this.marketplaceTasks = tasks);
-            loadingMarketplacePage.dismiss();
-          });
-
-          await taskRequestModal.present()
-            .then(() => loadingRequestPage.dismiss());
-        }
-      }, 0);
-    });
-  }
-
   async doRefresh(event?) {
     setTimeout(() => {
       switch (this.segment) {
@@ -256,17 +148,17 @@ export class MarketplacePage implements OnInit, OnDestroy {
           this.geolocation.getCurrentPosition().then(res => {
             const coords = {lat: res.coords.latitude, long: res.coords.longitude};
             // GEt job details with location
-            this.getAllMarketplaceRequests(coords);
+            this.getAllMarketplaceRequests(coords, this.callback);
           }).catch(err => {
             // Get job details without location
-            this.getAllMarketplaceRequests();
+            this.getAllMarketplaceRequests(this.callback);
           });
           break;
         case 'me':
-          this.getMyMarketplaceRequests();
+          this.getMyMarketplaceRequests(this.callback);
           break;
         case 'jobs':
-          this.getMyJobs();
+          this.getMyJobs(this.callback);
           break;
       }
 

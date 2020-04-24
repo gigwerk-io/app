@@ -20,7 +20,9 @@ export interface FriendRequestsResponse {
 }
 
 export interface GenericResponse {
+  success?: boolean;
   message: string;
+  data?: any;
 }
 
 export interface SearchResponse {

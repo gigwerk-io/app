@@ -49,7 +49,7 @@ export class AuthService extends RESTService {
     ).toPromise()
       .catch((error: HttpErrorResponse) => {
         console.log(error);
-        if (!error.ok) {
+        if (error.error) {
           this.utils.presentToast(error.error.message, 'danger');
         }
 
@@ -87,7 +87,7 @@ export class AuthService extends RESTService {
         return res;
       }).catch((error: HttpErrorResponse) => {
         console.log(error);
-        if (!error.ok) {
+        if (error.error) {
           this.utils.presentToast(error.error.message, 'danger');
         }
 

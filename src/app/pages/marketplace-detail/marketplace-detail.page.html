@@ -240,7 +240,7 @@
 
       <ion-row class="ion-padding-bottom">
         <ion-col size="3" class="ion-text-center">
-          <favr-img src="{{Categories[mainMarketplaceTask.category_id - 1].icon_image}}"
+          <favr-img src="{{categories[mainMarketplaceTask.category_id - 1].icon_image}}"
                     spinnerSrc="assets/img/spinner.gif"
                     imgClass="marketplace-detail-icons"
                     loaderClass="marketplace-detail-icons rounded-circle"></favr-img>
@@ -248,7 +248,7 @@
         <ion-col size="9">
           <b>Task Category:</b>
           <br>
-          {{Categories[mainMarketplaceTask.category_id - 1].name}}
+          {{categories[mainMarketplaceTask.category_id - 1].name}}
         </ion-col>
       </ion-row>
 

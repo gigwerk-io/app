@@ -43,8 +43,9 @@ export interface MainMarketplaceRouteResponse {
 }
 
 export interface MainMarketplaceRequestRouteResponse {
+  success: boolean;
   message: string;
-  id: number;
+  data: MainMarketplaceTask;
 }
 
 export interface FreelancerAcceptMainMarketplaceTaskRouteResponse {
