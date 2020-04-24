@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {SecurityService} from '../../utils/services/security.service';
-import {Sessions} from '../../utils/interfaces/auth/sessions';
+import {Sessions, SessionResponse} from '../../utils/interfaces/auth/sessions';
 import {ToastController} from '@ionic/angular';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
+
 
 @Component({
   selector: 'remembered-devices',
@@ -11,7 +13,7 @@ import {UtilsService} from '../../utils/services/utils.service';
 })
 export class RememberedDevicesPage implements OnInit {
 
-  sessions: Sessions[];
+  sessions: SessionResponse;
 
   constructor(
     private securityService: SecurityService,
@@ -23,7 +25,7 @@ export class RememberedDevicesPage implements OnInit {
   }
 
   getSessions() {
-    this.securityService.getSessions().then(res => this.sessions = res.sessions);
+    this.securityService.getSessions().then((devices: Response<SessionResponse>) => this.sessions = devices['data']);
   }
 
   killAll() {
