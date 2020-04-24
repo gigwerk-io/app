@@ -49,14 +49,7 @@ export class FriendsPage implements OnInit {
       })
       .catch(error => {
         if (error.status === 401) {
-          this.authService.isValidToken().then(res => {
-            if (!res.response) {
-              this.utils.presentToast('You have been logged out.', 'success');
-              this.storage.remove(StorageKeys.PROFILE);
-              this.storage.remove(StorageKeys.ACCESS_TOKEN);
-              this.navCtrl.navigateRoot('/welcome');
-            }
-          }).catch(e => this.utils.presentToast(e.message, 'danger'));
+          this.authService.isValidToken();
         }
       });
   }
@@ -87,14 +80,7 @@ export class FriendsPage implements OnInit {
       this.changeRef.detectChanges();
     }).catch(error => {
       if (error.status === 401) {
-        this.authService.isValidToken().then(res => {
-          if (!res.response) {
-            this.utils.presentToast('You have been logged out.', 'success');
-            this.storage.remove(StorageKeys.PROFILE);
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.navCtrl.navigateRoot('/welcome');
-          }
-        });
+        this.authService.isValidToken();
       }
     });
   }
@@ -109,14 +95,7 @@ export class FriendsPage implements OnInit {
       })
       .catch(error => {
         if (error.status === 401) {
-          this.authService.isValidToken().then(res => {
-            if (!res.response) {
-              this.utils.presentToast('You have been logged out.', 'success');
-              this.storage.remove(StorageKeys.PROFILE);
-              this.storage.remove(StorageKeys.ACCESS_TOKEN);
-              this.navCtrl.navigateRoot('/welcome');
-            }
-          });
+          this.authService.isValidToken();
         }
       });
   }
@@ -131,14 +110,7 @@ export class FriendsPage implements OnInit {
       })
       .catch(error => {
         if (error.status === 401) {
-          this.authService.isValidToken().then(res => {
-            if (!res.response) {
-              this.utils.presentToast('You have been logged out.', 'success');
-              this.storage.remove(StorageKeys.PROFILE);
-              this.storage.remove(StorageKeys.ACCESS_TOKEN);
-              this.navCtrl.navigateRoot('/welcome');
-            }
-          });
+          this.authService.isValidToken();
         }
       });
   }

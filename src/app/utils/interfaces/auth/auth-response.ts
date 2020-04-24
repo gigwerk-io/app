@@ -24,8 +24,8 @@ export interface SignOutResponse {
 
 export interface ValidateTokenResponse {
   success: boolean;
-  message: string;
-  data: {
+  message?: string;
+  data?: {
     validToken: boolean;
   };
 }
