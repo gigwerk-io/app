@@ -1,23 +1,31 @@
 import {User} from '../user';
 
 export interface AuthResponse {
-  id?: number;
-  profile?: {
-    created_at?: number;
-    description?: string;
-    image?: string;
-    updated_at?: number;
-    user?: User;
-    user_id?: number
+  success: boolean;
+  message?: string;
+  data?: {
+    id: number;
+    token: string;
+    profile: {
+      created_at?: number;
+      description?: string;
+      image?: string;
+      updated_at?: number;
+      user?: User;
+      user_id?: number
+    };
   };
-  token?: string;
-  response?: boolean;
 }
 
 export interface SignOutResponse {
-  message?: string;
+  success: boolean;
+  message: string;
 }
 
 export interface ValidateTokenResponse {
-  response: boolean;
+  success: boolean;
+  message: string;
+  data: {
+    validToken: boolean;
+  };
 }

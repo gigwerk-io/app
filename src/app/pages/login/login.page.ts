@@ -20,7 +20,7 @@ const {PushNotifications, Device} = Plugins;
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
-  styleUrls: ['./login.scss'],
+  styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
   login: UserOptions = {
@@ -45,12 +45,12 @@ export class LoginPage {
     this.submitted = true;
     if (form.valid) {
       this.authService.login(this.login)
-        .then(() => {
-          this.navCtrl.navigateRoot('/app/tabs/marketplace').then(res => {
-            this.initPushNotification();
-          });
-        }).catch(error => {
-          this.utils.presentToast(error.error.message, 'danger');
+        .then(res => {
+          if (res.success) {
+            this.navCtrl.navigateRoot('/app/tabs/marketplace').then(() => {
+              // this.initPushNotification();
+            });
+          }
         });
     }
   }

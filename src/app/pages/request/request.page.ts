@@ -22,7 +22,7 @@ import {PreferencesService} from '../../utils/services/preferences.service';
 import {PreviousRouteService} from '../../providers/previous-route.service';
 import {TaskActions} from '../../providers/constants';
 import {FavrDataService} from '../../utils/services/favr-data.service';
-import {PageStack} from '../signup/signup';
+import {PageStack} from '../signup/signup.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
