@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {ToastController} from '@ionic/angular';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
+import { Settings } from '../../utils/interfaces/settings/preferences';
 
 
 @Component({
@@ -18,7 +20,7 @@ export class PrivacyPreferencesPage implements OnInit {
   constructor(private preferences: PreferencesService, private utils: UtilsService) { }
 
   ngOnInit() {
-    this.preferences.getSettings().then(res => {
+    this.preferences.getSettings().then((res: Response<Settings>) => {
       this.scope = res.data.scope;
       this.displayDescription = res.data.display_description;
       this.displayRating = res.data.display_rating;

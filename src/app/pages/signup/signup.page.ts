@@ -83,7 +83,7 @@ export class SignupPage {
     private utils: UtilsService
   ) {
     this.favrService.getCities().then(res => {
-      this.cities = res.cities;
+      this.cities = res.data ;
     });
   }
 

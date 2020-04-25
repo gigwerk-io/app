@@ -169,7 +169,7 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getLocations() {
-    this.preferences.getMyLocations().then(res => this.locations = res.locations);
+    this.preferences.getMyLocations().then(res => this.locations = res.data);
   }
 
   async presentActionSheet(location?: LocationAddress) {

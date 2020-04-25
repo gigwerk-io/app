@@ -27,11 +27,10 @@ export class NotificationPreferencesPage implements OnInit {
   constructor(private preferences: PreferencesService, private utils: UtilsService) { }
 
   ngOnInit() {
-    this.preferences.getSettings().then((res: Response<Settings>) => {
-      const settings: Settings = res.data;
-      this.notificationPreferences.sms = settings.sms_notifications;
-      this.notificationPreferences.email = settings.email_notifications;
-      this.notificationPreferences.push = settings.push_notifications;
+    this.preferences.getSettings().then((settings: Response<Settings>) => {
+      this.notificationPreferences.sms = settings.data.sms_notifications;
+      this.notificationPreferences.email = settings.data.email_notifications;
+      this.notificationPreferences.push = settings.data.push_notifications;
     });
   }
 

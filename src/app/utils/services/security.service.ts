@@ -4,6 +4,7 @@ import {Storage} from '@ionic/storage';
 import {UpdateResponse} from '../interfaces/settings/preferences';
 import {SessionResponse} from '../interfaces/auth/sessions';
 import {RESTService} from './rest.service';
+import { Response } from '../interfaces/response';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,9 @@ export class SecurityService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getSessions(): Promise<SessionResponse> {
-    return this.makeHttpRequest<SessionResponse>('sessions', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res));
+  public getSessions(): Promise<Response<SessionResponse>> {
+    return this.makeHttpRequest<Response<SessionResponse>>('sessions', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<SessionResponse>) => res));
   }
 
   public killAll(): Promise<UpdateResponse> {

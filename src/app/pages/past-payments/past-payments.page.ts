@@ -25,12 +25,12 @@ export class PastPaymentsPage implements OnInit {
 
   getPayments() {
     this.financeService.getPayments().then(res => {
-      this.payments = res.payments;
-      if (res.payments.length === 0) {
+      this.payments = res.data;
+      if (res.data.length === 0) {
         this.isNone = true;
       }
     }).catch(error => {
-      this.utils.presentToast(error.error.message, 'danger').then(() => {
+      this.utils.presentToast(error.message, 'danger').then(() => {
         this.router.navigateByUrl('app/set-up-payments');
       });
     });
