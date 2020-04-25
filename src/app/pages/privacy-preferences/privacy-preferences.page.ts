@@ -19,10 +19,10 @@ export class PrivacyPreferencesPage implements OnInit {
 
   ngOnInit() {
     this.preferences.getSettings().then(res => {
-      this.scope = res.settings.scope;
-      this.displayDescription = res.settings.display_description;
-      this.displayRating = res.settings.display_rating;
-      this.displayReceipts = res.settings.display_receipts;
+      this.scope = res.data.scope;
+      this.displayDescription = res.data.display_description;
+      this.displayRating = res.data.display_rating;
+      this.displayReceipts = res.data.display_receipts;
     });
   }
 

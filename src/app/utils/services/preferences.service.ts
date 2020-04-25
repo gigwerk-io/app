@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {UpdateResponse, Settings, MyLocationsResponse, CurrentCityResponse} from '../interfaces/settings/preferences';
 import {RESTService} from './rest.service';
+import { Response } from '../interfaces/response';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +19,10 @@ export class PreferencesService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getSettings(): Promise<Settings> {
-    return this.makeHttpRequest<Settings>('settings', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res));
+
+  public getSettings(): Promise<Response<Settings>> {
+    return this.makeHttpRequest<Response<Settings>>('settings', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<Settings>) => res));
   }
 
   public updatePrivacyPreferences(body): Promise<UpdateResponse> {

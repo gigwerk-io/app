@@ -3,7 +3,6 @@ export interface UpdateResponse {
 }
 
 export interface Settings {
-  settings: {
     user_id: number;
     scope: string;
     display_rating: boolean;
@@ -14,7 +13,6 @@ export interface Settings {
     push_notifications: boolean;
     created_at: string;
     updated_at: string;
-  };
 }
 
 export interface LocationAddress {
