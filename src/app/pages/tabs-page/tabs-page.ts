@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
@@ -10,13 +10,14 @@ import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page'
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
 import {RequestPage} from '../request/request.page';
+import {PusherNotification} from '../../utils/interfaces/notification/PusherNotification';
 
 @Component({
   templateUrl: './tabs-page.html',
   styleUrls: ['./tabs-page.scss']
 })
 export class TabsPage implements OnInit, OnDestroy {
-
+  @Input() not: string;
   tabSlot: string;
   notificationCount = 0;
   friendCount = 0;
@@ -34,13 +35,13 @@ export class TabsPage implements OnInit, OnDestroy {
               private storage: Storage,
               private router: Router,
               public routerOutlet: IonRouterOutlet,
+              private changeDetectorRef: ChangeDetectorRef,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     if (window.innerWidth >= 1025) {
       this.tabSlot = 'top';
     } else {
       this.tabSlot = 'bottom';
     }
-    this.getBadges();
     this.events.subscribe('prefersDark', (prefDark: boolean) => {
       if (prefDark) {
         this.requestButtonIcon = 'assets/brand/favr_logo_blk.png';
@@ -59,13 +60,36 @@ export class TabsPage implements OnInit, OnDestroy {
       });
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
-        if (profile) {
+        if (profile !== null) {
+          this.getBadges();
           this.profileId = profile.user_id;
+          this.pusher.listenToUserNotifications(this.profileId).then(notificationChannel => {
+            notificationChannel.bind_global((eventName, data: PusherNotification) => {
+              if (data.message != null && data.title != null) {
+                this.utils.presentToast(data.message, 'dark', 'top', 3000, [{
+                  text: 'View',
+                  handler: () => {
+                    // mark as read if clicked
+                    this.router.navigate([data.page, data.params]).then(res => {
+                      if (res) {
+                        this.notificationService.markNotificationAsRead(data.id).then(() => {
+                          this.getBadges();
+                        });
+                      }
+                    });
+                  }
+                }]).then(() => {
+                  this.getBadges();
+                });
+              }
+            });
+          });
           this.profileImage = profile.image;
           this.angulartics2GoogleAnalytics.setUsername(profile.user.username);
           this.angulartics2GoogleAnalytics.startTracking();
         }
       });
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -73,27 +97,10 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   getBadges() {
-    setTimeout(() => {
-      this.notificationService.getBadgeCount().then(res => {
-        this.notificationCount = res.data.notifications;
-        this.friendCount = res.data.friends;
-        // Listen To Pusher User Channel
-        this.storage.get(StorageKeys.PROFILE).then(profile => {
-          const channel = this.pusher.user(profile.user.id);
-          // Bind Notification Channel
-          channel.bind('notification', data => {
-            this.utils.presentToast(data.message);
-            this.notificationCount = data.badges.notifications;
-            this.friendCount = data.badges.friends;
-          });
-          // Bind Badge Channel
-          channel.bind('badges', data => {
-            this.notificationCount = data.badges.notifications;
-            this.friendCount = data.badges.friends;
-          });
-        });
-      });
-    }, 1000);
+    this.notificationService.getBadgeCount().then(res => {
+      this.notificationCount = res.data.notifications;
+      this.friendCount = res.data.friends;
+    });
   }
 
   async openRequestPage() {

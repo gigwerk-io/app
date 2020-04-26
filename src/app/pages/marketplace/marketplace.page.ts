@@ -28,19 +28,6 @@ export class MarketplacePage implements OnInit, OnDestroy {
   Role = Role;
   private callback = (res: MainMarketplaceRouteResponse) => {
     this.marketplaceTasks = res.data;
-    const channel = this.pusher.marketplace();
-    channel.bind('new-request', data => {
-      // Push new job to feed
-      this.marketplaceTasks.push(data.marketplace);
-      // Remove duplicate jobs from the feed.
-      const seen = new Set();
-      this.marketplaceTasks = this.marketplaceTasks.filter(marketplace => {
-        const duplicate = seen.has(marketplace.id);
-        seen.add(marketplace.id);
-        return !duplicate;
-      });
-    });
-    this.changeRef.detectChanges();
   }
 
   constructor(
@@ -78,6 +65,24 @@ export class MarketplacePage implements OnInit, OnDestroy {
         }
         this.segmentChanged();
       });
+    this.pusher.listenToMarketplaceFeed().then(marketplaceChannel => {
+      console.log(marketplaceChannel);
+      marketplaceChannel.bind('new-request', data => {
+        console.log(data);
+        if (this.segment === 'all') {
+          // Push new job to feed
+          this.marketplaceTasks.push(data.marketplace);
+          // Remove duplicate jobs from the feed.
+          const seen = new Set();
+          this.marketplaceTasks = this.marketplaceTasks.filter(marketplace => {
+            const duplicate = seen.has(marketplace.id);
+            seen.add(marketplace.id);
+            return !duplicate;
+          });
+        }
+      });
+    });
+    this.changeRef.detectChanges();
   }
 
   ngOnDestroy(): void {

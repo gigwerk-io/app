@@ -1,9 +1,11 @@
+import {PusherNotification} from './PusherNotification';
+
 export interface Notification {
   id: string;
   type: string;
   notifiable_type: string;
   notifiable_id: number;
-  data: any;
+  data: PusherNotification;
   read_at: string;
   user_id: number;
   created_at: string;

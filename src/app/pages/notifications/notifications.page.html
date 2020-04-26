@@ -20,8 +20,8 @@
       <ion-item *ngFor="let notification of notifications; let i = index" [attr.data-index]="i" (click)="view(i, notification)" [class]="notificationClass">
         <ion-icon slot="start" name="notifications"></ion-icon>
         <ion-label>
-          <h2>{{notification.type}}</h2>
-          <p>{{notification.message}}</p>
+          <h2>{{notification.data.title}}</h2>
+          <p>{{notification.data.message}}</p>
         </ion-label>
         <ion-note>
           <small> {{notification.created_at | amFromUtc | amLocal |  amTimeAgo:true}} ago</small>
