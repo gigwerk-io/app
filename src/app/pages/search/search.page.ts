@@ -37,7 +37,7 @@ export class SearchPage implements OnInit, OnDestroy {
     this.setupSearchDebouncer();
     if (this.isChat) {
       this.friendService.getMyFriends()
-        .then(res => (res.length > 0) ? this.users = res : undefined);
+        .then(res => (res.data.length > 0) ? this.users = res.data : undefined);
     }
   }
 

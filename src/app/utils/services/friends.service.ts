@@ -8,6 +8,8 @@ import {
 } from '../interfaces/searchable';
 import {Storage} from '@ionic/storage';
 import {RESTService} from './rest.service';
+import { Response } from '../interfaces/response';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +23,11 @@ export class FriendsService extends RESTService {
   /**
    * Show current friends of a user.
    */
-  public getMyFriends(): Promise<Searchable[]> {
-    return this.makeHttpRequest<MyFriendsResponse>('friends', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.friends));
+  public getMyFriends(): Promise<Response<Searchable[]>>  {
+    return this.makeHttpRequest<Response<Searchable[]>>('friends', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<Searchable[]>) => res));
   }
+
 
   public searchUsers(query): Promise<Searchable[]> {
     return this.makeHttpRequest<SearchResponse>('search', 'GET', {search: query})
@@ -35,18 +38,19 @@ export class FriendsService extends RESTService {
    * Show recommended friends for a user.
    *
    */
-  public getRecommendedFriends(): Promise<Searchable[]> {
-    return this.makeHttpRequest<RecommendedFriendsResponse>('friend/recommend', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.recommendations));
+  public getRecommendedFriends(): Promise<Response<Searchable[]>> {
+    return this.makeHttpRequest<Response<Searchable[]>>('friend/recommend', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<Searchable[]>) => res));
   }
+
 
   /**
    * Show a users friend requests.
    *
    */
-  public getFriendRequests(): Promise<Searchable[]> {
-    return this.makeHttpRequest<FriendRequestsResponse>('friend/requests', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.requests));
+  public getFriendRequests(): Promise<Response<Searchable[]>> {
+    return this.makeHttpRequest<Response<Searchable[]>>('friend/requests', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<Searchable[]>) => res));
   }
 
   public sendFriendRequest(id): Promise<string> {
