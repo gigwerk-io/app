@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnInit} from '@angular/core';
 import {NotificationService} from '../../utils/services/notification.service';
 import {Notification} from '../../utils/interfaces/notification/notification';
 import {Router} from '@angular/router';
@@ -92,7 +92,9 @@ export class NotificationsPage implements OnInit {
   }
 
   view(index, notification: Notification) {
-    // this.router.navigate([notification.action.page, notification.action.params]);
+    const emitter = new EventEmitter();
+    emitter.emit('Foo bar');
+    this.router.navigate([notification.data.page, notification.data.params]);
     this.notifications.splice(index, 1);
     this.notificationService.markNotificationAsRead(notification.id);
   }

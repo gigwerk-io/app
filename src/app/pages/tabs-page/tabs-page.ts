@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PusherServiceProvider} from '../../providers/pusher.service';
@@ -17,7 +17,7 @@ import {PusherNotification} from '../../utils/interfaces/notification/PusherNoti
   styleUrls: ['./tabs-page.scss']
 })
 export class TabsPage implements OnInit, OnDestroy {
-
+  @Input() not: string;
   tabSlot: string;
   notificationCount = 0;
   friendCount = 0;
@@ -35,6 +35,7 @@ export class TabsPage implements OnInit, OnDestroy {
               private storage: Storage,
               private router: Router,
               public routerOutlet: IonRouterOutlet,
+              private changeDetectorRef: ChangeDetectorRef,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
     if (window.innerWidth >= 1025) {
       this.tabSlot = 'top';
@@ -69,7 +70,13 @@ export class TabsPage implements OnInit, OnDestroy {
                   text: 'View',
                   handler: () => {
                     // mark as read if clicked
-                    this.router.navigate([data.page, data.params]);
+                    this.router.navigate([data.page, data.params]).then(res => {
+                      if (res) {
+                        this.notificationService.markNotificationAsRead(data.id).then(() => {
+                          this.getBadges();
+                        });
+                      }
+                    });
                   }
                 }]).then(() => {
                   this.getBadges();
@@ -82,6 +89,7 @@ export class TabsPage implements OnInit, OnDestroy {
           this.angulartics2GoogleAnalytics.startTracking();
         }
       });
+    this.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -90,8 +98,8 @@ export class TabsPage implements OnInit, OnDestroy {
 
   getBadges() {
     this.notificationService.getBadgeCount().then(res => {
-      this.notificationCount = res.notifications;
-      this.friendCount = res.friends;
+      this.notificationCount = res.data.notifications;
+      this.friendCount = res.data.friends;
     });
   }
 
