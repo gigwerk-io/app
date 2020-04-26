@@ -7,6 +7,7 @@ import {AuthService} from '../../utils/services/auth.service';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
 
 @Component({
   selector: 'friends',
@@ -75,8 +76,8 @@ export class FriendsPage implements OnInit {
   showRecommendedFriends() {
     this.btnClass = 'person-add';
     this.secondButton = false;
-    this.friendService.getRecommendedFriends().then(res => {
-      this.users = res;
+    this.friendService.getRecommendedFriends().then((res: Response<Searchable[]>) => {
+      this.users = res.data;
       this.changeRef.detectChanges();
     }).catch(error => {
       if (error.status === 401) {
@@ -89,8 +90,8 @@ export class FriendsPage implements OnInit {
     this.btnClass = 'chatbubble';
     this.secondButton = false;
     this.friendService.getMyFriends()
-      .then(res => {
-        this.users = res;
+      .then((res: Response<Searchable[]>) => {
+        this.users = res.data;
         this.changeRef.detectChanges();
       })
       .catch(error => {
@@ -104,8 +105,8 @@ export class FriendsPage implements OnInit {
     this.btnClass = 'checkmark';
     this.secondButton = true;
     this.friendService.getFriendRequests()
-      .then(res => {
-        this.users = res;
+      .then((res: Response<Searchable[]>) => {
+        this.users = res.data;
         this.changeRef.detectChanges();
       })
       .catch(error => {
