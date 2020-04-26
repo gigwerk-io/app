@@ -75,8 +75,8 @@ export class TabsPage implements OnInit, OnDestroy {
   getBadges() {
     setTimeout(() => {
       this.notificationService.getBadgeCount().then(res => {
-        this.notificationCount = res.notifications;
-        this.friendCount = res.friends;
+        this.notificationCount = res.data.notifications;
+        this.friendCount = res.data.friends;
         // Listen To Pusher User Channel
         this.storage.get(StorageKeys.PROFILE).then(profile => {
           const channel = this.pusher.user(profile.user.id);
