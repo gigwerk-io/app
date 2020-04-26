@@ -57,7 +57,7 @@ export class PreferencesService extends RESTService {
   }
 
   public selectCity(id): Promise<Response<UpdateResponse>> {
-    return this.makeHttpRequest<Response<UpdateResponse>>('select-city', 'POST', {city_id: id})
+    return this.makeHttpRequest<Response<UpdateResponse>>('select-city', 'PUT', {city_id: id})
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 

@@ -29,7 +29,7 @@ export class SelectCityPage implements OnInit {
   selectCity(city: City) {
     this.preferencesService.selectCity(city.id).then((res: Response<UpdateResponse>) => {
       this.current = city.id;
-      this.utils.presentToast(res.data.message, 'success');
+      this.utils.presentToast(res.message, 'success');
     });
   }
 
