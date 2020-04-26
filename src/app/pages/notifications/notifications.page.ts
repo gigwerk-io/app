@@ -8,6 +8,7 @@ import {Storage} from '@ionic/storage';
 import {Badge} from '@ionic-native/badge/ngx';
 import {StorageKeys} from '../../providers/constants';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
 
 @Component({
   selector: 'notifications',
@@ -49,8 +50,8 @@ export class NotificationsPage implements OnInit {
 
   getNewNotifications() {
     this.notificationService.getNewNotifications()
-      .then(res => {
-        this.notifications = res.notifications;
+      .then((res: Response<Notification[]>) => {
+        this.notifications = res.data;
         this.changeRef.detectChanges();
       })
       .catch(error => {
@@ -62,8 +63,8 @@ export class NotificationsPage implements OnInit {
 
   getAllNotifications() {
     this.notificationService.getAllNotifications()
-      .then(res => {
-        this.notifications = res.notifications;
+      .then((res: Response<Notification[]>) => {
+        this.notifications = res.data;
         this.changeRef.detectChanges();
       })
       .catch(error => {
@@ -91,7 +92,7 @@ export class NotificationsPage implements OnInit {
   }
 
   view(index, notification: Notification) {
-    this.router.navigate([notification.action.page, notification.action.params]);
+    // this.router.navigate([notification.action.page, notification.action.params]);
     this.notifications.splice(index, 1);
     this.notificationService.markNotificationAsRead(notification.id);
   }
