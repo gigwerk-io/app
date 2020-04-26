@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Storage} from '@ionic/storage';
 import {HttpClient} from '@angular/common/http';
-import {Badge, NotificationsResponse, Notification} from '../interfaces/notification/notification';
-import {UpdateResponse} from '../interfaces/settings/preferences';
+import {Badge, Notification} from '../interfaces/notification/notification';
 import {RESTService} from './rest.service';
-import { Response } from '../interfaces/response';
+import {Response} from '../interfaces/response';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +14,8 @@ export class NotificationService extends RESTService {
     super(httpClient, storage);
   }
 
-  public getBadgeCount(): Promise<Badge> {
-    return this.makeHttpRequest<Badge>('badges', 'GET')
+  public getBadgeCount(): Promise<Response<Badge>> {
+    return this.makeHttpRequest<Response<Badge>>('badges', 'GET')
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
@@ -35,13 +34,13 @@ export class NotificationService extends RESTService {
       .then(httpRes => httpRes.toPromise().then());
   }
 
-  public saveFCMToken(body): Promise<UpdateResponse> {
-    return this.makeHttpRequest<UpdateResponse>('fcm_token', 'POST', body)
+  public saveFCMToken(body): Promise<Response<void>> {
+    return this.makeHttpRequest<Response<void>>('fcm_token', 'POST', body)
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public saveAPNToken(body): Promise<UpdateResponse> {
-    return this.makeHttpRequest<UpdateResponse>('apn_token', 'POST', body)
+  public saveAPNToken(body): Promise<Response<void>> {
+    return this.makeHttpRequest<Response<void>>('apn_token', 'POST', body)
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 }

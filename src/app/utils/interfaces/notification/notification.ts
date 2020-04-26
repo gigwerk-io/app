@@ -1,13 +1,11 @@
 export interface Notification {
-  id: number;
-  user_id: number;
+  id: string;
   type: string;
-  message: string;
-  action: {
-    page: string;
-    params: any;
-  };
-  read: boolean;
+  notifiable_type: string;
+  notifiable_id: number;
+  data: any;
+  read_at: string;
+  user_id: number;
   created_at: string;
   updated_at: string;
 }
@@ -15,8 +13,4 @@ export interface Notification {
 export interface Badge {
   notifications: number;
   friends: number;
-}
-
-export interface NotificationsResponse {
-  notifications: Notification[];
 }
