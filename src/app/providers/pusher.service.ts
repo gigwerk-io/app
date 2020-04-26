@@ -4,14 +4,12 @@ import {PUSHER_ID, StorageKeys} from './constants';
 import {Storage} from '@ionic/storage';
 import Pusher, {Channel} from 'pusher-js';
 import {environment} from '../../environments/environment';
-import {UtilsService} from '../utils/services/utils.service';
-import {Router} from '@angular/router';
 
 @Injectable()
 export class PusherServiceProvider implements OnInit, OnDestroy {
   channel: any;
 
-  constructor(public http: HttpClient, private storage: Storage, private utils: UtilsService, private router: Router) {
+  constructor(public http: HttpClient, private storage: Storage) {
   }
 
   ngOnInit(): void {
@@ -46,14 +44,12 @@ export class PusherServiceProvider implements OnInit, OnDestroy {
    */
   public async listenToMarketplaceFeed(): Promise<Channel> {
     return await this.storage.get(StorageKeys.PROFILE).then(profile => {
-      console.log(profile);
       const pusher = new Pusher(PUSHER_ID, {
         cluster: 'us2',
         forceTLS: true,
       });
       // show job only if users are in same org
       const orgId = (profile.user.organization_id != null) ? profile.user.organization_id : 0;
-      console.log(orgId);
       return pusher.subscribe('marketplace.' + orgId);
     });
   }
