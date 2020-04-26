@@ -92,7 +92,7 @@ export class NotificationsPage implements OnInit {
   }
 
   view(index, notification: Notification) {
-    this.router.navigate([notification.action.page, notification.action.params]);
+    // this.router.navigate([notification.action.page, notification.action.params]);
     this.notifications.splice(index, 1);
     this.notificationService.markNotificationAsRead(notification.id);
   }
