@@ -45,8 +45,8 @@ export class FriendsPage implements OnInit {
     this.secondButton = false;
     this.clickType = 'search';
     this.friendService.searchUsers(query)
-      .then(res => {
-        this.users = res;
+      .then((res: Response<Searchable[]>) => {
+        this.users = res.data;
       })
       .catch(error => {
         if (error.status === 401) {

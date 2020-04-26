@@ -6,6 +6,7 @@ import {Subject, Subscription} from 'rxjs';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import {Searchable} from '../../utils/interfaces/searchable';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
 
 @Component({
   selector: 'search',
@@ -50,10 +51,8 @@ export class SearchPage implements OnInit, OnDestroy {
   }
 
   handleSearch() {
-    // console.log(this.query);
-    this.friendService.searchUsers(this.query).then(res => {
-      this.users = res;
-      // console.log(this.users);
+    this.friendService.searchUsers(this.query).then((res: Response<Searchable[]>) => {
+      this.users = res.data;
     });
   }
 
@@ -75,8 +74,8 @@ export class SearchPage implements OnInit, OnDestroy {
       debounceTime(250),
       distinctUntilChanged(),
     ).subscribe((term: string) => {
-      this.friendService.searchUsers(term).then(res => {
-        this.users = res;
+      this.friendService.searchUsers(term).then((res: Response<Searchable[]>) => {
+        this.users = res.data;
         this.queryLength = this.users.length;
       });
     });

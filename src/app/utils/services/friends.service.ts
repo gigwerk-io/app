@@ -29,10 +29,11 @@ export class FriendsService extends RESTService {
   }
 
 
-  public searchUsers(query): Promise<Searchable[]> {
-    return this.makeHttpRequest<SearchResponse>('search', 'GET', {search: query})
-      .then(httpRes => httpRes.toPromise().then(res => res.users));
+  public searchUsers(query): Promise<Response<Searchable[]>> {
+    return this.makeHttpRequest<Response<Searchable[]>>('search', 'GET', {search: query})
+      .then(httpRes => httpRes.toPromise().then((res: Response<Searchable[]>) => res));
   }
+
 
   /**
    * Show recommended friends for a user.
