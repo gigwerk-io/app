@@ -7,5 +7,7 @@ export interface MainCategory {
 }
 
 export interface CategoryResponse {
-  categories: MainCategory[];
+  success: boolean;
+  message: string;
+  data: MainCategory[];
 }

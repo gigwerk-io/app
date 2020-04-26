@@ -2,9 +2,10 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {BalanceResponse, OAuthResponse, PayoutsResponse} from '../interfaces/finance/transfers';
-import {CardSavedResponse, PaymentInformationResponse, PaymentsResponse} from '../interfaces/finance/payments';
+import {CardSavedResponse, PaymentInformationResponse, PaymentsResponse, Payments} from '../interfaces/finance/payments';
 import {RedeemedCreditResponse, UserCreditResponse} from '../interfaces/finance/credit';
 import {RESTService} from './rest.service';
+import { Response } from '../interfaces/response';
 
 @Injectable({
   providedIn: 'root'
@@ -31,14 +32,15 @@ export class FinanceService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  getPaymentInformation() {
-    return this.makeHttpRequest<PaymentInformationResponse>('payment-information', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res));
+  getPaymentInformation(): Promise<Response<PaymentInformationResponse>> {
+    return this.makeHttpRequest<Response<PaymentInformationResponse>>('payment-information', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<PaymentInformationResponse>) => res));
   }
 
-  getPayments() {
-    return this.makeHttpRequest<PaymentsResponse>('payments', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res));
+
+  getPayments(): Promise<Response<Payments[]>> {
+    return this.makeHttpRequest<Response<Payments[]>>('payments', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<Payments[]>) => res));
   }
 
   saveBankAccount() {

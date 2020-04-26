@@ -41,7 +41,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   isOwner: boolean;
   isFreelancer: boolean;
   userRole: string;
-  Categories: MainCategory[];
+  categories: MainCategory[];
   TaskStatus = TaskStatus;
   credit: number;
   activatedRouteSub: Subscription;
@@ -64,7 +64,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               public routerOutlet: IonRouterOutlet,
               private previousRoute: PreviousRouteService,
               private utils: UtilsService) {
-    this.favrService.getCategories().then(res => this.Categories = res.categories);
+    this.favrService.getCategories().then(res => this.categories = res.data);
     this.events.subscribe('task-action', (action) => this.doRefresh());
   }
 

@@ -22,10 +22,11 @@ import {PreferencesService} from '../../utils/services/preferences.service';
 import {PreviousRouteService} from '../../providers/previous-route.service';
 import {TaskActions} from '../../providers/constants';
 import {FavrDataService} from '../../utils/services/favr-data.service';
-import {PageStack} from '../signup/signup';
+import {PageStack} from '../signup/signup.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'request',
@@ -138,7 +139,7 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getCategories() {
-    this.favrService.getCategories().then(res => this.categories = res.categories);
+    this.favrService.getCategories().then(res => this.categories = res.data);
   }
 
   async alertConfirmClose() {
@@ -168,7 +169,7 @@ export class RequestPage implements OnInit, OnDestroy {
   }
 
   getLocations() {
-    this.preferences.getMyLocations().then(res => this.locations = res.locations);
+    this.preferences.getMyLocations().then(res => this.locations = res.data);
   }
 
   async presentActionSheet(location?: LocationAddress) {
@@ -247,23 +248,21 @@ export class RequestPage implements OnInit, OnDestroy {
 
     if (this.progress === 1) {
       this.marketplaceService.createMainMarketplaceRequest(this.taskRequest)
-        .then((res) => {
+        .then(() => {
           this.closeRequestPage()
             .then(() => {
-              this.utils.presentToast(res, 'success');
               if (this.previousRoute.getCurrentUrl() !== '/app/tabs/marketplace') {
                 this.router.navigateByUrl('app/tabs/marketplace');
               }
             });
           loadingPage.dismiss();
         })
-        .catch(error => {
+        .catch(() => {
           this.closeRequestPage()
             .then(() => {
               this.router.navigateByUrl('app/set-up-payments')
                 .then(() => {
                   this.events.publish('task-request', this.taskRequest);
-                  this.utils.presentToast(error.error.message, 'danger');
                 });
             });
           loadingPage.dismiss();
@@ -287,16 +286,14 @@ export class RequestPage implements OnInit, OnDestroy {
     await loadingPage.present();
 
     this.marketplaceService.editMainMarketplaceRequest(this.taskRequest)
-      .then((res) => {
+      .then(() => {
         this.closeRequestPage();
-        this.utils.presentToast(res, 'success');
         this.navCtrl.navigateBack(`app/marketplace-detail/${this.taskRequest.id}`);
         this.events.publish('task-action', TaskActions.CUSTOMER_UPDATE_TASK);
         loadingPage.dismiss();
       })
-      .catch(error => {
+      .catch(() => {
         this.closeRequestPage();
-        this.utils.presentToast(error.error.message, 'danger');
         loadingPage.dismiss();
       });
   }

@@ -11,6 +11,7 @@ import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Router} from '@angular/router';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'set-up-payments',
@@ -73,8 +74,7 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
         this.financeService.saveCreditCard(body).then(res => {
           if (this.task) {
             setTimeout(() => {
-              this.marketplaceService.createMainMarketplaceRequest(this.task)
-                .then(resp => this.utils.presentToast(resp, 'success'));
+              this.marketplaceService.createMainMarketplaceRequest(this.task);
             }, 1000);
             this.router.navigateByUrl('app/tabs/marketplace');
             this.events.unsubscribe('task-request');
@@ -82,7 +82,7 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
             this.utils.presentToast(res.message, 'success');
           }
         });
-      }).catch(error => this.utils.presentToast(error.message, 'danger'));
+      });
     }
 
     await loadingCtrl.dismiss();

@@ -6,7 +6,6 @@ export interface CardSavedResponse {
 }
 
 export interface PaymentInformationResponse {
-  user: {
     user_id: number;
     customer_id: number;
     express_id: number;
@@ -18,7 +17,6 @@ export interface PaymentInformationResponse {
     created_at: number;
     updated_at: number;
     user: User;
-  };
 }
 
 export interface PaymentsResponse {

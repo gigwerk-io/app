@@ -37,12 +37,15 @@ export interface MainMarketplaceTask {
 }
 
 export interface MainMarketplaceRouteResponse {
-  requests: MainMarketplaceTask[];
+  success: boolean;
+  message: boolean;
+  data: MainMarketplaceTask[];
 }
 
 export interface MainMarketplaceRequestRouteResponse {
+  success: boolean;
   message: string;
-  id: number;
+  data: MainMarketplaceTask;
 }
 
 export interface FreelancerAcceptMainMarketplaceTaskRouteResponse {

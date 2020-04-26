@@ -32,7 +32,9 @@ export class EditProfilePage implements OnInit {
   }
 
   getProfileInfo() {
+    console.log('storage', StorageKeys)
     this.storage.get(StorageKeys.PROFILE).then(profile => {
+      console.log('this is the progile', profile)
       this.firstName = profile.user.first_name;
       this.lastName = profile.user.last_name;
       this.username = profile.user.username;

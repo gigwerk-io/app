@@ -1,8 +1,9 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
-import {LocationAddress} from '../../utils/interfaces/settings/preferences';
+import {LocationAddress, MyLocationsResponse} from '../../utils/interfaces/settings/preferences';
 import {ActionSheetController, ToastController} from '@ionic/angular';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
 
 @Component({
   selector: 'saved-locations',
@@ -52,7 +53,9 @@ export class SavedLocationsPage implements OnInit {
   }
 
   getLocations() {
-    this.preferences.getMyLocations().then(res => this.locations = res.locations );
+    this.preferences.getMyLocations().then((res: Response<LocationAddress[]>) => {
+      this.locations = res.data;
+    } );
   }
 
   async doRefresh(event?) {

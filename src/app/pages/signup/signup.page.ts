@@ -4,7 +4,7 @@ import {UserRegistrationOptions} from '../../utils/interfaces/user-options';
 import {AuthService} from '../../utils/services/auth.service';
 import {IonContent, IonSlides, Platform, ToastController} from '@ionic/angular';
 import {setProgress} from '../request/request.page';
-import {Push, PushObject, PushOptions} from '@ionic-native/push/ngx';
+import {Push} from '@ionic-native/push/ngx';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {City} from '../../utils/interfaces/locations/city';
@@ -28,8 +28,8 @@ export interface PageStack {
 
 @Component({
   selector: 'page-signup',
-  templateUrl: 'signup.html',
-  styleUrls: ['./signup.scss']
+  templateUrl: 'signup.page.html',
+  styleUrls: ['./signup.page.scss']
 })
 export class SignupPage {
 
@@ -83,7 +83,7 @@ export class SignupPage {
     private utils: UtilsService
   ) {
     this.favrService.getCities().then(res => {
-      this.cities = res.cities;
+      this.cities = res.data ;
     });
   }
 

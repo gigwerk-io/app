@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
-import {UpdateResponse, Settings, MyLocationsResponse, CurrentCityResponse} from '../interfaces/settings/preferences';
+import {UpdateResponse, Settings, MyLocationsResponse, CurrentCityResponse, LocationAddress} from '../interfaces/settings/preferences';
 import {RESTService} from './rest.service';
+import { Response } from '../interfaces/response';
+import { City } from '../interfaces/locations/city';
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +20,10 @@ export class PreferencesService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getSettings(): Promise<Settings> {
-    return this.makeHttpRequest<Settings>('settings', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res));
+
+  public getSettings(): Promise<Response<Settings>> {
+    return this.makeHttpRequest<Response<Settings>>('settings', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<Settings>) => res));
   }
 
   public updatePrivacyPreferences(body): Promise<UpdateResponse> {
@@ -33,9 +36,9 @@ export class PreferencesService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public getMyLocations(): Promise<MyLocationsResponse> {
-    return this.makeHttpRequest<MyLocationsResponse>('locations', 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res));
+  public getMyLocations(): Promise<Response<LocationAddress[]>> {
+    return this.makeHttpRequest<Response<LocationAddress[]>>('locations', 'GET')
+      .then(httpRes => httpRes.toPromise().then((res: Response<LocationAddress[]>) => res));
   }
 
   public makeDefaultLocation(id): Promise<UpdateResponse> {
@@ -53,13 +56,13 @@ export class PreferencesService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public selectCity(id): Promise<UpdateResponse> {
-    return this.makeHttpRequest<UpdateResponse>('select-city', 'POST', {city_id: id})
+  public selectCity(id): Promise<Response<UpdateResponse>> {
+    return this.makeHttpRequest<Response<UpdateResponse>>('select-city', 'PUT', {city_id: id})
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  public currentCity(): Promise<CurrentCityResponse> {
-    return this.makeHttpRequest<CurrentCityResponse>('current-city', 'GET')
+  public currentCity(): Promise<Response<City>> {
+    return this.makeHttpRequest<Response<City>>('current-city', 'GET')
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 }

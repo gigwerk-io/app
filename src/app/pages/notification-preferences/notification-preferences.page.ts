@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {ToastController} from '@ionic/angular';
 import {UtilsService} from '../../utils/services/utils.service';
+import { Response } from '../../utils/interfaces/response';
+import { Settings } from '../../utils/interfaces/settings/preferences';
 
 interface NotificationPreferences {
   sms: boolean;
@@ -25,10 +27,10 @@ export class NotificationPreferencesPage implements OnInit {
   constructor(private preferences: PreferencesService, private utils: UtilsService) { }
 
   ngOnInit() {
-    this.preferences.getSettings().then(res => {
-      this.notificationPreferences.sms = res.settings.sms_notifications;
-      this.notificationPreferences.email = res.settings.email_notifications;
-      this.notificationPreferences.push = res.settings.push_notifications;
+    this.preferences.getSettings().then((settings: Response<Settings>) => {
+      this.notificationPreferences.sms = settings.data.sms_notifications;
+      this.notificationPreferences.email = settings.data.email_notifications;
+      this.notificationPreferences.push = settings.data.push_notifications;
     });
   }
 
