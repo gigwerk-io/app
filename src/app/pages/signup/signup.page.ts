@@ -4,22 +4,16 @@ import {UserRegistrationOptions} from '../../utils/interfaces/user-options';
 import {AuthService} from '../../utils/services/auth.service';
 import {IonContent, IonSlides, Platform, ToastController} from '@ionic/angular';
 import {setProgress} from '../request/request.page';
-import {Push} from '@ionic-native/push/ngx';
 import {NotificationService} from '../../utils/services/notification.service';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {City} from '../../utils/interfaces/locations/city';
 import {Router} from '@angular/router';
 import {FavrDataService} from '../../utils/services/favr-data.service';
 import {PhonePipe} from '../../utils/pipes/phone.pipe';
-import {
-  Plugins,
-  Capacitor, PushNotificationToken
-} from '@capacitor/core';
-import {SwPush} from '@angular/service-worker';
-
-const {PushNotifications, Device} = Plugins;
-import {environment} from '../../../environments/environment';
+import {Capacitor} from '@capacitor/core';
 import {UtilsService} from '../../utils/services/utils.service';
+import {PushNotificationService} from '../../utils/services/push-notification.service';
+
 
 export interface PageStack {
   pageTitle: string;
@@ -72,15 +66,14 @@ export class SignupPage {
   constructor(
     private authService: AuthService,
     private toastController: ToastController,
-    private push: Push,
     private notificationService: NotificationService,
     private platform: Platform,
     private preferencesService: PreferencesService,
     private router: Router,
     private favrService: FavrDataService,
     private phonePipe: PhonePipe,
-    private swPush: SwPush,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private pushNotificationService: PushNotificationService
   ) {
     this.favrService.getCities().then(res => {
       this.cities = res.data ;
@@ -94,9 +87,8 @@ export class SignupPage {
       this.authService.register(this.signup)
         .then(() => {
           this.authService.login({username: this.signup.username, password: this.signup.password}).then(() => {
-            this.router.navigateByUrl('/app/tabs/marketplace').then(() => {
-              this.initPushNotification();
-            });
+            this.pushNotificationService.registerPushNotifications();
+            this.router.navigateByUrl('/app/tabs/marketplace');
           });
         })
         .catch(error => {
@@ -123,43 +115,6 @@ export class SignupPage {
     this.signup.city_id = city.id;
     this.updateProgress();
     setTimeout(() => this.openSubPage('signup-index'), 600);
-  }
-
-  initPushNotification() {
-    if (this.pushNotificationsAvailable) {
-      PushNotifications.requestPermission().then(permission => {
-        if (permission.granted) {
-          PushNotifications.register();
-        }
-      });
-
-      // On success, we should be able to receive notifications
-      PushNotifications.addListener('registration', (token: PushNotificationToken) => {
-        Device.getInfo().then(info => {
-          if (info.operatingSystem === 'ios') {
-            this.notificationService.saveAPNToken({device_token: token.value});
-          } else {
-            this.notificationService.saveFCMToken({device_token: token.value});
-          }
-        });
-      });
-
-      // Show us the notification payload if the app is open on our device
-      PushNotifications.addListener('pushNotificationReceived',
-        (notification) => {
-          console.log(notification);
-        }
-      );
-
-    } else {
-      this.swPush.requestSubscription({
-        serverPublicKey: environment.publicKey
-      }).then(token => {
-        console.log(token);
-        this.notificationService.saveFCMToken({device_token: token});
-      }).catch(err => console.error('Could not register notifications', err));
-
-    }
   }
 
   navigateBack() {
