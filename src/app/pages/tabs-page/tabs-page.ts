@@ -10,6 +10,7 @@ import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page'
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
 import {RequestPage} from '../request/request.page';
+import {PusherNotification} from '../../utils/interfaces/notification/PusherNotification';
 
 @Component({
   templateUrl: './tabs-page.html',
@@ -40,7 +41,6 @@ export class TabsPage implements OnInit, OnDestroy {
     } else {
       this.tabSlot = 'bottom';
     }
-    this.getBadges();
     this.events.subscribe('prefersDark', (prefDark: boolean) => {
       if (prefDark) {
         this.requestButtonIcon = 'assets/brand/favr_logo_blk.png';
@@ -59,8 +59,24 @@ export class TabsPage implements OnInit, OnDestroy {
       });
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
-        if (profile) {
+        if (profile !== null) {
+          this.getBadges();
           this.profileId = profile.user_id;
+          this.pusher.listenToUserNotifications(this.profileId).then(notificationChannel => {
+            notificationChannel.bind_global((eventName, data: PusherNotification) => {
+              if (data.message != null && data.title != null) {
+                this.utils.presentToast(data.message, 'dark', 'top', 3000, [{
+                  text: 'View',
+                  handler: () => {
+                    // mark as read if clicked
+                    this.router.navigate([data.page, data.params]);
+                  }
+                }]).then(() => {
+                  this.getBadges();
+                });
+              }
+            });
+          });
           this.profileImage = profile.image;
           this.angulartics2GoogleAnalytics.setUsername(profile.user.username);
           this.angulartics2GoogleAnalytics.startTracking();
@@ -73,27 +89,10 @@ export class TabsPage implements OnInit, OnDestroy {
   }
 
   getBadges() {
-    setTimeout(() => {
-      this.notificationService.getBadgeCount().then(res => {
-        this.notificationCount = res.notifications;
-        this.friendCount = res.friends;
-        // Listen To Pusher User Channel
-        this.storage.get(StorageKeys.PROFILE).then(profile => {
-          const channel = this.pusher.user(profile.user.id);
-          // Bind Notification Channel
-          channel.bind('notification', data => {
-            this.utils.presentToast(data.message);
-            this.notificationCount = data.badges.notifications;
-            this.friendCount = data.badges.friends;
-          });
-          // Bind Badge Channel
-          channel.bind('badges', data => {
-            this.notificationCount = data.badges.notifications;
-            this.friendCount = data.badges.friends;
-          });
-        });
-      });
-    }, 1000);
+    this.notificationService.getBadgeCount().then(res => {
+      this.notificationCount = res.notifications;
+      this.friendCount = res.friends;
+    });
   }
 
   async openRequestPage() {

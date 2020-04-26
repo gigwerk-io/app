@@ -135,17 +135,18 @@ export class MessagesPage implements OnInit, OnDestroy {
       this.messages = this.room.messages;
       this.toUser = this.getToUser();
       this.changeRef.detectChanges();
-      const channel = this.pusher.init(this.uuid);
-      channel.bind('new-message', data => {
-        this.changeRef.detectChanges();
-        const message = {
-          sender_id: data.sender.id,
-          text: data.message,
-          sender: data.sender
-        };
-        this.messages.push(message);
-        this.scrollToBottomOnInit();
-        this.sending = false;
+      this.pusher.listenToChatMessages(this.uuid).then(chatChannel => {
+        chatChannel.bind('new-message', data => {
+          this.changeRef.detectChanges();
+          const message = {
+            sender_id: data.sender.id,
+            text: data.message,
+            sender: data.sender
+          };
+          this.messages.push(message);
+          this.scrollToBottomOnInit();
+          this.sending = false;
+        });
       });
     });
   }
