@@ -8,6 +8,7 @@ import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../providers/constants';
 import {UtilsService} from '../../utils/services/utils.service';
 import { Response } from '../../utils/interfaces/response';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'friends',
@@ -32,7 +33,8 @@ export class FriendsPage implements OnInit {
     private storage: Storage,
     private navCtrl: NavController,
     public routerOutlet: IonRouterOutlet,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private events: Events
   ) {
   }
 
@@ -130,6 +132,7 @@ export class FriendsPage implements OnInit {
     this.friendService.acceptFriendRequest(id).then(res => {
       this.utils.presentToast(res, 'success');
       this.showMyFriendRequests();
+      this.events.publish('updateFriendBadge');
     }).catch(error => this.utils.presentToast(error.message, 'danger'));
   }
 
@@ -137,6 +140,7 @@ export class FriendsPage implements OnInit {
     this.friendService.rejectFriendRequest(id).then(res => {
       this.utils.presentToast(res, 'success');
       this.showMyFriendRequests();
+      this.events.publish('updateFriendBadge');
     }).catch(error => this.utils.presentToast(error.message, 'danger'));
   }
 

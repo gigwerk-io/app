@@ -9,6 +9,7 @@ import {Badge} from '@ionic-native/badge/ngx';
 import {StorageKeys} from '../../providers/constants';
 import {UtilsService} from '../../utils/services/utils.service';
 import { Response } from '../../utils/interfaces/response';
+import {Events} from '../../utils/services/events';
 
 @Component({
   selector: 'notifications',
@@ -31,9 +32,8 @@ export class NotificationsPage implements OnInit {
               private storage: Storage,
               private platform: Platform,
               private badge: Badge,
-              private navCtrl: NavController,
               public routerOutlet: IonRouterOutlet,
-              private utils: UtilsService) { }
+              private events: Events) { }
 
   ngOnInit() {
     this.segmentChanged();
@@ -92,10 +92,10 @@ export class NotificationsPage implements OnInit {
   }
 
   view(index, notification: Notification) {
-    const emitter = new EventEmitter();
-    emitter.emit('Foo bar');
     this.router.navigate([notification.data.page, notification.data.params]);
     this.notifications.splice(index, 1);
-    this.notificationService.markNotificationAsRead(notification.id);
+    this.notificationService.markNotificationAsRead(notification.id).then(() => {
+      this.events.publish('updateNotificationBadge');
+    });
   }
 }

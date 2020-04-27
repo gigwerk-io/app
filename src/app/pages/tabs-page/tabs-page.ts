@@ -89,11 +89,21 @@ export class TabsPage implements OnInit, OnDestroy {
           this.angulartics2GoogleAnalytics.startTracking();
         }
       });
+
+    this.events.subscribe('updateNotificationBadge', () => {
+      this.getBadges();
+    });
+
+    this.events.subscribe('updateFriendBadge', () => {
+      this.getBadges();
+    });
+
     this.changeDetectorRef.detectChanges();
   }
 
   ngOnDestroy(): void {
     this.events.unsubscribe('prefersDark');
+    this.events.unsubscribe('updateNotificationBadge');
   }
 
   getBadges() {

@@ -51,7 +51,6 @@ export class ProfilePage implements OnInit, OnDestroy {
       const id: number = parseInt(data.get('id'), 10);
       this.profileService.getProfile(id)
         .then((profile: Response<Profile>) => {
-          console.log(profile);
           this.profile = profile.data;
           if (this.profile.customer_rating != null) {
             this.rating = this.profile.customer_rating;
