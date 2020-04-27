@@ -30,85 +30,100 @@
 
 <ion-content>
   <ng-container [ngSwitch]="subPage">
-    <ion-list *ngSwitchCase="'request-index'" style="min-height: 100%;">
-      <ion-item (click)="openSubPage('select-category')">
-        <ion-icon slot="start" name="cart"></ion-icon>
-        <ion-label>Select Category</ion-label>
-        <div slot="end" *ngIf="taskRequest.category_id">
-          <small>
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </div>
-      </ion-item>
+    <ng-container *ngIf="requestPageLoaded; else loadingRequestPage">
+      <ion-list *ngSwitchCase="'request-index'" style="min-height: 100%;">
+        <ion-item (click)="openSubPage('select-category')">
+          <ion-icon slot="start" name="cart"></ion-icon>
+          <ion-label>Select Category</ion-label>
+          <div slot="end" *ngIf="taskRequest.category_id">
+            <small>
+              <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+            </small>
+          </div>
+        </ion-item>
 
-      <ion-item (click)="openSubPage('task-information')">
-        <ion-icon slot="start" mode="md" name="clipboard"></ion-icon>
-        <ion-label>Task Information</ion-label>
-        <div slot="end" *ngIf="taskRequest.description && taskRequest.date">
-          <small>
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </div>
-      </ion-item>
+        <ion-item (click)="openSubPage('task-information')">
+          <ion-icon slot="start" mode="md" name="clipboard"></ion-icon>
+          <ion-label>Task Information</ion-label>
+          <div slot="end" *ngIf="taskRequest.description && taskRequest.date">
+            <small>
+              <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+            </small>
+          </div>
+        </ion-item>
 
-      <ion-item (click)="openSubPage('location')">
-        <ion-icon slot="start" name="pin"></ion-icon>
-        <ion-label>Location</ion-label>
-        <div slot="end" *ngIf="taskRequest.street_address && taskRequest.city && taskRequest.state && taskRequest.zip">
-          <small>
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </div>
-      </ion-item>
+        <ion-item (click)="openSubPage('location')">
+          <ion-icon slot="start" name="pin"></ion-icon>
+          <ion-label>Location</ion-label>
+          <div slot="end" *ngIf="taskRequest.street_address && taskRequest.city && taskRequest.state && taskRequest.zip">
+            <small>
+              <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+            </small>
+          </div>
+        </ion-item>
 
-      <ion-item (click)="openSubPage('task-intensity')">
-        <ion-icon slot="start" mode="ios" name="hourglass"></ion-icon>
-        <ion-label>Task Difficulty</ion-label>
-        <div slot="end" *ngIf="taskRequest.intensity">
-          <small>
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </div>
-      </ion-item>
+        <ion-item (click)="openSubPage('task-intensity')">
+          <ion-icon slot="start" mode="ios" name="hourglass"></ion-icon>
+          <ion-label>Task Difficulty</ion-label>
+          <div slot="end" *ngIf="taskRequest.intensity">
+            <small>
+              <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+            </small>
+          </div>
+        </ion-item>
 
-      <ion-item *ngIf="!isTaskEdit" (click)="openSubPage('set-price')">
-        <ion-icon slot="start" name="pricetag"></ion-icon>
-        <ion-label>Set Your Price</ion-label>
-        <div slot="end" *ngIf="taskRequest.price">
-          <small>
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </div>
-      </ion-item>
+        <ion-item *ngIf="!isTaskEdit" (click)="openSubPage('set-price')">
+          <ion-icon slot="start" name="pricetag"></ion-icon>
+          <ion-label>Set Your Price</ion-label>
+          <div slot="end" *ngIf="taskRequest.price">
+            <small>
+              <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+            </small>
+          </div>
+        </ion-item>
 
-      <ion-item *ngIf="!isTaskEdit" (click)="openSubPage('attach-images')">
-        <ion-icon slot="start" mode="md" name="images"></ion-icon>
-        <ion-label>Attach Images (Optional)</ion-label>
-        <div slot="end" *ngIf="taskImages.image_one">
-          <small>
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </div>
-      </ion-item>
+        <ion-item *ngIf="!isTaskEdit" (click)="openSubPage('attach-images')">
+          <ion-icon slot="start" mode="md" name="images"></ion-icon>
+          <ion-label>Attach Images (Optional)</ion-label>
+          <div slot="end" *ngIf="taskImages.image_one">
+            <small>
+              <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+            </small>
+          </div>
+        </ion-item>
 
-      <div class="ion-padding-start form-submit-button">
-        <ion-button *ngIf="!isTaskEdit; else taskEditSubmit" (click)="onSubmitTaskRequest()"
-                    [disabled]="progress < 1"
-                    type="submit"
-                    expand="block">
-          Submit
-        </ion-button>
-
-        <ng-template #taskEditSubmit>
-          <ion-button (click)="onUpdateTaskRequest()"
+        <div class="ion-padding-start form-submit-button">
+          <ion-button *ngIf="!isTaskEdit; else taskEditSubmit" (click)="onSubmitTaskRequest()"
                       [disabled]="progress < 1"
                       type="submit"
                       expand="block">
-            Update Task
+            Submit
           </ion-button>
-        </ng-template>
-      </div>
-    </ion-list>
+
+          <ng-template #taskEditSubmit>
+            <ion-button (click)="onUpdateTaskRequest()"
+                        [disabled]="progress < 1"
+                        type="submit"
+                        expand="block">
+              Update Task
+            </ion-button>
+          </ng-template>
+        </div>
+      </ion-list>
+    </ng-container>
+
+    <ng-template #loadingRequestPage>
+      <ion-item *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8]">
+        <ion-avatar slot="start">
+          <ion-skeleton-text animated></ion-skeleton-text>
+        </ion-avatar>
+        <ion-label>
+          <h2>
+            <ion-skeleton-text animated style="width: 70%;height: 25px"></ion-skeleton-text>
+          </h2>
+        </ion-label>
+      </ion-item>
+    </ng-template>
 
     <div *ngSwitchCase="'select-category'" class="sub-page">
       <ion-list>
