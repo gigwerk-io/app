@@ -167,7 +167,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   onFocus() {
     this.content.scrollToBottom(300);
   }
-
+ 
   async presentActionSheet() {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'User Actions',
