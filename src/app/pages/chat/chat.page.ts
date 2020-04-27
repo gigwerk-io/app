@@ -6,6 +6,7 @@ import {StorageKeys} from '../../providers/constants';
 import {Router} from '@angular/router';
 import {SearchPage} from '../search/search.page';
 import {IonRouterOutlet, ModalController} from '@ionic/angular';
+import { Response } from '../../utils/interfaces/response';
 
 @Component({
   selector: 'chat',
@@ -32,7 +33,7 @@ export class ChatPage implements OnInit {
 
   public getRooms() {
     this.roomService.getChatRooms()
-      .then(res => this.rooms = res)
+      .then((res: Response<Room[]>) => this.rooms = res.data)
       .catch(() => this.rooms = []);
   }
 
