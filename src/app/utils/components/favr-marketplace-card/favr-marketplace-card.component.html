@@ -153,7 +153,7 @@
 </ion-card>
 
 <ng-template #freelancerPastJob>
-  <ion-card *ngIf="pastJob; else skeletonCard" class="marketplace-card">
+  <ion-card *ngIf="pastJob && pastJob.marketplace.customer; else skeletonCard" class="marketplace-card">
 
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 1')" class="marketplace-slide-image"
@@ -173,7 +173,7 @@
     </ion-slides>
 
     <ion-card-header>
-      <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{pastJob.marketplace.customer.id}}"
+      <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{pastJob.marketplace.customer_id}}"
                 routerDirection="forward">
         <ion-avatar slot="start">
           <favr-img

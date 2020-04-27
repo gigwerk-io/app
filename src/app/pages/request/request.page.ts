@@ -26,7 +26,6 @@ import {PageStack} from '../signup/signup.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
-import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'request',
@@ -62,6 +61,8 @@ export class RequestPage implements OnInit, OnDestroy {
   };
   isMobileWebOrDesktop = false;
   isTaskEdit = false;
+
+  requestPageLoaded = false;
 
   minYear: number = (new Date()).getFullYear();
   maxYear: number = this.minYear + 1;
@@ -126,6 +127,8 @@ export class RequestPage implements OnInit, OnDestroy {
     this.getLocations();
     this.getCreditBalance();
     this.getCategories();
+
+    setTimeout(() => this.requestPageLoaded = true, 1000);
   }
 
   ngOnDestroy(): void {
@@ -134,7 +137,7 @@ export class RequestPage implements OnInit, OnDestroy {
 
   getCreditBalance() {
     this.financeService.getCreditBalance().then(res => {
-      this.credit = parseInt(res.credit.toString().replace('$', ''), 10);
+      this.credit = parseInt(res.data.credit.toString().replace('$', ''), 10);
     });
   }
 

@@ -40,7 +40,7 @@ export class UtilsService {
         this.router.navigate(['/app/room', res.id]);
       })
       .catch(error => {
-        this.presentToast(error.error.message, 'danger');
+        this.presentToast((error.error) ? error.error.message : error.message, 'danger');
       });
   }
 }

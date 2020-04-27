@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {BalanceResponse, OAuthResponse, PayoutsResponse} from '../interfaces/finance/transfers';
 import {CardSavedResponse, PaymentInformationResponse, PaymentsResponse, Payments} from '../interfaces/finance/payments';
-import {RedeemedCreditResponse, UserCreditResponse} from '../interfaces/finance/credit';
+import {RedeemedCreditResponse, UserCredit} from '../interfaces/finance/credit';
 import {RESTService} from './rest.service';
 import { Response } from '../interfaces/response';
 
@@ -48,8 +48,8 @@ export class FinanceService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 
-  getCreditBalance() {
-    return this.makeHttpRequest<UserCreditResponse>('credit', 'GET')
+  getCreditBalance(): Promise<Response<UserCredit>> {
+    return this.makeHttpRequest<Response<UserCredit>>('credit', 'GET')
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 

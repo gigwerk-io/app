@@ -87,15 +87,15 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       this.taskID = parseInt(data.get('id'), 10);
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID, coords)
-        .then((task: MainMarketplaceTask) => {
-          this.mainMarketplaceTask = task;
+        .then((res) => {
+          this.mainMarketplaceTask = res.data;
           this.taskStatusDisplay = (this.mainMarketplaceTask.status === TaskStatus.PAID)
             ? 'Freelancer En-Route'
             : this.mainMarketplaceTask.status;
           this.storage.get(StorageKeys.PROFILE)
             .then(prof => {
               this.userRole = prof.user.role;
-              this.isOwner = prof.user_id === task.customer_id;
+              this.isOwner = prof.user_id === this.mainMarketplaceTask.customer_id;
               this.isFreelancer = (this.userRole === Role.VERIFIED_FREELANCER)
                 ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
                 : false;
@@ -107,7 +107,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
   getCreditBalance() {
     this.financeService.getCreditBalance().then(res => {
-      this.credit = parseInt(res.credit.toString().replace('$', ''), 10);
+      this.credit = parseInt(res.data.credit.toString().replace('$', ''), 10);
     });
   }
 
@@ -245,13 +245,13 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async doRefresh(event?) {
     setTimeout(() => {
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID)
-        .then((task: MainMarketplaceTask) => {
-          this.mainMarketplaceTask = task;
+        .then((res) => {
+          this.mainMarketplaceTask = res.data;
           this.taskStatusDisplay = (this.mainMarketplaceTask.status === 'Paid') ? 'Freelancer En-Route' : this.mainMarketplaceTask.status;
           this.storage.get(StorageKeys.PROFILE)
             .then(prof => {
               this.userRole = prof.user.role;
-              this.isOwner = prof.user_id === task.customer_id;
+              this.isOwner = prof.user_id === this.mainMarketplaceTask.customer_id;
               this.isFreelancer = (this.userRole === Role.VERIFIED_FREELANCER)
                 ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
                 : false;

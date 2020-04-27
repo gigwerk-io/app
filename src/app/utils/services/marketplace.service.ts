@@ -18,6 +18,7 @@ import {RESTService} from './rest.service';
 import {Observable} from 'rxjs';
 import {AuthService} from './auth.service';
 import {UtilsService} from './utils.service';
+import {Response} from '../interfaces/response';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +34,8 @@ export class MarketplaceService extends RESTService {
     super(httpClient, storage);
   }
 
-  public getSingleMainMarketplaceRequest(id: number, coords?: any): Promise<MainMarketplaceTask> {
-    return this.makeHttpRequest<MainMarketplaceTask>(`marketplace/main/request/${id}`, 'GET', {params: coords})
+  public getSingleMainMarketplaceRequest(id: number, coords?: any): Promise<Response<MainMarketplaceTask>> {
+    return this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', {params: coords})
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 

@@ -63,7 +63,7 @@ export class EditProfilePage implements OnInit {
       // Get Update Profile Info
       this.profileService.getProfile(this.userId).then(result => {
         // Update Storage Info
-        this.storage.set(StorageKeys.PROFILE, result.user).then(response => {
+        this.storage.set(StorageKeys.PROFILE, result.data.user).then(response => {
           this.utils.presentToast('<strong>Success</strong> Your profile has been updated.', 'success');
         });
       });
