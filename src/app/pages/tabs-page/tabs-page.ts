@@ -104,6 +104,7 @@ export class TabsPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.events.unsubscribe('prefersDark');
     this.events.unsubscribe('updateNotificationBadge');
+    this.events.unsubscribe('updateFriendBadge');
   }
 
   getBadges() {
