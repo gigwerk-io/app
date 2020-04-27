@@ -26,7 +26,6 @@ import {PageStack} from '../signup/signup.page';
 import {FinanceService} from '../../utils/services/finance.service';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
-import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'request',

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {ProfileRouteResponse} from '../../utils/interfaces/user';
+import {Profile} from '../../utils/interfaces/user';
 import {ProfileService} from '../../utils/services/profile.service';
 import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {Storage} from '@ionic/storage';
@@ -12,6 +12,7 @@ import {AuthService} from '../../utils/services/auth.service';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {ReportPage} from '../report/report.page';
 import {UtilsService} from '../../utils/services/utils.service';
+import {Response} from '../../utils/interfaces/response';
 
 @Component({
   selector: 'profile',
@@ -21,7 +22,7 @@ import {UtilsService} from '../../utils/services/utils.service';
 })
 export class ProfilePage implements OnInit, OnDestroy {
 
-  profile: ProfileRouteResponse;
+  profile: Profile;
   isOwner: boolean;
   status: {class: string, text: string};
   showFriendButton = true;
@@ -49,20 +50,21 @@ export class ProfilePage implements OnInit, OnDestroy {
     this.activatedRouteSub = this.activatedRoute.paramMap.subscribe(data => {
       const id: number = parseInt(data.get('id'), 10);
       this.profileService.getProfile(id)
-        .then((profile: ProfileRouteResponse) => {
-          this.profile = profile;
-          if (profile.user.customer_rating != null) {
-            this.rating = profile.user.customer_rating;
-          } else if (profile.user.rating != null) {
-            this.rating = profile.user.rating;
+        .then((profile: Response<Profile>) => {
+          console.log(profile);
+          this.profile = profile.data;
+          if (this.profile.customer_rating != null) {
+            this.rating = this.profile.customer_rating;
+          } else if (this.profile.rating != null) {
+            this.rating = this.profile.rating;
           }
 
-          this.status = this.showBadge(profile.user.friend_status);
-          this.friendButton = this.defineFriendButton(profile.user.friend_status);
+          this.status = this.showBadge(this.profile.friend_status);
+          this.friendButton = this.defineFriendButton(this.profile.friend_status);
           this.storage.get(StorageKeys.PROFILE)
             .then((prof: any) => {
-              this.isOwner = (prof.user_id === this.profile.user.user_id);
-              if (this.profile.user.user.role !== Role.VERIFIED_FREELANCER) {
+              this.isOwner = (prof.user_id === this.profile.user_id);
+              if (this.profile.user.role !== Role.VERIFIED_FREELANCER) {
                 this.taskFeed = 'customer';
               }
             });
@@ -112,11 +114,11 @@ export class ProfilePage implements OnInit, OnDestroy {
   async presentActionSheet() {
 
     const actionButtons = (this.status.text === 'Friends') ? [{
-      text: 'Unfriend ' + this.profile.user.user.first_name,
+      text: 'Unfriend ' + this.profile.user.first_name,
       role: 'destructive',
       icon: 'remove-circle',
       handler: () => {
-        this.friendService.unfriend(this.profile.user.user_id)
+        this.friendService.unfriend(this.profile.user_id)
           .then(message => this.utils.presentToast(message, 'success')
             .then(() => this.doRefresh()))
           .catch(error => this.utils.presentToast(error.message, 'danger'));
@@ -211,19 +213,19 @@ export class ProfilePage implements OnInit, OnDestroy {
   }
 
   handleFriendButtonClick() {
-    switch (this.profile.user.friend_status) {
+    switch (this.profile.friend_status) {
       case 'friend':
         break;
       case 'sent':
         break;
       case 'respond':
-        this.friendService.acceptFriendRequest(this.profile.user.user_id)
+        this.friendService.acceptFriendRequest(this.profile.user_id)
           .then(res => this.utils.presentToast(res, 'success'))
           .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
       case 'not_friend':
         this.friendButton.disable = true;
-        this.friendService.sendFriendRequest(this.profile.user.user_id)
+        this.friendService.sendFriendRequest(this.profile.user_id)
           .then(res => this.utils.presentToast(res, 'success'))
           .catch(error => this.utils.presentToast(error.message, 'danger'));
         break;
@@ -232,14 +234,14 @@ export class ProfilePage implements OnInit, OnDestroy {
 
   async doRefresh(event?) {
     setTimeout(() => {
-      this.profileService.getProfile(this.profile.user.user_id)
-        .then((profile: ProfileRouteResponse) => {
-          this.profile = profile;
-          this.status = this.showBadge(profile.user.friend_status);
-          this.friendButton = this.defineFriendButton(profile.user.friend_status);
+      this.profileService.getProfile(this.profile.user_id)
+        .then((profile: Response<Profile>) => {
+          this.profile = profile.data;
+          this.status = this.showBadge(this.profile.friend_status);
+          this.friendButton = this.defineFriendButton(this.profile.friend_status);
           this.storage.get(StorageKeys.PROFILE)
             .then((prof: any) => {
-              this.isOwner = (prof.user_id === this.profile.user.user_id);
+              this.isOwner = (prof.user_id === this.profile.user_id);
             });
         });
       if (event) {

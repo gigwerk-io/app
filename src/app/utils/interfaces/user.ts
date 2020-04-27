@@ -4,30 +4,33 @@ import {MainProposal} from './main-marketplace/main-proposal';
 // @ts-ignore
 import {FriendMarketplaceTask} from './friend-marketplace/friend-marketplace-task';
 import {FriendProposals} from './friend-marketplace/friend-proposals';
+import {Role} from '../../providers/constants';
 
 export interface User {
-  id?: number;
-  username?: string;
-  name?: string;
-  role?: string;
-  first_name?: string;
-  last_name?: string;
-  email?: string;
-  phone?: number;
-  twilio_phone?: number;
-  birthday?: number;
-  city_id?: number;
-  is_admin?: boolean;
-  credit_amount?: number;
-  intercom_id?: number;
-  email_verified_at?: number;
-  created_at?: number;
-  updated_at?: number;
-  deleted_at?: number;
-  main_marketplace?: MainMarketplaceTask[];
-  friend_marketplace?: FriendMarketplaceTask[];
-  friend_proposals?: FriendProposals[];
-  main_proposals?: MainProposal[];
+  id: number;
+  first_name: string;
+  last_name: string;
+  birthday: string;
+  city_id: number;
+  created_at: string;
+  deleted_at: string;
+  credit_amount: number;
+  email: string;
+  email_verified_at: string;
+  has_chatkit: string;
+  intercom_id: null
+  is_admin: false
+  is_organization_admin: false
+  main_marketplace: MainMarketplaceTask[];
+  main_proposals: MainProposal[];
+  organization_id: number;
+  organization: any;
+  phone: string;
+  // @ts-ignore
+  role: Role.VERIFIED_FREELANCER | Role.PENDING_FREELANCER | Role.CUSTOMER;
+  twilio_phone: string;
+  updated_at: string;
+  username: string;
   profile?: Profile;
 }
 
@@ -45,55 +48,15 @@ export interface PastJob {
   user_id: number;
 }
 
-export interface ProfileRouteResponse {
-  user: {
-    user_id?: number;
-    image?: string;
-    description?: string;
-    created_at?: number;
-    updated_at?: number;
-    rating?: number;
-    customer_rating?: number;
-    friend_status?: string;
-    past_jobs?: PastJob[];
-    user: {
-      id?: number;
-      username?: string;
-      role?: string;
-      first_name?: string;
-      last_name?: string;
-      email?: string;
-      phone?: number;
-      twilio_phone?: number;
-      birthday?: number;
-      city_id?: number;
-      is_admin?: boolean;
-      organization_id?: number;
-      is_organization_admin?: boolean
-      credit_amount?: number;
-      intercom_id?: number;
-      email_verified_at?: number;
-      created_at?: number;
-      updated_at?: number;
-      deleted_at?: number;
-      main_marketplace?: MainMarketplaceTask[];
-      friend_marketplace?: FriendMarketplaceTask[];
-      friend_proposals?: FriendProposals[];
-      main_proposals?: MainProposal[];
-    };
-  };
-}
-
 export interface Profile {
-  user_id?: number;
-  image?: string;
-  description?: string;
-  created_at?: number;
-  updated_at?: number;
-  rating?: number;
-  customer_rating?: number;
-  friend_status?: string;
-  user?: {
-    role?: string; // TODO: define types for this value
-  };
+  user_id: number;
+  created_at: string;
+  customer_rating: number;
+  description: string;
+  friend_status: any;
+  image: string;
+  past_jobs: PastJob[];
+  rating: number;
+  updated_at: string;
+  user?: User;
 }

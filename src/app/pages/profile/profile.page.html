@@ -4,10 +4,10 @@
       <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="profile">
-      {{profile.user.user.first_name}} {{profile.user.user.last_name}}
+      {{profile.user.first_name}} {{profile.user.last_name}}
     </ion-title>
     <ion-buttons slot="end" *ngIf="!isOwner" >
-      <ion-button (click)="startChat(profile.user.user.username)"
+      <ion-button (click)="startChat(profile.user.username)"
                   class="nav-button">
         <ion-icon name="chatbubble"></ion-icon>
       </ion-button>
@@ -37,7 +37,7 @@
   <ion-list style="margin-bottom: unset;">
     <ion-toolbar class="ion-padding-top web-only">
       <ion-buttons slot="end" *ngIf="!isOwner" >
-        <ion-button (click)="startChat(profile.user.user.username)"
+        <ion-button (click)="startChat(profile.user.username)"
                     class="nav-button">
           <ion-icon name="chatbubbles"></ion-icon>
         </ion-button>
@@ -60,16 +60,16 @@
     </ion-toolbar>
     <div class="ion-text-center ion-padding-top">
       <div class="ion-margin-bottom img-container">
-        <favr-img [src]="profile.user.image"
+        <favr-img [src]="profile.image"
                   spinnerSrc="assets/img/user.png"
                   imgClass="rounded-circle"
                   loaderClass="rounded-circle"
-                 (click)="viewAttachedPhoto(profile.user.image, profile.user.user.first_name + ' ' + profile.user.user.last_name)"
-                 alt="Profile Picture of {{profile.user.user.first_name}} {{profile.user.user.last_name}}"></favr-img>
+                 (click)="viewAttachedPhoto(profile.image, profile.user.first_name + ' ' + profile.user.last_name)"
+                 alt="Profile Picture of {{profile.user.first_name}} {{profile.user.last_name}}"></favr-img>
       </div>
       <ion-note>
-        @{{profile.user.user.username}}
-        <ion-img *ngIf="profile.user.user.role == Role.VERIFIED_FREELANCER"
+        @{{profile.user.username}}
+        <ion-img *ngIf="profile.user.role == Role.VERIFIED_FREELANCER"
              class="badge"
              src="assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
       </ion-note>
@@ -99,13 +99,13 @@
           </ng-template>
         </ion-button>
       </section>
-      <section [ngClass]="profile.user.description ? 'ion-padding' : ''">
-        {{profile.user.description}}
+      <section [ngClass]="profile.description ? 'ion-padding' : ''">
+        {{profile.description}}
       </section>
     </div>
     <hr>
   </ion-list>
-  <ion-toolbar *ngIf="profile.user.user.role === Role.VERIFIED_FREELANCER">
+  <ion-toolbar *ngIf="profile.user.role === Role.VERIFIED_FREELANCER">
     <ion-segment [(ngModel)]="taskFeed">
       <ion-segment-button checked value="freelancer">Past Jobs</ion-segment-button>
       <ion-segment-button value="customer">Past Tasks</ion-segment-button>
@@ -113,14 +113,14 @@
   </ion-toolbar>
   <ng-container [ngSwitch]="taskFeed">
     <ng-container *ngSwitchCase="'customer'">
-      <ng-container class="ion-text-center" *ngIf="profile.user.user.main_marketplace.length === 0; else tasks">
+      <ng-container class="ion-text-center" *ngIf="profile.user.main_marketplace.length === 0; else tasks">
         <ion-label color="medium" class="no-tasks">
           No Tasks To Display
         </ion-label>
       </ng-container>
 
       <ng-template #tasks>
-        <favr-marketplace-card *ngFor="let task of profile.user.user.main_marketplace"
+        <favr-marketplace-card *ngFor="let task of profile.user.main_marketplace"
                                [mainMarketplaceTask]="task"
                                [routerOutlet]="routerOutlet"
         ></favr-marketplace-card>
@@ -128,14 +128,14 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'freelancer'">
-      <ng-container class="ion-text-center" *ngIf="profile.user.past_jobs.length === 0; else tasks">
+      <ng-container class="ion-text-center" *ngIf="profile.past_jobs.length === 0; else tasks">
         <ion-label color="medium" class="no-tasks">
           No Past Jobs To Display
         </ion-label>
       </ng-container>
 
       <ng-template #tasks>
-        <favr-marketplace-card *ngFor="let task of profile.user.past_jobs"
+        <favr-marketplace-card *ngFor="let task of profile.past_jobs"
                                [freelancerPastTask]="task"
                                [routerOutlet]="routerOutlet"
         ></favr-marketplace-card>

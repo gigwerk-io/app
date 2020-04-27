@@ -28,7 +28,7 @@ export class ReportPage implements OnInit {
   onSubmitReport() {
     switch (this.type) {
       case 'User':
-        this.profileService.reportUser(this.extra.user.user_id, this.description)
+        this.profileService.reportUser(this.extra.user_id, this.description)
           .then((res: string) => this.utils.presentToast(res, 'success'))
           .catch(error => this.utils.presentToast(error.error.message, 'danger'));
         this.closeReportPage();
