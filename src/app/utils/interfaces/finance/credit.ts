@@ -1,4 +1,4 @@
-export interface UserCreditResponse {
+export interface UserCredit {
   credit: number;
 }
 
