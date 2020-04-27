@@ -6,6 +6,10 @@
   max-width: 200px;
 }
 
+.tab-selected {
+  border-top: 1px solid var(--ion-color-primary);
+}
+
 .icon-button {
   position: absolute;
   left: 50%;
