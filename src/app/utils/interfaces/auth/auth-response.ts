@@ -7,10 +7,10 @@ export interface AuthResponse {
     id: number;
     token: string;
     profile: {
-      created_at?: number;
+      created_at?: string;
       description?: string;
       image?: string;
-      updated_at?: number;
+      updated_at?: string;
       user?: User;
       user_id?: number
     };

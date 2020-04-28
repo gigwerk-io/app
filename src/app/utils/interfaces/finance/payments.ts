@@ -14,8 +14,8 @@ export interface PaymentInformationResponse {
     last4: number;
     exp_month: number;
     exp_year: number;
-    created_at: number;
-    updated_at: number;
+    created_at: string;
+    updated_at: string;
     user: User;
 }
 

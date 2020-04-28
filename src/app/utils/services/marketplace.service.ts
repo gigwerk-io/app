@@ -35,7 +35,7 @@ export class MarketplaceService extends RESTService {
   }
 
   public getSingleMainMarketplaceRequest(id: number, coords?: any): Promise<Response<MainMarketplaceTask>> {
-    return this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', {params: coords})
+    return this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', coords)
       .then(httpRes => httpRes.toPromise().then(res => res));
   }
 

@@ -16,8 +16,8 @@ export interface FriendMarketplaceTask {
   image_one: string;
   image_two: string;
   image_three: string;
-  created_at: number;
-  updated_at: number;
+  created_at: string;
+  updated_at: string;
   deleted_at: number;
   proposals: FriendProposals[];
   customer: User;
