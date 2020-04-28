@@ -35,12 +35,10 @@ export class FavrPageHeaderComponent implements OnInit {
   ngOnInit() {
     this.storage.get(StorageKeys.PROFILE)
       .then(profile => {
-        console.log(profile);
         if (profile) {
           this.profileId = profile.user_id;
           this.profileService.getProfileImage(this.profileId)
             .then((profileImage) => {
-              console.log(profileImage);
               this.profileImage = profileImage;
             });
         }
