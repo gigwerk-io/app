@@ -7,6 +7,7 @@ import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {ActionSheetController, IonContent, IonTextarea} from '@ionic/angular';
 import {Subscription} from 'rxjs';
+import { Response } from '../../utils/interfaces/response';
 
 
 @Component({
@@ -69,7 +70,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   public getRooms() {
-    this.chatService.getChatRooms().then(res => this.rooms = res);
+    this.chatService.getChatRooms().then((res: Response<Room[]>) => this.rooms = res.data);
   }
 
   getUserProfileImage(members?: Room[]) {
@@ -130,8 +131,8 @@ export class MessagesPage implements OnInit, OnDestroy {
   }
 
   getMessages() {
-    this.getChatRoomsSub = this.chatService.getChatRoom(this.uuid).subscribe(res => {
-      this.room = res;
+    this.getChatRoomsSub = this.chatService.getChatRoom(this.uuid).subscribe((res: Response<Room>) => {
+      this.room = res.data;
       this.messages = this.room.messages;
       this.toUser = this.getToUser();
       this.changeRef.detectChanges();
