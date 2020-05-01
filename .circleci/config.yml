@@ -53,7 +53,7 @@ jobs:
       - run: *install-chrome
       - attach_workspace:
           at: /tmp/workspace
-#      - run: npm run test -- --watch=false --progress=false
+      - run: npm run e2e
   deploy:
     <<: *defaults
     steps:

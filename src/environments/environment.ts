@@ -4,8 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 export const environment = {
   production: false,
-  apiUrl: 'https://api.askfavr.test',
-  pusherId: '5a35a484c75eee676b6f',
+  apiUrl: 'https://lumen.askfavr.com',
+  pusherId: '3e1e4ea4e682c0c4bad7',
   stripeKey: 'pk_test_WRhN4BKmkqctL2nrjCPJCTXi',
   googleAnalyticsId: 'UA-122971401-1',
   intercomId: 'yvoar9nd',
@@ -15,7 +15,6 @@ export const environment = {
   publicKey: 'BM2zSPJRBEKkY760fJSxFDf8ie1LUkxv9EzoB4ZBckCAgMMpaagVLpwPpIBinXcxmyg4k_PQ2n4hspRUYay4JoI',
   privateKey: 'i7XLhlRCVBbTtIaY_RaksPP7qGUvAkakDIE0npgPxxw'
 };
-
 /*
  * In development mode, to ignore zone related error stack frames such as
  * `zone.run`, `zoneDelegate.invokeTask` for easier debugging, you can

@@ -24,7 +24,7 @@ export class AppPage {
   }
 
   async waitForSelector(el: ElementFinder) {
-    return browser.wait(ExpectedConditions.presenceOf(el), 3000);
+    return browser.wait(ExpectedConditions.presenceOf(el), 1500);
   }
 
   getElement(selector) {
