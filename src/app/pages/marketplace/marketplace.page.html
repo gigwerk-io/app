@@ -1,8 +1,4 @@
-<favr-page-header
-  pageTitle="Marketplace"
-  [showSearchBar]="true"
-  [routerOutlet]="routerOutlet"
->
+<favr-page-header pageTitle="Marketplace" [showSearchBar]="true" [routerOutlet]="routerOutlet">
 </favr-page-header>
 <ion-content #ionContent>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
@@ -12,7 +8,7 @@
     <ion-segment-button *ngIf="userRole === Role.VERIFIED_FREELANCER" value="jobs">
       <ion-label>My Jobs</ion-label>
     </ion-segment-button>
-    <ion-segment-button value="me">
+    <ion-segment-button value="me" id='my-task-tab'>
       <ion-label>My Tasks</ion-label>
     </ion-segment-button>
     <ion-segment-button value="all">
@@ -21,11 +17,8 @@
   </ion-segment>
 
   <ng-container>
-    <favr-marketplace-card *ngFor="let task of marketplaceTasks"
-                           [mainMarketplaceTask]="task"
-                           (taskActionTaken)="doRefresh($event)"
-                           [routerOutlet]="routerOutlet"
-    ></favr-marketplace-card>
+    <favr-marketplace-card *ngFor="let task of marketplaceTasks" [mainMarketplaceTask]="task"
+      (taskActionTaken)="doRefresh($event)" [routerOutlet]="routerOutlet"></favr-marketplace-card>
     <br>
     <br>
   </ng-container>

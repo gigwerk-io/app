@@ -1,9 +1,5 @@
-<favr-page-header *ngIf="subPage == 'signup-index'; else subPageHeader"
-  [pageTitle]="pageTitle"
-  [progress]="progress"
-  [showProfile]="false"
-  [showBackButton]="true"
-></favr-page-header>
+<favr-page-header *ngIf="subPage == 'signup-index'; else subPageHeader" [pageTitle]="pageTitle" [progress]="progress"
+  [showProfile]="false" [showBackButton]="true"></favr-page-header>
 
 <ng-template #subPageHeader>
   <ion-header>
@@ -21,7 +17,8 @@
           <ion-icon name="list"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-progress-bar *ngIf="progress" [value]="progress" [ngClass]="progress == 1 ? 'green-progress' : ''"></ion-progress-bar>
+      <ion-progress-bar *ngIf="progress" [value]="progress" [ngClass]="progress == 1 ? 'green-progress' : ''">
+      </ion-progress-bar>
     </ion-toolbar>
   </ion-header>
 </ng-template>
@@ -37,7 +34,7 @@
                           && signup.last_name
                           && signup.username
                           && signup.email
-                          && signup.phone">
+                          && signup.phone" id='personal-info'>
             <small>
               <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
             </small>
@@ -67,10 +64,8 @@
         </ion-item>
 
         <div class="ion-padding form-submit-button">
-          <ion-button (click)="onSignup(signupForm)"
-            [disabled]="!signupForm.valid || progress < 1"
-            type="submit"
-            expand="block">
+          <ion-button (click)="onSignup(signupForm)" id="submit-account" [disabled]="!signupForm.valid || progress < 1"
+            type="submit" expand="block">
             Create Account
           </ion-button>
         </div>
@@ -82,18 +77,13 @@
         </div>
       </ion-list>
 
-      <ion-list *ngSwitchCase="'personal-info'" [ngClass]="(backPage == 'personal-info') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
+      <ion-list *ngSwitchCase="'personal-info'"
+        [ngClass]="(backPage == 'personal-info') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
         <ion-item class="input-item">
           <ion-label position="stacked">First Name</ion-label>
-          <ion-input [(ngModel)]="signup.first_name"
-                     #first_name="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="first_name"
-                     type="text"
-                     spellcheck="false"
-                     autocapitalize="on"
-                     autocomplete="true"
-                     required>
+          <ion-input [(ngModel)]="signup.first_name" id='first_name_input' #first_name="ngModel"
+            (ionChange)="updateProgress()" name="first_name" type="text" spellcheck="false" autocapitalize="on"
+            autocomplete="true" required>
           </ion-input>
         </ion-item>
         <ion-text color="danger">
@@ -104,15 +94,8 @@
 
         <ion-item>
           <ion-label position="stacked">Last Name</ion-label>
-          <ion-input [(ngModel)]="signup.last_name"
-                     #last_name="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="last_name"
-                     type="text"
-                     spellcheck="false"
-                     autocapitalize="on"
-                     autocomplete="true"
-                     required>
+          <ion-input [(ngModel)]="signup.last_name" #last_name="ngModel" (ionChange)="updateProgress()" name="last_name"
+            type="text" spellcheck="false" autocapitalize="on" autocomplete="true" required>
           </ion-input>
         </ion-item>
         <ion-text color="danger">
@@ -123,16 +106,8 @@
 
         <ion-item>
           <ion-label position="stacked">Username</ion-label>
-          <ion-input [(ngModel)]="signup.username"
-                     #username="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="username"
-                     type="text"
-                     spellcheck="false"
-                     autocapitalize="off"
-                     autocomplete="true"
-                     placeholder="example123"
-                     required>
+          <ion-input [(ngModel)]="signup.username" #username="ngModel" (ionChange)="updateProgress()" name="username"
+            type="text" spellcheck="false" autocapitalize="off" autocomplete="true" placeholder="example123" required>
           </ion-input>
         </ion-item>
         <ion-text color="danger">
@@ -143,16 +118,9 @@
 
         <ion-item>
           <ion-label position="stacked">Email</ion-label>
-          <ion-input [(ngModel)]="signup.email"
-                     #email="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="email"
-                     type="email"
-                     spellcheck="false"
-                     autocapitalize="off"
-                     autocomplete="true"
-                     placeholder="example@askfavr.com"
-                     required>
+          <ion-input [(ngModel)]="signup.email" #email="ngModel" (ionChange)="updateProgress()" name="email"
+            type="email" spellcheck="false" autocapitalize="off" autocomplete="true" placeholder="example@askfavr.com"
+            required>
           </ion-input>
         </ion-item>
         <ion-text color="danger">
@@ -163,30 +131,16 @@
 
         <ion-item>
           <ion-label position="stacked">Birthday (Optional)</ion-label>
-          <ion-datetime [(ngModel)]="signup.birthday"
-                        #birthday="ngModel"
-                        (ionChange)="updateProgress()"
-                        name="birthday"
-                        [max]="maxYear"
-                        [displayFormat]="'MMM DD, YYYY'"
-          >
+          <ion-datetime [(ngModel)]="signup.birthday" #birthday="ngModel" (ionChange)="updateProgress()" name="birthday"
+            [max]="maxYear" [displayFormat]="'MMM DD, YYYY'">
           </ion-datetime>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">Phone</ion-label>
-          <ion-input [(ngModel)]="signup.phone"
-                     [minlength]="14"
-                     [maxlength]="14"
-                     #phone="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="phone"
-                     type="tel"
-                     spellcheck="false"
-                     autocapitalize="off"
-                     autocomplete="false"
-                     placeholder="1234567890"
-                     required>
+          <ion-input [(ngModel)]="signup.phone" [minlength]="14" [maxlength]="14" #phone="ngModel"
+            (ionChange)="updateProgress()" name="phone" type="tel" spellcheck="false" autocapitalize="off"
+            autocomplete="false" placeholder="1234567890" required>
           </ion-input>
         </ion-item>
 
@@ -201,24 +155,19 @@
                           && username.valid
                           && email.valid
                           && phone.valid
-                          && birthday.valid"
-                    (click)="openSubPage('set-up-password')"
-                    class="long-button">
+                          && birthday.valid" (click)="openSubPage('set-up-password')" class="long-button"
+          id='long-button'>
           Tap to Continue
           <ion-icon name="arrow-forward" slot="end"></ion-icon>
         </ion-button>
       </ion-list>
 
-      <ion-list *ngSwitchCase="'set-up-password'" [ngClass]="(backPage == 'set-up-password') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
+      <ion-list *ngSwitchCase="'set-up-password'"
+        [ngClass]="(backPage == 'set-up-password') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
         <ion-item>
           <ion-label position="stacked">Password</ion-label>
-          <ion-input [(ngModel)]="signup.password"
-                     #password="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="password"
-                     type="password"
-                     autocomplete="false"
-                     required>
+          <ion-input [(ngModel)]="signup.password" #password="ngModel" (ionChange)="updateProgress()" name="password"
+            type="password" autocomplete="false" required>
           </ion-input>
         </ion-item>
         <ion-text color="danger">
@@ -229,12 +178,8 @@
 
         <ion-item>
           <ion-label position="stacked">Confirm Password</ion-label>
-          <ion-input [(ngModel)]="signup.confirm_password"
-                     #confirm_password="ngModel"
-                     (ionChange)="updateProgress()"
-                     name="password"
-                     type="password"
-                     required>
+          <ion-input id="confirm-password" [(ngModel)]="signup.confirm_password" #confirm_password="ngModel"
+            (ionChange)="updateProgress()" name="password-confirm" type="password" required>
           </ion-input>
         </ion-item>
         <ion-text color="danger">
@@ -248,15 +193,15 @@
 
         <ion-button *ngIf="password.valid
                           && confirm_password.valid
-                          && signup.password === signup.confirm_password"
-                    (click)="openSubPage('select-city')"
-                    class="long-button">
+                          && signup.password === signup.confirm_password" (click)="openSubPage('select-city')"
+          class="long-button" id='finish-personal'>
           Tap to Continue
           <ion-icon name="arrow-forward" slot="end"></ion-icon>
         </ion-button>
       </ion-list>
 
-      <ion-list *ngSwitchCase="'select-city'" [ngClass]="(backPage == 'select-city') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
+      <ion-list *ngSwitchCase="'select-city'"
+        [ngClass]="(backPage == 'select-city') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
         <ion-card *ngFor="let city of cities">
 
           <img src="assets/img/{{city.image}}" alt="{{city.city}}">
@@ -273,11 +218,12 @@
 
           <ion-row class="ion-padding">
             <ion-col class="ion-text-center">
-              <ion-button  *ngIf="signup.city_id == city.id" color="success" expand="block" shape="round" disabled>
+              <ion-button *ngIf="signup.city_id == city.id" color="success" expand="block" shape="round" disabled>
                 <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
                 Selected
               </ion-button>
-              <ion-button  *ngIf="signup.city_id != city.id" color="success" expand="block" shape="round" (click)="selectCity(city)">
+              <ion-button *ngIf="signup.city_id != city.id" color="success" expand="block" shape="round"
+                (click)="selectCity(city)" id="select-city-{{city.city}}">
                 <ion-icon name="checkmark" style="font-size: x-large;font-weight: bolder;"></ion-icon>
                 Select City
               </ion-button>

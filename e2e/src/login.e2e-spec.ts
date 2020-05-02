@@ -1,5 +1,7 @@
-import {LoginPage} from './login.po';
-import {browser} from 'protractor';
+import { LoginPage } from './login.po';
+import { browser } from 'protractor';
+import { Registration } from '../src/pages/registration';
+
 
 describe('login page', () => {
   const page = new LoginPage();
@@ -30,5 +32,26 @@ describe('login page', () => {
     page.enterInput('password', 'secret');
     page.clickButton();
     expect(page.wentToNextPage()).toBe(browser.baseUrl + 'app/tabs/marketplace');
+  });
+
+
+
+});
+
+
+describe('Registration', () => {
+  const registrationPage = new Registration();
+
+  beforeAll(() => {
+    registrationPage.restartBrowser();
+  });
+
+  it('should register new user', () => {
+
+    registrationPage.goToRegistrationPage();
+    registrationPage.clickPersonalInformation();
+    registrationPage.filloutPersonalInformation();
+    expect(registrationPage.wentToNextPage()).toBe(browser.baseUrl + 'app/tabs/marketplace');
+
   });
 });
