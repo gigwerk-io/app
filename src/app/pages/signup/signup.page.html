@@ -28,7 +28,7 @@
     <form #signupForm="ngForm" novalidate>
       <ion-list *ngSwitchCase="'signup-index'">
         <ion-item (click)="openSubPage('personal-info')">
-          <ion-icon slot="start" name="person-circle"></ion-icon>
+          <ion-icon slot="start" name="person-circle" id="personal-info-icon"></ion-icon>
           Personal Information
           <div slot="end" *ngIf="signup.first_name
                           && signup.last_name
