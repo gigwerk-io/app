@@ -244,19 +244,11 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
   async doRefresh(event?) {
     setTimeout(() => {
-      this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID)
-        .then((res) => {
-          this.mainMarketplaceTask = res.data;
-          this.taskStatusDisplay = (this.mainMarketplaceTask.status === 'Paid') ? 'Freelancer En-Route' : this.mainMarketplaceTask.status;
-          this.storage.get(StorageKeys.PROFILE)
-            .then(prof => {
-              this.userRole = prof.user.role;
-              this.isOwner = prof.user_id === this.mainMarketplaceTask.customer_id;
-              this.isFreelancer = (this.userRole === Role.VERIFIED_FREELANCER)
-                ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
-                : false;
-            });
-        });
+      this.geolocation.getCurrentPosition().then(res => {
+        const coords = {lat: res.coords.latitude, long: res.coords.longitude};
+        // Get job details with location
+        this.getJobDetails(coords);
+      }).catch(err => this.getJobDetails());
       if (event) {
         event.target.complete();
       }

@@ -27,7 +27,9 @@ export class MarketplaceService extends RESTService {
   }
 
   public getSingleMainMarketplaceRequest(id: number, coords?: any): Promise<Response<MainMarketplaceTask>> {
-    return this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', coords)
+    const makeRequest = (coords) ? this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', coords) :
+      this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET');
+    return makeRequest
       .then(httpRes => httpRes.toPromise().then(res => res))
       .catch((error: HttpErrorResponse) => {
         if (error.error) {
@@ -115,7 +117,8 @@ export class MarketplaceService extends RESTService {
     return this.makeHttpRequest<GenericResponse>(`marketplace/main/freelancer/withdraw/${id}`, 'GET')
       .then(httpRes => httpRes.toPromise()
         .then(res => {
-          this.utils.presentToast(res.message, 'success');
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.JOB_CAN_BE_ACCEPTED, id));
           return res;
         })
         .catch((error: HttpErrorResponse) => {
@@ -129,7 +132,7 @@ export class MarketplaceService extends RESTService {
       .then(httpRes => httpRes.toPromise()
         .then(res => {
           this.utils.presentToast(res.message, 'success')
-              .then(() => this.events.publish('task-action', TaskAction.JOB_IS_EDITABLE, id));
+              .then(() => this.events.publish('task-action', TaskAction.NO_PERFORMABLE_ACTION, id));
           return res;
         })
         .catch((error: HttpErrorResponse) => {
@@ -212,7 +215,8 @@ export class MarketplaceService extends RESTService {
     return this.makeHttpRequest<GenericResponse>(`report/main/marketplace/${id}`, 'POST', {description})
       .then(httpRes => httpRes.toPromise()
         .then(res => {
-          this.utils.presentToast(res.message, 'success');
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.NO_PERFORMABLE_ACTION, id));
           return res;
         })
         .catch((error: HttpErrorResponse) => {

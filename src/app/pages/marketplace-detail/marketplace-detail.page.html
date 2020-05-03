@@ -125,16 +125,6 @@
             Accept
           </ion-button>
         </ion-col>
-
-        <ion-col class="ion-text-center">
-          <ion-button fill="outline"
-                      size="small"
-                      color="primary"
-                      (click)="startChat(mainMarketplaceTask.customer.username)">
-            <ion-icon name="chatbubble" slot="start"></ion-icon>
-            Chat
-          </ion-button>
-        </ion-col>
       </ion-row>
 
       <ion-row class="ion-padding-bottom" *ngIf="isOwner || isFreelancer">
@@ -168,6 +158,16 @@
                         color="primary">
               <ion-icon name="checkmark" slot="start"></ion-icon>
               Complete Task
+            </ion-button>
+          </ion-col>
+
+          <ion-col class="ion-text-center">
+            <ion-button fill="outline"
+                        size="small"
+                        color="primary"
+                        (click)="startChat(mainMarketplaceTask.customer.username)">
+              <ion-icon name="chatbubble" slot="start"></ion-icon>
+              Chat
             </ion-button>
           </ion-col>
         </ng-container>
