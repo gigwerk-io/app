@@ -1,15 +1,13 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MainMarketplaceRouteResponse, MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
+import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
-import {IonContent, IonRouterOutlet, LoadingController, ModalController, NavController, ToastController} from '@ionic/angular';
-import {RequestPage} from '../request/request.page';
-import {Role, StorageKeys} from '../../providers/constants';
+import {IonContent, IonRouterOutlet, LoadingController, ModalController, NavController} from '@ionic/angular';
+import {Role, StorageKeys, TaskAction} from '../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../providers/pusher.service';
 import {AuthService} from '../../utils/services/auth.service';
 import {Router} from '@angular/router';
 import {Geolocation} from '@ionic-native/geolocation/ngx';
-import {CustomerTutorialPage} from '../customer-tutorial/customer-tutorial.page';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
 
@@ -26,9 +24,6 @@ export class MarketplacePage implements OnInit, OnDestroy {
   segment: string;
   userRole: string;
   Role = Role;
-  private callback = (res: MainMarketplaceRouteResponse) => {
-    this.marketplaceTasks = res.data;
-  }
 
   constructor(
     private marketplaceService: MarketplaceService,
@@ -44,8 +39,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
     private utils: UtilsService,
     private geolocation: Geolocation,
     public routerOutlet: IonRouterOutlet
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.events.subscribe('scroll-top-marketplace', () => this.ionContent.scrollToTop(500));
@@ -89,17 +83,28 @@ export class MarketplacePage implements OnInit, OnDestroy {
     this.events.unsubscribe('scroll-top-marketplace');
   }
 
-
-  getAllMarketplaceRequests(coords?: any, callback?: (...args) => any) {
-    this.marketplaceService.getMainMarketplaceRequests('all', coords, callback);
+  getAllMarketplaceRequests(coords?: any) {
+    this.marketplaceService.getMainMarketplaceRequests('all', coords)
+      .then(res => {
+        console.log(res);
+        this.marketplaceTasks = res.data;
+      });
   }
 
-  getMyMarketplaceRequests(callback?: (...args) => any) {
-    this.marketplaceService.getMainMarketplaceRequests('me', {}, callback);
+  getMyMarketplaceRequests() {
+    this.marketplaceService.getMainMarketplaceRequests('me')
+      .then(res => {
+        console.log(res);
+        this.marketplaceTasks = res.data;
+      });
   }
 
-  getMyJobs(callback?: (...args) => any) {
-    this.marketplaceService.getMainMarketplaceRequests('proposals', {}, callback);
+  getMyJobs() {
+    this.marketplaceService.getMainMarketplaceRequests('proposals', {})
+      .then(res => {
+        console.log(res);
+        this.marketplaceTasks = res.data;
+      });
   }
 
   segmentChanged() {
@@ -109,41 +114,21 @@ export class MarketplacePage implements OnInit, OnDestroy {
         this.geolocation.getCurrentPosition().then(res => {
           const coords = {lat: res.coords.latitude, long: res.coords.longitude};
           // Get job details with location
-          this.getAllMarketplaceRequests(coords, this.callback);
-        }).catch(err => {
+          this.getAllMarketplaceRequests(coords);
+        }).catch(() => {
           // Get job details without location
-          this.getAllMarketplaceRequests(this.callback);
+          this.getAllMarketplaceRequests();
         });
         break;
       case 'me':
         this.segment = 'me';
-        this.getMyMarketplaceRequests(this.callback);
+        this.getMyMarketplaceRequests();
         break;
       case 'jobs':
         this.segment = 'jobs';
-        this.getMyJobs(this.callback);
+        this.getMyJobs();
         break;
     }
-  }
-
-  async openCustomerTutorial() {
-    const modal = await this.modalCtrl.create({
-      component: CustomerTutorialPage,
-      componentProps: {isModal: true}
-    });
-
-    const loadingRequestPage = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      translucent: true
-    });
-
-    await loadingRequestPage.present();
-
-    await modal.present()
-      .then(() => {
-
-        return loadingRequestPage.dismiss();
-      });
   }
 
   async doRefresh(event?) {
@@ -153,17 +138,17 @@ export class MarketplacePage implements OnInit, OnDestroy {
           this.geolocation.getCurrentPosition().then(res => {
             const coords = {lat: res.coords.latitude, long: res.coords.longitude};
             // GEt job details with location
-            this.getAllMarketplaceRequests(coords, this.callback);
+            this.getAllMarketplaceRequests(coords);
           }).catch(err => {
             // Get job details without location
-            this.getAllMarketplaceRequests(this.callback);
+            this.getAllMarketplaceRequests();
           });
           break;
         case 'me':
-          this.getMyMarketplaceRequests(this.callback);
+          this.getMyMarketplaceRequests();
           break;
         case 'jobs':
-          this.getMyJobs(this.callback);
+          this.getMyJobs();
           break;
       }
 
@@ -173,5 +158,15 @@ export class MarketplacePage implements OnInit, OnDestroy {
         }
       }
     }, 1000);
+  }
+
+  handleTaskActionTaken(action: number) {
+    switch (action) {
+      case TaskAction.JOB_IS_EDITABLE:
+        break;
+      default:
+        this.doRefresh();
+        break;
+    }
   }
 }

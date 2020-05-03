@@ -4,7 +4,7 @@ import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {AlertController, IonRouterOutlet, ModalController, NavController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {MarketplaceService} from '../../services/marketplace.service';
-import {Role, StorageKeys, TaskActions, TaskStatus} from '../../../providers/constants';
+import {Role, StorageKeys, TaskAction, TaskStatus} from '../../../providers/constants';
 import {PastJob, Profile} from '../../interfaces/user';
 import {RequestPage} from '../../../pages/request/request.page';
 import {Events} from '../../services/events';
@@ -22,7 +22,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   @Input() mainMarketplaceTask: MainMarketplaceTask;
   @Input() freelancerPastTask: PastJob;
   @Input() routerOutlet: IonRouterOutlet;
-  @Output() taskActionTaken: EventEmitter<string> = new EventEmitter();
+  @Output() taskActionTaken: EventEmitter<number> = new EventEmitter();
 
   mainMarketTask: MainMarketplaceTask;
   pastJob: PastJob;
@@ -39,25 +39,7 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
               private navCtrl: NavController,
               private alertCtrl: AlertController,
               private events: Events,
-              private storage: Storage) {
-    this.events.subscribe('task-action', (action, taskID) => {
-      if (this.mainMarketplaceTask.id === taskID) {
-        switch (action) {
-          case TaskActions.FREELANCER_ACCEPT_TASK:
-            this.mainMarketplaceTask.action = 3;
-            this.changeRef.detectChanges();
-            break;
-          case TaskActions.FREELANCER_WITHDRAW_TASK:
-            this.mainMarketplaceTask.action = 2;
-            this.changeRef.detectChanges();
-            break;
-          case TaskActions.CUSTOMER_CANCEL_TASK:
-            this.taskActionTaken.emit(TaskActions.CUSTOMER_CANCEL_TASK);
-            break;
-        }
-      }
-    });
-  }
+              private storage: Storage) {  }
 
   ngOnInit() {
     setTimeout(() => {
@@ -66,8 +48,24 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
           this.userProfile = prof;
           this.mainMarketTask = this.mainMarketplaceTask;
           this.pastJob = this.freelancerPastTask;
+          this.events.subscribe('task-action', (action, taskID) => {
+            if (this.mainMarketplaceTask.id === taskID) {
+              switch (action) {
+                case TaskAction.JOB_CAN_BE_ACCEPTED:
+                  this.mainMarketplaceTask.action = 3;
+                  this.changeRef.detectChanges();
+                  break;
+                case TaskAction.WORKER_IS_WAITING_FOR_CUSTOMER:
+                  this.mainMarketplaceTask.action = 2;
+                  this.changeRef.detectChanges();
+                  break;
+                case TaskAction.JOB_IS_EDITABLE:
+                  break;
+              }
+            }
+          });
         });
-    }, 2000);
+    }, 1000);
   }
 
   ngOnDestroy(): void {
@@ -85,7 +83,6 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
   async alertConfirmCustomerCancel() {
     const alert = await this.alertCtrl.create({
       header: 'Are you sure?',
-      // tslint:disable-next-line:max-line-length
       message: 'You are about to <strong>cancel</strong> this request. Your request <strong>will be DELETED</strong>.',
       buttons: [
         {
@@ -104,45 +101,44 @@ export class FavrMarketplaceCardComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  startChat(username) {
-    this.utils.startChat(username);
+  async alertConfirmFreelancerWithdrawal() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: 'You are about to <strong>withdraw</strong> from working on this request.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes',
+          handler: () => this.freelancerWithdrawTask()
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   freelancerAcceptTask() {
     this.marketplaceService.freelancerAcceptMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => {
-        this.utils.presentToast(res, 'success')
-          .then(() => this.taskActionTaken.emit('freelancerAcceptTask'));
-      })
-      .catch((err) => {
-        this.utils.presentToast(err.error.message, 'danger').then(() => {
-          setTimeout(() => this.navCtrl.navigateForward('app/connect-bank-account'), 550);
-        });
-      });
+      .then((res) => (res.success) ? this.taskActionTaken.emit(TaskAction.JOB_CAN_BE_ACCEPTED) : undefined)
+      .catch(() => setTimeout(() => this.navCtrl.navigateForward('app/connect-bank-account'), 550));
   }
 
-  async freelancerWithdrawTask() {
-    const freelancerWithdrawTask = await this.marketplaceService.freelancerWithdrawMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(freelancerWithdrawTask, 'success')
-      .then(() => this.taskActionTaken.emit('freelancerWithdrawTask'));
+  freelancerWithdrawTask() {
+    this.marketplaceService.freelancerWithdrawMainMarketplaceRequest(this.mainMarketplaceTask.id)
+      .then(() => this.taskActionTaken.emit(TaskAction.WORKER_IS_WAITING_FOR_CUSTOMER));
   }
 
-  async freelancerArriveTask() {
-    const freelancerArriveTask = await this.marketplaceService.freelancerArrivedAtTaskSite(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(freelancerArriveTask)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ARRIVE_TASK, this.mainMarketplaceTask.id));
+  freelancerArriveTask() {
+    this.marketplaceService.freelancerArrivedAtTaskSite(this.mainMarketplaceTask.id)
+      .then(() => this.taskActionTaken.emit(TaskAction.WORKER_IS_IN_PROGRESS));
   }
 
-  async customerCancelTask() {
-    const cancelTask = await this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(cancelTask, 'success')
-      .then(() => this.taskActionTaken.emit('customerCancelTask'));
+  customerCancelTask() {
+    this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
+      .then(() => this.taskActionTaken.emit(TaskAction.JOB_IS_EDITABLE));
   }
 
   async customerEditTask(task: MainMarketplaceTask) {

@@ -1,24 +1,15 @@
 import {Injectable} from '@angular/core';
-import {
-  CustomerApproveFreelancerResponse,
-  CustomerCancelTaskResponse, CustomerCompleteTaskResponse,
-  CustomerDenyFreelancerResponse,
-  FreelancerAcceptMainMarketplaceTaskRouteResponse,
-  FreelancerArrivedResponse,
-  FreelancerCompleteTaskResponse,
-  FreelancerWithdrawMainMarketplaceTaskRouteResponse,
-  MainMarketplaceRequestRouteResponse,
-  MainMarketplaceRouteResponse,
-  MainMarketplaceTask, ReportTaskResponse
-} from '../interfaces/main-marketplace/main-marketplace-task';
+import {MainMarketplaceTask} from '../interfaces/main-marketplace/main-marketplace-task';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Storage} from '@ionic/storage';
 import {MainProposal} from '../interfaces/main-marketplace/main-proposal';
 import {RESTService} from './rest.service';
-import {Observable} from 'rxjs';
 import {AuthService} from './auth.service';
 import {UtilsService} from './utils.service';
 import {Response} from '../interfaces/response';
+import {GenericResponse} from '../interfaces/searchable';
+import {Events} from './events';
+import {TaskAction} from '../../providers/constants';
 
 @Injectable({
   providedIn: 'root'
@@ -29,17 +20,26 @@ export class MarketplaceService extends RESTService {
     public httpClient: HttpClient,
     public storage: Storage,
     public authService: AuthService,
-    public utils: UtilsService
+    public utils: UtilsService,
+    public events: Events
   ) {
     super(httpClient, storage);
   }
 
   public getSingleMainMarketplaceRequest(id: number, coords?: any): Promise<Response<MainMarketplaceTask>> {
-    return this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', {params: coords})
-      .then(httpRes => httpRes.toPromise().then(res => res));
+    return this.makeHttpRequest<Response<MainMarketplaceTask>>(`marketplace/main/request/${id}`, 'GET', coords)
+      .then(httpRes => httpRes.toPromise().then(res => res))
+      .catch((error: HttpErrorResponse) => {
+        if (error.error) {
+          this.utils.presentToast(error.error.message, 'danger');
+        } else {
+          this.utils.presentToast(error.message, 'danger');
+        }
+        return {success: false, message: '', data: null};
+      });
   }
 
-  public getMainMarketplaceRequests(filter?: string, coords?: any, callback?: (...args) => any): Promise<MainMarketplaceTask[]> {
+  public getMainMarketplaceRequests(filter?: string, coords?: any): Promise<Response<MainMarketplaceTask[]>> {
     let route: string;
 
     switch (filter) {
@@ -54,30 +54,18 @@ export class MarketplaceService extends RESTService {
         break;
     }
 
-    const mainMarketplaceTasks: Promise<Observable<MainMarketplaceRouteResponse>> =
-      this.makeHttpRequest<MainMarketplaceRouteResponse>(
-        route,
-        'GET',
-        coords
-      );
-
-    return mainMarketplaceTasks.then(httpRes => httpRes.toPromise()
-      .then(res => {
-        if (callback) {
-          callback(res);
-        }
-        return res.data;
-      }))
+    return this.makeHttpRequest<Response<MainMarketplaceTask[]>>(route, 'GET', coords).then(httpRes => httpRes.toPromise()
+      .then(res => res))
       .catch(error => {
         if (error.status === 401) {
           this.authService.isValidToken(); // check whether this user has valid authorization rights
         }
-        return [];
+        return {success: false, message: '', data: []};
       });
   }
 
-  public createMainMarketplaceRequest(req: MainMarketplaceTask): Promise<MainMarketplaceRequestRouteResponse> {
-    return this.makeHttpRequest<MainMarketplaceRequestRouteResponse>('marketplace/main/request', 'POST', req)
+  public createMainMarketplaceRequest(req: MainMarketplaceTask): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>('marketplace/main/request', 'POST', req)
       .then(httpRes => httpRes.toPromise().then(res => {
         this.utils.presentToast(res.message, 'success');
         return res;
@@ -92,10 +80,11 @@ export class MarketplaceService extends RESTService {
       });
   }
 
-  public editMainMarketplaceRequest(req: MainMarketplaceTask): Promise<MainMarketplaceRequestRouteResponse> {
-    return this.makeHttpRequest<MainMarketplaceRequestRouteResponse>(`marketplace/main/edit/${req.id}`, 'POST', req)
+  public editMainMarketplaceRequest(req: MainMarketplaceTask): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/edit/${req.id}`, 'PATCH', req)
       .then(httpRes => httpRes.toPromise().then(res => {
-        this.utils.presentToast(res.message, 'success');
+        this.utils.presentToast(res.message, 'success')
+          .then(() => this.events.publish('task-action', TaskAction.JOB_IS_EDITABLE, req.id));
         return res;
       }))
       .catch((error: HttpErrorResponse) => {
@@ -108,49 +97,128 @@ export class MarketplaceService extends RESTService {
       });
   }
 
-  public freelancerAcceptMainMarketplaceRequest(id: number): Promise<string> {
-    return this.makeHttpRequest<FreelancerAcceptMainMarketplaceTaskRouteResponse>(`marketplace/main/accept/${id}`, 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public freelancerAcceptMainMarketplaceRequest(id: number): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/accept/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.JOB_CAN_BE_ACCEPTED, id));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public freelancerWithdrawMainMarketplaceRequest(id: number): Promise<string> {
-    return this.makeHttpRequest<FreelancerWithdrawMainMarketplaceTaskRouteResponse>(`marketplace/main/freelancer/withdraw/${id}`, 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public freelancerWithdrawMainMarketplaceRequest(id: number): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/freelancer/withdraw/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success');
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public customerCancelMainMarketplaceRequest(id: number): Promise<string> {
-    return this.makeHttpRequest<CustomerCancelTaskResponse>(`marketplace/main/request/cancel/${id}`, 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public customerCancelMainMarketplaceRequest(id: number): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/request/cancel/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+              .then(() => this.events.publish('task-action', TaskAction.JOB_IS_EDITABLE, id));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public customerAcceptFreelancer(taskID: number, freelancerID: number): Promise<string> {
-    return this.makeHttpRequest<CustomerApproveFreelancerResponse>(`marketplace/main/${taskID}/accept/${freelancerID}`, 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public customerAcceptFreelancer(taskID: number, freelancerID: number): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/${taskID}/accept/${freelancerID}`, 'GET')
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.WORKER_HAS_BEEN_APPROVED, taskID));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public customerDenyFreelancer(taskID: number, freelancerID: number): Promise<string> {
-    return this.makeHttpRequest<CustomerDenyFreelancerResponse>(`marketplace/main/${taskID}/deny/${freelancerID}`, 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public customerDenyFreelancer(taskID: number, freelancerID: number): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/${taskID}/deny/${freelancerID}`, 'GET')
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.JOB_CAN_BE_ACCEPTED, taskID));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public freelancerArrivedAtTaskSite(id: number): Promise<string> {
-    return this.makeHttpRequest<FreelancerArrivedResponse>(`marketplace/main/freelancer/arrive/${id}`, 'GET')
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public freelancerArrivedAtTaskSite(id: number): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/freelancer/arrive/${id}`, 'GET')
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.WORKER_IS_IN_PROGRESS, id));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public freelancerCompleteTask(id: number, ratingAndReview: { rating: number, review: string }): Promise<string> {
-    return this.makeHttpRequest<FreelancerCompleteTaskResponse>(`marketplace/main/freelancer/complete/${id}`, 'POST', ratingAndReview)
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public freelancerCompleteTask(id: number, ratingAndReview: { rating: number, review: string }): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/freelancer/complete/${id}`, 'POST', ratingAndReview)
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.CUSTOMER_NEEDS_TO_REVIEW, id));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public customerCompleteTask(id: number, ratingAndReview: { rating: number, review: string }): Promise<string> {
-    return this.makeHttpRequest<CustomerCompleteTaskResponse>(`marketplace/main/request/complete/${id}`, 'POST', ratingAndReview)
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public customerCompleteTask(id: number, ratingAndReview: { rating: number, review: string }): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`marketplace/main/request/complete/${id}`, 'POST', ratingAndReview)
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success')
+            .then(() => this.events.publish('task-action', TaskAction.JOB_IS_COMPLETE, id));
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
-  public mainMarketplaceReportTask(id: number, description: string): Promise<string> {
-    return this.makeHttpRequest<ReportTaskResponse>(`report/main/marketplace/${id}`, 'POST', {description})
-      .then(httpRes => httpRes.toPromise().then(res => res.message));
+  public mainMarketplaceReportTask(id: number, description: string): Promise<GenericResponse> {
+    return this.makeHttpRequest<GenericResponse>(`report/main/marketplace/${id}`, 'POST', {description})
+      .then(httpRes => httpRes.toPromise()
+        .then(res => {
+          this.utils.presentToast(res.message, 'success');
+          return res;
+        })
+        .catch((error: HttpErrorResponse) => {
+          this.utils.presentToast(error.error.message, 'danger');
+          return {success: false, message: error.message};
+        }));
   }
 
   public checkIsTaskFreelancer(userID: number, task: MainMarketplaceTask): boolean {

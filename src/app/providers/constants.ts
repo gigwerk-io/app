@@ -22,16 +22,18 @@ export const TaskStatus = {
   COMPLETE: 'Complete'
 };
 
-export const TaskActions = {
-  FREELANCER_ACCEPT_TASK: 'freelancerAcceptTask',
-  FREELANCER_WITHDRAW_TASK: 'freelancerWithdrawTask',
-  FREELANCER_ARRIVE_TASK: 'freelancerArriveTask',
-  FREELANCER_COMPLETE_TASK: 'completeTask',
-  CUSTOMER_ACCEPT_FREELANCER: 'customerAcceptFreelancer',
-  CUSTOMER_REJECT_FREELANCER: 'customerRejectFreelancer',
-  CUSTOMER_UPDATE_TASK: 'customerUpdateTask',
-  CUSTOMER_CANCEL_TASK: 'customerCancelTask',
-  CUSTOMER_COMPLETE_TASK: 'customerCompleteTask'
+export const TaskAction = {
+  JOB_IS_EDITABLE: 1,
+  JOB_CAN_BE_ACCEPTED: 2,
+  WORKER_IS_WAITING_FOR_CUSTOMER: 3,
+  NO_PERFORMABLE_ACTION: 4,
+  WORKER_HAS_BEEN_APPROVED: 5,
+  WORKER_IS_IN_PROGRESS: 6,
+  CUSTOMER_NEEDS_TO_RESPOND: 7,
+  CUSTOMER_WAITING_FOR_WORKER_ARRIVAL: 8,
+  CUSTOMER_WAITING_FOR_WORKER_REVIEW: 9,
+  CUSTOMER_NEEDS_TO_REVIEW: 10,
+  JOB_IS_COMPLETE: 11
 };
 
 export const API_ADDRESS =  environment.apiUrl;

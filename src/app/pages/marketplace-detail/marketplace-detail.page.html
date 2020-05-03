@@ -17,18 +17,18 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <ion-list *ngIf="mainMarketplaceTask; else skeletonList">
+  <ion-list class="ion-no-padding" *ngIf="mainMarketplaceTask; else skeletonList">
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 1')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_one">
-        <favr-img [src]="mainMarketplaceTask.image_one" alt="Task image one"></favr-img>
+        <favr-img [src]="mainMarketplaceTask.image_one" loaderClass="favr-card-img" alt="Task image one"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_two, 'Image 2')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_two">
-        <favr-img [src]="mainMarketplaceTask.image_two" alt="Task image two"></favr-img>
+        <favr-img [src]="mainMarketplaceTask.image_two" loaderClass="favr-card-img" alt="Task image two"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(mainMarketplaceTask.image_one, 'Image 3')" class="marketplace-slide-image" *ngIf="mainMarketplaceTask.image_three">
-        <favr-img [src]="mainMarketplaceTask.image_three" alt="Task image three"></favr-img>
+        <favr-img [src]="mainMarketplaceTask.image_three" loaderClass="favr-card-img" alt="Task image three"></favr-img>
       </ion-slide>
     </ion-slides>
 
@@ -114,23 +114,35 @@
       </ng-container>
 
       <!-- begin task actions-->
+      <ion-row *ngIf="!isOwner && userRole == Role.VERIFIED_FREELANCER">
+        <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_CAN_BE_ACCEPTED" class="ion-text-center">
+          <ion-button
+            (click)="freelancerAcceptTask()"
+            fill="outline"
+            size="small"
+            color="primary">
+            <ion-icon name="thumbs-up" slot="start"></ion-icon>
+            Accept
+          </ion-button>
+        </ion-col>
+
+        <ion-col class="ion-text-center">
+          <ion-button fill="outline"
+                      size="small"
+                      color="primary"
+                      (click)="startChat(mainMarketplaceTask.customer.username)">
+            <ion-icon name="chatbubble" slot="start"></ion-icon>
+            Chat
+          </ion-button>
+        </ion-col>
+      </ion-row>
 
       <ion-row class="ion-padding-bottom" *ngIf="isOwner || isFreelancer">
         <!-- Begin freelancer task actions-->
         <ng-container *ngIf="isFreelancer">
-          <ion-col *ngIf="mainMarketplaceTask.action == 2" class="ion-text-center">
-            <ion-button
-              (click)="freelancerAcceptTask()"
-              fill="outline"
-              size="small"
-              color="primary">
-              <ion-icon name="thumbs-up" slot="start"></ion-icon>
-              Accept
-            </ion-button>
-          </ion-col>
-
-          <ion-col *ngIf="mainMarketplaceTask.action == 3 || mainMarketplaceTask.action == 5" class="ion-text-center">
-            <ion-button (click)="freelancerWithdrawTask()"
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.WORKER_IS_WAITING_FOR_CUSTOMER
+           || mainMarketplaceTask.action == TaskAction.WORKER_HAS_BEEN_APPROVED" class="ion-text-center">
+            <ion-button (click)="alertConfirmFreelancerWithdrawal()"
                         fill="outline"
                         size="small"
                         color="primary">
@@ -139,17 +151,7 @@
             </ion-button>
           </ion-col>
 
-          <ion-col *ngIf="mainMarketplaceTask.action == 5 || mainMarketplaceTask.action == 6" class="ion-text-center">
-            <ion-button fill="outline"
-                        size="small"
-                        color="primary"
-                        (click)="startChat(mainMarketplaceTask.customer.username)">
-              <ion-icon name="chatbubble" slot="start"></ion-icon>
-              Chat
-            </ion-button>
-          </ion-col>
-
-          <ion-col *ngIf="mainMarketplaceTask.action == 5" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.WORKER_HAS_BEEN_APPROVED" class="ion-text-center">
             <ion-button (click)="freelancerArriveTask()"
                         fill="outline"
                         size="small"
@@ -159,7 +161,7 @@
             </ion-button>
           </ion-col>
 
-          <ion-col *ngIf="mainMarketplaceTask.action == 6" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.WORKER_IS_IN_PROGRESS" class="ion-text-center">
             <ion-button (click)="openCompleteTaskModal(true)"
                         fill="outline"
                         size="small"
@@ -173,14 +175,14 @@
 
         <!-- Start task owner actions -->
         <ng-container *ngIf="isOwner">
-          <ion-col *ngIf="mainMarketplaceTask.action == 1" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_IS_EDITABLE" class="ion-text-center">
             <ion-button (click)="editTaskRequest(mainMarketplaceTask)" fill="outline" size="small" color="primary">
               <ion-icon name="create" slot="start"></ion-icon>
               Edit
             </ion-button>
           </ion-col>
 
-          <ion-col *ngIf="mainMarketplaceTask.action == 7" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
             <!--TODO: work on approval system instead of this work around-->
             <ion-button (click)="customerAcceptFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
                         size="small" color="primary">
@@ -189,7 +191,7 @@
             </ion-button>
           </ion-col>
 
-          <ion-col *ngIf="mainMarketplaceTask.action == 7" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
             <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
                         size="small" color="primary">
               <ion-icon name="thumbs-down" slot="start"></ion-icon>
@@ -197,14 +199,14 @@
             </ion-button>
           </ion-col>
 
-          <ion-col *ngIf="mainMarketplaceTask.action == 10" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_REVIEW" class="ion-text-center">
             <ion-button (click)="openCompleteTaskModal(false)" fill="outline" size="small" color="primary">
               <ion-icon name="checkmark" slot="start"></ion-icon>
               Complete My Task
             </ion-button>
           </ion-col>
 
-          <ion-col *ngIf="mainMarketplaceTask.action == 1 || mainMarketplaceTask.action == 7" class="ion-text-center">
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_IS_EDITABLE || mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
             <ion-button (click)="alertConfirmCustomerCancel()"
                         fill="outline" size="small" color="primary">
               <ion-icon name="close" mode="md" slot="start"></ion-icon>

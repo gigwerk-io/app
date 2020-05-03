@@ -35,9 +35,7 @@ export class ReportPage implements OnInit {
         break;
       case 'Task':
         this.marketplaceService.mainMarketplaceReportTask(this.extra.id, this.description)
-          .then((res: string) => this.utils.presentToast(res, 'success'))
-          .catch(error => this.utils.presentToast(error.error.message, 'danger'));
-        this.closeReportPage();
+          .then(() => this.closeReportPage());
         break;
     }
   }

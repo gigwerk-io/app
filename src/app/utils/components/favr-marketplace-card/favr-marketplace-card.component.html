@@ -3,17 +3,17 @@
   <ion-slides [pager]="true">
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 1')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_one">
-      <favr-img [src]="mainMarketTask.image_one" alt="Task image one"></favr-img>
+      <favr-img [src]="mainMarketTask.image_one" loaderClass="favr-card-img" alt="Task image one"></favr-img>
     </ion-slide>
 
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_two, 'Image 2')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_two">
-      <favr-img [src]="mainMarketTask.image_two" alt="Task image two"></favr-img>
+      <favr-img [src]="mainMarketTask.image_two" loaderClass="favr-card-img" alt="Task image two"></favr-img>
     </ion-slide>
 
     <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 3')" class="marketplace-slide-image"
                *ngIf="mainMarketTask.image_three">
-      <favr-img [src]="mainMarketTask.image_three" alt="Task image three"></favr-img>
+      <favr-img [src]="mainMarketTask.image_three" loaderClass="favr-card-img" alt="Task image three"></favr-img>
     </ion-slide>
   </ion-slides>
 
@@ -85,7 +85,7 @@
       </ion-button>
 
       <ion-button *ngIf="mainMarketTask.action == 3"
-                  (click)="freelancerWithdrawTask()"
+                  (click)="alertConfirmFreelancerWithdrawal()"
                   fill="outline"
                   size="small"
                   color="primary">
@@ -158,17 +158,17 @@
     <ion-slides [pager]="true">
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 1')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_one">
-        <favr-img [src]="pastJob.marketplace.image_one" alt="Task image one"></favr-img>
+        <favr-img [src]="pastJob.marketplace.image_one" loaderClass="favr-card-img" alt="Task image one"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_two, 'Image 2')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_two">
-        <favr-img [src]="pastJob.marketplace.image_two" alt="Task image two"></favr-img>
+        <favr-img [src]="pastJob.marketplace.image_two" loaderClass="favr-card-img" alt="Task image two"></favr-img>
       </ion-slide>
 
       <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 3')" class="marketplace-slide-image"
                  *ngIf="pastJob.marketplace.image_three">
-        <favr-img [src]="pastJob.marketplace.image_three" alt="Task image three"></favr-img>
+        <favr-img [src]="pastJob.marketplace.image_three" loaderClass="favr-card-img" alt="Task image three"></favr-img>
       </ion-slide>
     </ion-slides>
 

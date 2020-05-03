@@ -23,7 +23,7 @@
   <ng-container>
     <favr-marketplace-card *ngFor="let task of marketplaceTasks"
                            [mainMarketplaceTask]="task"
-                           (taskActionTaken)="doRefresh($event)"
+                           (taskActionTaken)="handleTaskActionTaken($event)"
                            [routerOutlet]="routerOutlet"
     ></favr-marketplace-card>
     <br>

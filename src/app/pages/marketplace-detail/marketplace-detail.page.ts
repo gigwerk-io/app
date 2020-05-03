@@ -12,7 +12,7 @@ import {PhotoViewer} from '@ionic-native/photo-viewer/ngx';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
 import {Storage} from '@ionic/storage';
-import {Role, StorageKeys, TaskActions, TaskStatus} from '../../providers/constants';
+import {Role, StorageKeys, TaskAction, TaskStatus} from '../../providers/constants';
 import {Events} from '../../utils/services/events';
 import {CompleteTaskPage} from '../complete-task/complete-task.page';
 import {LaunchNavigator, LaunchNavigatorOptions} from '@ionic-native/launch-navigator/ngx';
@@ -25,6 +25,7 @@ import {MainCategory} from '../../utils/interfaces/main-marketplace/main-categor
 import {Subscription} from 'rxjs';
 import {UtilsService} from '../../utils/services/utils.service';
 import {PreviousRouteService} from '../../providers/previous-route.service';
+import {GenericResponse} from '../../utils/interfaces/searchable';
 
 @Component({
   selector: 'marketplace-detail',
@@ -37,12 +38,17 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   taskID: number;
   mainMarketplaceTask: MainMarketplaceTask;
   page = 'main';
+
   taskStatusDisplay: string;
   isOwner: boolean;
   isFreelancer: boolean;
   userRole: string;
-  categories: MainCategory[];
+
+  Role = Role;
   TaskStatus = TaskStatus;
+  TaskAction = TaskAction;
+
+  categories: MainCategory[];
   credit: number;
   activatedRouteSub: Subscription;
 
@@ -63,18 +69,20 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private geolocation: Geolocation,
               public routerOutlet: IonRouterOutlet,
               private previousRoute: PreviousRouteService,
-              private utils: UtilsService) {
-    this.favrService.getCategories().then(res => this.categories = res.data);
-    this.events.subscribe('task-action', (action) => this.doRefresh());
-  }
+              private utils: UtilsService) { }
 
   ngOnInit() {
+    this.favrService.getCategories().then(res => this.categories = res.data);
     this.geolocation.getCurrentPosition().then(res => {
       const coords = {lat: res.coords.latitude, long: res.coords.longitude};
       // Get job details with location
       this.getJobDetails(coords);
     }).catch(err => this.getJobDetails());
     this.getCreditBalance();
+    this.events.subscribe('task-action', (action) => {
+      console.log(action);
+      this.doRefresh();
+    });
   }
 
 
@@ -88,6 +96,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
       this.taskID = parseInt(data.get('id'), 10);
       this.marketplaceService.getSingleMainMarketplaceRequest(this.taskID, coords)
         .then((res) => {
+          console.log(res);
           this.mainMarketplaceTask = res.data;
           this.taskStatusDisplay = (this.mainMarketplaceTask.status === TaskStatus.PAID)
             ? 'Freelancer En-Route'
@@ -100,7 +109,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
                 ? this.marketplaceService.checkIsTaskFreelancer(prof.user_id, this.mainMarketplaceTask)
                 : false;
             });
-          console.log(this.mainMarketplaceTask);
         });
     });
   }
@@ -146,55 +154,29 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     this.utils.startChat(username);
   }
 
-  async freelancerAcceptTask() {
-    const freelancerAcceptedTask = await this.marketplaceService.freelancerAcceptMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(freelancerAcceptedTask)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ACCEPT_TASK, this.mainMarketplaceTask.id));
+  freelancerAcceptTask() {
+    this.marketplaceService.freelancerAcceptMainMarketplaceRequest(this.mainMarketplaceTask.id);
   }
 
-  async freelancerWithdrawTask() {
-    const freelancerWithdrawTask = await this.marketplaceService.freelancerWithdrawMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(freelancerWithdrawTask)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_WITHDRAW_TASK, this.mainMarketplaceTask.id));
+  freelancerWithdrawTask(): Promise<GenericResponse> {
+    return this.marketplaceService.freelancerWithdrawMainMarketplaceRequest(this.mainMarketplaceTask.id);
   }
 
-  async freelancerArriveTask() {
-    const freelancerArriveTask = await this.marketplaceService.freelancerArrivedAtTaskSite(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(freelancerArriveTask)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ARRIVE_TASK, this.mainMarketplaceTask.id));
+  freelancerArriveTask() {
+    this.marketplaceService.freelancerArrivedAtTaskSite(this.mainMarketplaceTask.id);
   }
 
-  async customerCancelTask() {
-    const cancelTask = await this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(cancelTask)
-      .then(() => {
-        this.events.publish('task-action', TaskActions.CUSTOMER_CANCEL_TASK, this.mainMarketplaceTask.id);
-        this.navCtrl.back();
-      });
+  customerCancelTask() {
+    this.marketplaceService.customerCancelMainMarketplaceRequest(this.mainMarketplaceTask.id)
+      .then(() => this.navCtrl.back());
   }
 
-  async customerAcceptFreelancer(freelancerID: number) {
-    const customerApproveFreelancer = await this.marketplaceService.customerAcceptFreelancer(this.mainMarketplaceTask.id, freelancerID)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(customerApproveFreelancer)
-      .then(() => this.events.publish('task-action', TaskActions.CUSTOMER_ACCEPT_FREELANCER, this.mainMarketplaceTask.id));
+  customerAcceptFreelancer(freelancerID: number) {
+    this.marketplaceService.customerAcceptFreelancer(this.mainMarketplaceTask.id, freelancerID);
   }
 
-  async customerRejectFreelancer(freelancerID: number) {
-    const customerDenyFreelancer = await this.marketplaceService.customerDenyFreelancer(this.mainMarketplaceTask.id, freelancerID)
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(customerDenyFreelancer)
-      .then(() => this.events.publish('task-action', TaskActions.FREELANCER_ACCEPT_TASK, this.mainMarketplaceTask.id));
+  customerRejectFreelancer(freelancerID: number) {
+    this.marketplaceService.customerDenyFreelancer(this.mainMarketplaceTask.id, freelancerID);
   }
 
   async openCompleteTaskModal(isFreelancer: boolean) {
@@ -211,7 +193,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
   async alertConfirmCustomerCancel() {
     const alert = await this.alertCtrl.create({
       header: 'Are you sure?',
-      // tslint:disable-next-line:max-line-length
       message: 'You are about to <strong>cancel</strong> this request. Your request <strong>will be DELETED</strong>.',
       buttons: [
         {
@@ -223,6 +204,25 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
           handler: () => {
             this.customerCancelTask();
           }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async alertConfirmFreelancerWithdrawal() {
+    const alert = await this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: 'You are about to <strong>withdraw</strong> from working on this request.',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          cssClass: 'secondary',
+        }, {
+          text: 'Yes',
+          handler: () => this.freelancerWithdrawTask()
         }
       ]
     });
@@ -272,7 +272,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
    const options: LaunchNavigatorOptions = {};
 
    this.launchNavigator.navigate(locationAddress, options)
-      .then(success => {})
       .catch(error => window.open('https://maps.google.com/?q=' + locationAddress));
   }
 

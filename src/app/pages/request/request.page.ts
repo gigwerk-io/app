@@ -20,7 +20,7 @@ import {Router} from '@angular/router';
 import {LocationAddress} from '../../utils/interfaces/settings/preferences';
 import {PreferencesService} from '../../utils/services/preferences.service';
 import {PreviousRouteService} from '../../providers/previous-route.service';
-import {TaskActions} from '../../providers/constants';
+import {TaskAction} from '../../providers/constants';
 import {FavrDataService} from '../../utils/services/favr-data.service';
 import {PageStack} from '../signup/signup.page';
 import {FinanceService} from '../../utils/services/finance.service';
@@ -292,7 +292,6 @@ export class RequestPage implements OnInit, OnDestroy {
       .then(() => {
         this.closeRequestPage();
         this.navCtrl.navigateBack(`app/marketplace-detail/${this.taskRequest.id}`);
-        this.events.publish('task-action', TaskActions.CUSTOMER_UPDATE_TASK);
         loadingPage.dismiss();
       })
       .catch(() => {

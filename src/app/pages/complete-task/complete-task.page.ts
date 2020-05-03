@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {ModalController, ToastController} from '@ionic/angular';
 import {MarketplaceService} from '../../utils/services/marketplace.service';
-import {TaskActions, TaskStatus} from '../../providers/constants';
+import {TaskAction, TaskStatus} from '../../providers/constants';
 import {Events} from '../../utils/services/events';
 import {UtilsService} from '../../utils/services/utils.service';
 
@@ -10,7 +10,7 @@ import {UtilsService} from '../../utils/services/utils.service';
   templateUrl: './complete-task.page.html',
   styleUrls: ['./complete-task.page.scss'],
 })
-export class CompleteTaskPage implements OnInit {
+export class CompleteTaskPage {
   @Input() taskID: number;
   @Input() isFreelancer: boolean;
   rate: number;
@@ -22,30 +22,14 @@ export class CompleteTaskPage implements OnInit {
               private utils: UtilsService,
               private events: Events) { }
 
-  ngOnInit() {}
-
-  async freelancerCompleteTask() {
-    const freelancerCompleteTask = await this.marketplaceService
-      .freelancerCompleteTask(this.taskID, {rating: this.rate, review: this.description})
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(freelancerCompleteTask, 'success')
-      .then(() => {
-        this.closeCompleteTaskPage();
-        this.events.publish('task-action', TaskActions.FREELANCER_COMPLETE_TASK, this.taskID);
-      });
+  freelancerCompleteTask() {
+    this.marketplaceService.freelancerCompleteTask(this.taskID, {rating: this.rate, review: this.description})
+      .then(() => this.closeCompleteTaskPage());
   }
 
-  async customerCompleteTask() {
-    const customerCompleteTask = await this.marketplaceService
-      .customerCompleteTask(this.taskID, {rating: this.rate, review: this.description})
-      .then((res: string) => res)
-      .catch((err: any) => err.error.message);
-    this.utils.presentToast(customerCompleteTask, 'success')
-      .then(() => {
-        this.closeCompleteTaskPage();
-        this.events.publish('task-action', TaskActions.CUSTOMER_COMPLETE_TASK, this.taskID);
-      });
+  customerCompleteTask() {
+    this.marketplaceService.customerCompleteTask(this.taskID, {rating: this.rate, review: this.description})
+      .then(() => this.closeCompleteTaskPage());
   }
 
   closeCompleteTaskPage() {
