@@ -9,6 +9,6 @@ export interface MainProposal {
   review?: string;
   arrived_at?: number;
   complete_at?: number;
-  created_at?: number;
-  updated_at?: number;
+  created_at?: string;
+  updated_at?: string;
 }

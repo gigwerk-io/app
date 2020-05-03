@@ -18,9 +18,9 @@ export interface User {
   email: string;
   email_verified_at: string;
   has_chatkit: string;
-  intercom_id: null
-  is_admin: false
-  is_organization_admin: false
+  intercom_id: null;
+  is_admin: false;
+  is_organization_admin: false;
   main_marketplace: MainMarketplaceTask[];
   main_proposals: MainProposal[];
   organization_id: number;
@@ -39,12 +39,12 @@ export interface PastJob {
   approved: number;
   arrived_at: number;
   complete_at: number;
-  created_at: number;
+  created_at: string;
   marketplace: MainMarketplaceTask;
   marketplace_id: number;
   rating: number;
   review: string;
-  updated_at: number;
+  updated_at: string;
   user_id: number;
 }
 
