@@ -1,7 +1,7 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back" mode="md" defaultHref="/app/tabs/settings"></ion-back-button>
     </ion-buttons>
     <ion-title>Manage Cards</ion-title>
   </ion-toolbar>
@@ -24,8 +24,8 @@
     <ion-list-header>
       <h6 class="text-bold">Saved</h6>
     </ion-list-header>
-    <ion-item *ngIf="card.user.card_id != null">
-      <ng-container [ngSwitch]="card.user.type">
+    <ion-item *ngIf="card.card_id != null">
+      <ng-container [ngSwitch]="card.type">
         <ng-template ngSwitchDefault>
           <ion-icon slot="start" name="card"></ion-icon>
         </ng-template>
@@ -56,8 +56,8 @@
       </ng-container>
 
       <ion-label>
-        <h3>{{card.user.type}}</h3>
-        <p>Card Ending with {{card.user.last4}}</p>
+        <h3>{{card.type}}</h3>
+        <p>Card Ending with {{card.last4}}</p>
       </ion-label>
     </ion-item>
 
