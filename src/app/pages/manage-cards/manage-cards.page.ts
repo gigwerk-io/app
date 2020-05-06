@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FinanceService} from '../../utils/services/finance.service';
-import {PaymentInformationResponse} from '../../utils/interfaces/finance/payments';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FinanceService } from '../../utils/services/finance.service';
+import { PaymentInformationResponse } from '../../utils/interfaces/finance/payments';
 import { Response } from '../../utils/interfaces/response';
 
 @Component({
@@ -12,11 +12,12 @@ export class ManageCardsPage implements OnInit {
 
   card: PaymentInformationResponse;
 
-  constructor(private financeService: FinanceService) {}
+  constructor(private financeService: FinanceService) { }
 
   ngOnInit() {
     this.financeService.getPaymentInformation()
       .then((res: Response<PaymentInformationResponse>) => {
+        console.log('this si the cards', res.data)
         this.card = res.data;
       });
   }

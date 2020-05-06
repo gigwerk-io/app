@@ -1,17 +1,18 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Stripe } from '@ionic-native/stripe/ngx';
-import {STRIPE_PUBLIC} from '../../providers/constants';
-import {FinanceService} from '../../utils/services/finance.service';
-import {AlertController, LoadingController} from '@ionic/angular';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import { STRIPE_PUBLIC } from '../../providers/constants';
+import { FinanceService } from '../../utils/services/finance.service';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { CreditCardValidator } from 'angular-cc-library';
-import {Validators} from '@angular/forms';
-import {MainMarketplaceTask} from '../../utils/interfaces/main-marketplace/main-marketplace-task';
-import {MarketplaceService} from '../../utils/services/marketplace.service';
-import {Router} from '@angular/router';
-import {Events} from '../../utils/services/events';
-import {UtilsService} from '../../utils/services/utils.service';
-import {HttpErrorResponse} from '@angular/common/http';
+import { Validators } from '@angular/forms';
+import { MainMarketplaceTask } from '../../utils/interfaces/main-marketplace/main-marketplace-task';
+import { MarketplaceService } from '../../utils/services/marketplace.service';
+import { Router } from '@angular/router';
+import { Events } from '../../utils/services/events';
+import { UtilsService } from '../../utils/services/utils.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { formatNumber } from '@angular/common';
 
 @Component({
   selector: 'set-up-payments',
@@ -23,21 +24,23 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
   submitted = false;
   task: MainMarketplaceTask = undefined;
 
-  constructor(private stripe: Stripe,
-              private financeService: FinanceService,
-              private alertController: AlertController,
-              private marketplaceService: MarketplaceService,
-              private router: Router,
-              private fb: FormBuilder,
-              private events: Events,
-              private loadCtrl: LoadingController,
-              private utils: UtilsService) {
+  constructor(
+    private stripe: Stripe,
+    private financeService: FinanceService,
+    private alertController: AlertController,
+    private marketplaceService: MarketplaceService,
+    private router: Router,
+    private fb: FormBuilder,
+    private events: Events,
+    private loadCtrl: LoadingController,
+    private utils: UtilsService) {
     this.events.subscribe('task-request', (taskRequest) => {
       this.task = taskRequest;
     });
   }
 
   ngOnInit() {
+
     this.stripe.setPublishableKey(STRIPE_PUBLIC);
     this.form = this.fb.group({
       creditCard: ['', [CreditCardValidator.validateCCNumber as any]],
@@ -50,11 +53,12 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
     this.events.unsubscribe('task-request');
   }
 
-  async onSubmit(form) {
+  async onSubmit() {
     const loadingCtrl = await this.loadCtrl.create({
       message: 'Please Wait',
       translucent: true
     });
+
 
     await loadingCtrl.present();
 
@@ -68,9 +72,10 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
       cvc: this.form.get('cvc').value
     };
 
+
     if (this.form.valid) {
       this.stripe.createCardToken(card).then(token => {
-        const body = {stripeToken: token.id};
+        const body = { stripeToken: token.id };
         this.financeService.saveCreditCard(body).then(res => {
           if (this.task) {
             setTimeout(() => {
@@ -84,7 +89,6 @@ export class SetUpPaymentsPage implements OnInit, OnDestroy {
         });
       });
     }
-
     await loadingCtrl.dismiss();
   }
 

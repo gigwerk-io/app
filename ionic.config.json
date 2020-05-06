@@ -2,6 +2,7 @@
   "name": "FAVR",
   "type": "angular",
   "integrations": {
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   }
 }
