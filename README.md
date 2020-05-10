@@ -19,8 +19,8 @@
 * Install the ionic CLI globally: `npm install -g @ionic/cli`
 * Clone this repository: `git clone https://github.com/FAVR-Inc/app.git`.
 * Run `npm install` from the project root.
-* Run `ionic serve` in a terminal from the project root.
-* Profit. :tada:
+* Run `ionic serve or npm run app` in a terminal from the project root. (For mobile app)
+* Run `npm run web` in a terminal from the project root. (For website)
 
 _Note: See [How to Prevent Permissions Errors](https://docs.npmjs.com/getting-started/fixing-npm-permissions) if you are running into issues when trying to install packages globally._
 

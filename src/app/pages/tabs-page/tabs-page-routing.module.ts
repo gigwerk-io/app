@@ -25,14 +25,18 @@ const routes: Routes = [
           }
         ]
       },
+      // {
+      //   path: 'friends',
+      //   children: [
+      //     {
+      //       path: '',
+      //       loadChildren: () => import('../friends/friends.module').then(m => m.FriendsPageModule)
+      //     }
+      //   ]
+      // },
       {
-        path: 'friends',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('../friends/friends.module').then(m => m.FriendsPageModule)
-          }
-        ]
+        path: 'chat',
+        loadChildren: () => import('../chat/chat.module').then(m => m.ChatPageModule)
       },
       {
         path: 'settings',
@@ -61,10 +65,6 @@ const routes: Routes = [
   {
     path: 'marketplace-detail/:id',
     loadChildren: () => import('../marketplace-detail/marketplace-detail.module').then(m => m.MarketplaceDetailPageModule)
-  },
-  {
-    path: 'chat',
-    loadChildren: () => import('../chat/chat.module').then(m => m.ChatPageModule)
   },
   {
     path: 'room/:uuid',

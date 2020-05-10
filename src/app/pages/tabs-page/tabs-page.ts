@@ -109,6 +109,7 @@ export class TabsPage implements OnInit, OnDestroy {
 
   getBadges() {
     this.notificationService.getBadgeCount().then(res => {
+      console.log(res);
       this.notificationCount = res.data.notifications;
       this.friendCount = res.data.friends;
     });

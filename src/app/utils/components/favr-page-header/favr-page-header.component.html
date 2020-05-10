@@ -46,20 +46,22 @@
           <ion-button *ngIf="pageTitle == 'Marketplace'
                              || pageTitle == 'Friends'
                              || pageTitle == 'Notifications'
-                             || pageTitle == 'Settings'"
+                             || pageTitle == 'Settings'
+                             || pageTitle == 'Chat'"
                       (click)="openSearchModal()"
                       class="nav-button">
             <ion-icon name="search"></ion-icon>
           </ion-button>
 
-          <ion-button *ngIf="pageTitle == 'Marketplace'
-                             || pageTitle == 'Friends'
-                             || pageTitle == 'Notifications'
-                             || pageTitle == 'Settings'"
-                      (click)="navigateToChat()"
-                      class="nav-button">
-            <ion-icon name="chatbubbles"></ion-icon>
-          </ion-button>
+<!--          <ion-button *ngIf="pageTitle == 'Marketplace'-->
+<!--                             || pageTitle == 'Friends'-->
+<!--                             || pageTitle == 'Notifications'-->
+<!--                             || pageTitle == 'Settings'"-->
+<!--                      (click)="navigateToChat()"-->
+<!--                      class="nav-button">-->
+<!--            <ion-icon name="chatbubbles"></ion-icon>-->
+<!--          </ion-button>-->
+          <ng-content></ng-content>
         </ion-buttons>
       </ion-col>
     </ion-row>

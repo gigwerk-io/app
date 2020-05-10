@@ -1,23 +1,31 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
-    </ion-buttons>
-    <ion-title> Recent Conversations</ion-title>
-    <ion-buttons class="mobile-only" slot="end">
-      <ion-button class="nav-button" (click)="openSearchModal()">
-        <ion-icon name="create"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<!--<ion-header>-->
+<!--  <ion-toolbar>-->
+<!--    <ion-buttons class="mobile-only" slot="start">-->
+<!--      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>-->
+<!--    </ion-buttons>-->
+<!--    <ion-title> Recent Conversations</ion-title>-->
+<!--    <ion-buttons class="mobile-only" slot="end">-->
+<!--      <ion-button class="nav-button" (click)="openSearchModal()">-->
+<!--        <ion-icon name="create"></ion-icon>-->
+<!--      </ion-button>-->
+<!--    </ion-buttons>-->
+<!--  </ion-toolbar>-->
+<!--</ion-header>-->
+<favr-page-header
+  [pageTitle]="'Chat'"
+  [routerOutlet]="routerOutlet"
+>
+  <ion-button class="nav-button" (click)="openSearchModal()">
+    <ion-icon name="create"></ion-icon>
+  </ion-button>
+</favr-page-header>
 
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <ng-container *ngIf="rooms; else skeletonRooms">
-    <ion-list *ngIf="rooms.length > 0; else noRooms">
+    <ion-list *ngIf="rooms.length > 0; else noRooms" style="margin-bottom: 60px;">
       <ion-item *ngFor="let room of rooms" (click)="goToChatRoom(room.pusher_id)">
         <ion-avatar slot="start">
           <favr-img [src]="getUserProfileImage(room.members)"
