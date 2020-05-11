@@ -73,12 +73,13 @@
              class="badge"
              src="assets/img/verified.png" alt="This user is a Verified Freelancer"></ion-img>
       </ion-note>
-      <p>
-        <ion-chip [color]="status.class">
-          <ion-label>{{status.text}}</ion-label>
-        </ion-chip>
-      </p>
-
+<!--      <p>-->
+<!--        <ion-chip [color]="status.class">-->
+<!--          <ion-label>{{status.text}}</ion-label>-->
+<!--        </ion-chip>-->
+<!--      </p>-->
+      <br />
+      <br />
       <ng-template #star let-fill="fill">
       <span class="star" [class.full]="fill === 100">
         <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
@@ -90,15 +91,15 @@
       </div>
     </div>
     <div class="ion-text-center">
-      <section *ngIf="!isOwner">
-        <ion-button *ngIf="showFriendButton" size="small" style="font-size: 16px;" [disabled]="friendButton.disable" (click)="handleFriendButtonClick()">
-          <ion-icon slot="start" mode="md" [name]="friendButton.class"></ion-icon>
-          <p slot="end" *ngIf="!friendButton.disable; else invitationSent">Send Friend Invite</p>
-          <ng-template #invitationSent>
-            <p slot="end">Friend Invite Sent</p>
-          </ng-template>
-        </ion-button>
-      </section>
+<!--      <section *ngIf="!isOwner">-->
+<!--        <ion-button *ngIf="showFriendButton" size="small" style="font-size: 16px;" [disabled]="friendButton.disable" (click)="handleFriendButtonClick()">-->
+<!--          <ion-icon slot="start" mode="md" [name]="friendButton.class"></ion-icon>-->
+<!--          <p slot="end" *ngIf="!friendButton.disable; else invitationSent">Send Friend Invite</p>-->
+<!--          <ng-template #invitationSent>-->
+<!--            <p slot="end">Friend Invite Sent</p>-->
+<!--          </ng-template>-->
+<!--        </ion-button>-->
+<!--      </section>-->
       <section [ngClass]="profile.description ? 'ion-padding' : ''">
         {{profile.description}}
       </section>
@@ -107,7 +108,7 @@
   </ion-list>
   <ion-toolbar *ngIf="profile.user.role === Role.VERIFIED_FREELANCER">
     <ion-segment [(ngModel)]="taskFeed">
-      <ion-segment-button checked value="freelancer">Past Jobs</ion-segment-button>
+      <ion-segment-button value="freelancer">Past Jobs</ion-segment-button>
       <ion-segment-button value="customer">Past Tasks</ion-segment-button>
     </ion-segment>
   </ion-toolbar>
