@@ -9,7 +9,6 @@
     "start": "ng serve",
     "build": "ng build",
     "app": "ionic serve",
-    "web": "ng serve --project web",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
