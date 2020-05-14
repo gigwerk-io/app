@@ -33,12 +33,9 @@ import {WebLayoutModule} from './layout/web-layout/web-layout.module';
 
 @NgModule({
   imports: [
-    AppLayoutModule,
-    WebLayoutModule,
     AppRoutingModule,
     Angulartics2Module.forRoot(),
     BrowserModule,
-    CustomerTutorialPageModule,
     CreditCardDirectivesModule,
     FormsModule,
     HttpClientModule,
@@ -47,8 +44,6 @@ import {WebLayoutModule} from './layout/web-layout/web-layout.module';
       appId: 'yvoar9nd', // from your Intercom config
       updateOnRouterChange: true // will automatically run `update` on router event changes. Default: `false`
     }),
-    RequestPageModule,
-    SearchPageModule,
     IonicStorageModule.forRoot({
       name: '_favrDB',
       storeName: '__favrKV',

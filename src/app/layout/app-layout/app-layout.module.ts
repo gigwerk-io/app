@@ -3,37 +3,32 @@ import { CommonModule } from '@angular/common';
 import {AppLayoutComponent} from './app-layout.component';
 import {RouterModule, Routes} from '@angular/router';
 import {CheckTutorial} from '../../providers/check-tutorial.service';
-import {CheckAuth} from '../../providers/check-auth.service';
+import {AppCheckAuth} from '../../providers/app-check-auth.service';
 import {IonicModule} from '@ionic/angular';
+import {TabsModule} from './pages/tabs-page/tabs-page.module';
+import {RequestPageModule} from './pages/request/request.module';
+import {SearchPageModule} from './pages/search/search.module';
+import {CustomerTutorialPageModule} from './pages/customer-tutorial/customer-tutorial.module';
 
 const routes: Routes = [
   {
     path: '',
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/app/tutorial'
-      },
-      {
         path: 'tabs',
-        loadChildren: () => import('./pages/tabs-page/tabs-page.module').then(m => m.TabsModule),
-        canActivate: [CheckAuth]
+        loadChildren: () => import('./pages/tabs-page/tabs-page.module').then(m => m.TabsModule)
       },
       {
         path: 'login',
-        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
-        canActivate: [CheckAuth]
+        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
       },
       {
         path: 'signup',
-        loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignUpModule),
-        canActivate: [CheckAuth]
+        loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignUpModule)
       },
       {
         path: 'forgot-password',
-        loadChildren: () => import('./pages/forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule),
-        canActivate: [CheckAuth]
+        loadChildren: () => import('./pages/forgot-password/forgot-password.module').then(m => m.ForgotPasswordPageModule)
       },
       {
         path: 'tutorial',
@@ -42,8 +37,7 @@ const routes: Routes = [
       },
       {
         path: 'welcome',
-        loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomePageModule),
-        canActivate: [CheckAuth]
+        loadChildren: () => import('./pages/welcome/welcome.module').then(m => m.WelcomePageModule)
       },
       {
         path: 'r/:username',
@@ -66,26 +60,22 @@ const routes: Routes = [
         loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesPageModule)
       },
       {
-        path: 'settings',
-        loadChildren: () => import('./pages/settings/settings.module').then(m => m.SettingsPageModule),
-      },
-      {
         path: 'edit-profile',
-        loadChildren: () => import('./pages/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule),
+        loadChildren: () => import('./pages/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule)
       },
       {
         path: 'edit-task',
-        loadChildren: () => import('./pages/request/request.module').then(m => m.RequestPageModule),
+        loadChildren: () => import('./pages/request/request.module').then(m => m.RequestPageModule)
       },
       {
         path: 'notification-preferences',
         loadChildren: () => import('./pages/notification-preferences/notification-preferences.module')
-          .then(m => m.NotificationPreferencesPageModule),
+          .then(m => m.NotificationPreferencesPageModule)
       },
       {
         path: 'privacy-preferences',
         loadChildren: () => import('./pages/privacy-preferences/privacy-preferences.module')
-          .then(m => m.PrivacyPreferencesPageModule),
+          .then(m => m.PrivacyPreferencesPageModule)
       },
       {
         path: 'saved-locations',
@@ -186,9 +176,13 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    IonicModule
+    IonicModule,
+    TabsModule,
+    CustomerTutorialPageModule,
+    RequestPageModule,
+    SearchPageModule,
   ],
   exports: [RouterModule],
-  providers: [CheckAuth]
+  providers: [AppCheckAuth]
 })
 export class AppLayoutModule { }

@@ -14,9 +14,10 @@ import {CustomerTutorialPage} from './layout/app-layout/pages/customer-tutorial/
 import {Subscription} from 'rxjs';
 
 import {
+  Capacitor,
+  Device,
   Plugins,
-  StatusBarStyle,
-  Capacitor
+  StatusBarStyle
 } from '@capacitor/core';
 import {filter, pairwise} from 'rxjs/operators';
 import {PreviousRouteService} from './providers/previous-route.service';
@@ -46,7 +47,6 @@ export class AppComponent implements OnInit, OnDestroy {
     private swUpdate: SwUpdate,
     private toastCtrl: ToastController,
     private screenOrientation: ScreenOrientation,
-    public tabsPage: TabsPage,
     private modalCtrl: ModalController,
     private config: Config,
     private previousRouteService: PreviousRouteService
@@ -98,9 +98,17 @@ export class AppComponent implements OnInit, OnDestroy {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      if (this.splashScreenAvailable) {
-        SplashScreen.hide();
-      }
+      Device.getInfo()
+        .then(device => {
+          console.log(device);
+          if (device.operatingSystem === 'ios'
+              || device.operatingSystem === 'android') {
+            this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+            if (this.splashScreenAvailable) {
+              SplashScreen.hide();
+            }
+          }
+        });
       this.storage.get(StorageKeys.THEME_PREFERENCE)
         .then((prefersDark: boolean) => {
           if (prefersDark == null) {
@@ -123,10 +131,6 @@ export class AppComponent implements OnInit, OnDestroy {
             }
           }
         });
-
-      if (this.platform.is('cordova')) {
-        this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
-      }
 
       this.previousRouteSub = this.router.events
         .pipe(filter((evt: any) => evt instanceof RoutesRecognized), pairwise())
