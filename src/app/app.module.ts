@@ -27,11 +27,14 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {RequestPageModule} from './pages/request/request.module';
 import {SearchPageModule} from './pages/search/search.module';
 import {CustomerTutorialPageModule} from './pages/customer-tutorial/customer-tutorial.module';
-import {MarketplacePageModule} from './pages/marketplace/marketplace.module';
 import { PushNotificationsModule } from 'ng-push';
+import {AppLayoutModule} from './layout/app-layout/app-layout.module';
+import {WebLayoutModule} from './layout/web-layout/web-layout.module';
 
 @NgModule({
   imports: [
+    AppLayoutModule,
+    WebLayoutModule,
     AppRoutingModule,
     Angulartics2Module.forRoot(),
     BrowserModule,
@@ -55,7 +58,6 @@ import { PushNotificationsModule } from 'ng-push';
       enabled: environment.production
     }),
     MomentModule,
-    MarketplacePageModule,
     ReactiveFormsModule,
     PushNotificationsModule
   ],

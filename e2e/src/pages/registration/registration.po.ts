@@ -4,7 +4,7 @@ import {PageObjectBase} from '../../base.po';
 
 export class RegistrationPage extends PageObjectBase {
   constructor() {
-    super('/signup');
+    super('/app/signup');
   }
 
   selectPersonalInformation() {

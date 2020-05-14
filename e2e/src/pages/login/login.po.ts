@@ -4,7 +4,7 @@ import {PageObjectBase} from '../../base.po';
 export class LoginPage extends PageObjectBase {
 
   constructor() {
-    super('/login');
+    super('/app/login');
   }
 
   async fieldIsRequired(id: string, text = '') {

@@ -66,7 +66,7 @@ export class AuthService extends RESTService {
           this.storage.remove(StorageKeys.PROFILE);
           this.storage.remove(StorageKeys.ACCESS_TOKEN);
           this.authSubject.next(false);
-          this.navCtrl.navigateRoot('/welcome');
+          this.navCtrl.navigateRoot('/app/welcome');
         }
       })
     ).toPromise();

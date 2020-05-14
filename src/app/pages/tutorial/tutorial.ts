@@ -34,7 +34,7 @@ export class TutorialPage implements OnInit, OnDestroy {
         this.navCtrl.navigateRoot('/app/tabs/marketplace')
           .then(() => this.storage.set(StorageKeys.PLATFORM_TUTORIAL, true));
       } else {
-        this.navCtrl.navigateRoot('/welcome')
+        this.navCtrl.navigateRoot('/app/welcome')
           .then(() => this.storage.set(StorageKeys.PLATFORM_TUTORIAL, true));
       }
     });
@@ -53,7 +53,7 @@ export class TutorialPage implements OnInit, OnDestroy {
           if (loggedIn) {
             this.navCtrl.navigateRoot('/app/tabs/marketplace');
           } else {
-            this.navCtrl.navigateRoot('/welcome');
+            this.navCtrl.navigateRoot('/app/welcome');
           }
         });
       }
