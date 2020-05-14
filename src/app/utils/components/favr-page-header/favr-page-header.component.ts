@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
 import {AlertController, IonRouterOutlet, ModalController, NavController} from '@ionic/angular';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../../providers/constants';
-import {SearchPage} from '../../../pages/search/search.page';
+import {SearchPage} from '../../../layout/app-layout/pages/search/search.page';
 import {ProfileService} from '../../services/profile.service';
 
 @Component({

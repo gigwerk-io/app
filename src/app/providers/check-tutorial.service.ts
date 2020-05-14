@@ -11,7 +11,7 @@ export class CheckTutorial implements CanLoad {
   canLoad() {
     return this.storage.get(StorageKeys.PLATFORM_TUTORIAL).then(res => {
       if (res) {
-        this.router.navigate(['/welcome']);
+        this.router.navigate(['/app/welcome']);
         return false;
       } else {
         return true;

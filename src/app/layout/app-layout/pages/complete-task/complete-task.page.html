@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeCompleteTaskPage()" slot="start">
+        close
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Complete Task</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <div style="text-align: center;">
+      <img src="../../../../../assets/img/gold-medal.png" height="150" width="150" alt="Woo. Task Done!">
+    </div>
+    <div style="text-align: center;">
+      <rating [(ngModel)]="rate"
+              readonly="false"
+              size="default">
+      </rating>
+    </div>
+    <ion-item>
+      <ion-label position="stacked">Description (Optional)</ion-label>
+      <ion-textarea spellcheck="true" [(ngModel)]="description" placeholder="Please say more about your experience..."></ion-textarea>
+    </ion-item>
+
+    <div *ngIf="isFreelancer; else customerComplete" class="ion-padding form-submit-button">
+      <ion-button expand="block" type="submit" (click)="freelancerCompleteTask()">Complete Task</ion-button>
+    </div>
+
+    <ng-template #customerComplete>
+      <div class="ion-padding form-submit-button">
+        <ion-button expand="block" type="submit" (click)="customerCompleteTask()">Complete My Task</ion-button>
+      </div>
+    </ng-template>
+  </ion-list>
+</ion-content>

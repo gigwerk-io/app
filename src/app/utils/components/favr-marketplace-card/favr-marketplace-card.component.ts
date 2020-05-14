@@ -6,7 +6,7 @@ import {Router} from '@angular/router';
 import {MarketplaceService} from '../../services/marketplace.service';
 import {Role, StorageKeys, TaskAction, TaskStatus} from '../../../providers/constants';
 import {PastJob, Profile} from '../../interfaces/user';
-import {RequestPage} from '../../../pages/request/request.page';
+import {RequestPage} from '../../../layout/app-layout/pages/request/request.page';
 import {Events} from '../../services/events';
 import {UtilsService} from '../../services/utils.service';
 import {Storage} from '@ionic/storage';

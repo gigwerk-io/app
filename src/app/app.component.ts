@@ -6,11 +6,11 @@ import {Config, IonRouterOutlet, MenuController, ModalController, Platform, Toas
 
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from './providers/constants';
-import {toggleDarkTheme} from './pages/settings/settings.page';
+import {toggleDarkTheme} from './layout/app-layout/pages/settings/settings.page';
 import {ScreenOrientation} from '@ionic-native/screen-orientation/ngx';
-import {TabsPage} from './pages/tabs-page/tabs-page';
-import {SearchPage} from './pages/search/search.page';
-import {CustomerTutorialPage} from './pages/customer-tutorial/customer-tutorial.page';
+import {TabsPage} from './layout/app-layout/pages/tabs-page/tabs-page';
+import {SearchPage} from './layout/app-layout/pages/search/search.page';
+import {CustomerTutorialPage} from './layout/app-layout/pages/customer-tutorial/customer-tutorial.page';
 import {Subscription} from 'rxjs';
 
 import {
