@@ -30,6 +30,10 @@ const routes: Routes = [
     canActivate: [CheckAuth]
   },
   {
+    path: 'web',
+    loadChildren: () => import('./layout/web-layout/web-layout.module').then(m => m.WebLayoutModule)
+  },
+  {
     path: 'tutorial',
     loadChildren: () => import('./pages/tutorial/tutorial.module').then(m => m.TutorialModule),
     canLoad: [CheckTutorial]
