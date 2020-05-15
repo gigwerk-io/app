@@ -13,11 +13,10 @@ import {Subscription} from 'rxjs';
   templateUrl: 'tutorial.html',
   styleUrls: ['./tutorial.scss'],
 })
-export class TutorialPage implements OnInit, OnDestroy {
+export class TutorialPage {
   showSkip = true;
 
   @ViewChild('slides', { static: true }) slides: IonSlides;
-  private authServiceSub: Subscription;
 
   constructor(
     private navCtrl: NavController,
@@ -27,7 +26,7 @@ export class TutorialPage implements OnInit, OnDestroy {
   ) {  }
 
   startApp() {
-    this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {
+    this.authService.isLoggedIn().then(loggedIn => {
       if (loggedIn) {
         this.navCtrl.navigateRoot('/app/tabs/marketplace')
           .then(() => this.storage.set(StorageKeys.PLATFORM_TUTORIAL, true));
@@ -42,23 +41,5 @@ export class TutorialPage implements OnInit, OnDestroy {
     event.target.isEnd().then(isEnd => {
       this.showSkip = !isEnd;
     });
-  }
-
-  ngOnInit() {
-    this.storage.get(StorageKeys.PLATFORM_TUTORIAL).then(res => {
-      if (res === true) {
-        this.authServiceSub = this.authService.isLoggedIn().subscribe(loggedIn => {
-          if (loggedIn) {
-            this.navCtrl.navigateRoot('/app/tabs/marketplace');
-          } else {
-            this.navCtrl.navigateRoot('/app/welcome');
-          }
-        });
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.authServiceSub.unsubscribe();
   }
 }

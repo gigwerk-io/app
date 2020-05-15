@@ -73,13 +73,16 @@ export class AuthService extends RESTService {
   }
 
   isLoggedIn() {
-    return this.authSubject.asObservable();
+    return this.storage.get(StorageKeys.ACCESS_TOKEN)
+      .then(token => token !== null)
+      .catch(() => false);
   }
 
   isValidToken(): Promise<ValidateTokenResponse> {
     return this.makeHttpRequest<ValidateTokenResponse>('validate', 'GET')
       .then(httpRes => httpRes.toPromise().then(res => {
         if (!res.data.validToken) {
+          this.authSubject.next(false);
           this.storage.get(StorageKeys.ACCESS_TOKEN)
             .then(token => this.logout(token));
         }
