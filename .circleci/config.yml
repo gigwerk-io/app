@@ -50,9 +50,9 @@ jobs:
   test:
     <<: *defaults
     steps:
-#      - run: *install-chrome
-#      - attach_workspace:
-#          at: /tmp/workspace
+      - run: *install-chrome
+      - attach_workspace:
+          at: /tmp/workspace
 #      - run: npm run e2e
   deploy:
     <<: *defaults
