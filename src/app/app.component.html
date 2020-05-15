@@ -1,3 +1,15 @@
-<ion-app>
-  <ion-router-outlet></ion-router-outlet>
-</ion-app>
+<img *ngIf="platformIsMobile === undefined; else app"
+  src="assets/brand/favr_logo_rd.png"
+  alt="FAVR logo"
+  style="position: absolute;
+   top: 50%;
+   left: 50%;
+   width: 50%;
+   margin-left: -25%;
+   margin-right: -25%;">
+<ng-template #app>
+  <ion-router-outlet *ngIf="platformIsMobile"></ion-router-outlet>
+  <router-outlet *ngIf="!platformIsMobile"></router-outlet>
+</ng-template>
+
+

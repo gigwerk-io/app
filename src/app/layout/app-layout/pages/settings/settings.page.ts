@@ -9,6 +9,7 @@ import {environment} from '../../../../../environments/environment';
 
 import {Capacitor, Plugins, StatusBarStyle} from '@capacitor/core';
 import {Events} from '../../../../utils/services/events';
+import {toggleDarkTheme} from '../../../../app.component';
 
 const {StatusBar} = Plugins;
 
@@ -152,8 +153,4 @@ export class SettingsPage implements OnInit {
       .then(() => toggleDarkTheme(this.darkMode));
     this.events.publish('prefersDark', this.darkMode);
   }
-}
-
-export function toggleDarkTheme(shouldAdd) {
-  document.body.classList.toggle('dark', shouldAdd);
 }

@@ -12,13 +12,13 @@ import {ReportPageModule} from '../report/report.module';
 
 const MODULES = [
   CommonModule,
-  CompleteTaskPageModule,
-  FriendsPageModule,
   IonicModule,
+  TabsPageRoutingModule,
+  FriendsPageModule,
   MarketplaceDetailPageModule,
+  CompleteTaskPageModule,
   ReportPageModule,
   SettingsPageModule,
-  TabsPageRoutingModule,
 ];
 
 @NgModule({
