@@ -1,3 +1,26 @@
-<p>
-  web-layout works!
-</p>
+<div class="min-h-screen bg-gray-100">
+  <favr-nav>
+    <a routerLink="/app/marketplace"
+       [ngClass]="(selected === '/app/marketplace' ? selectedClass : idleClass)"
+    >
+      Marketplace
+    </a>
+    <a routerLink="/app/my-jobs"
+       *ngIf="navType === Role.VERIFIED_FREELANCER"
+       [ngClass]="(selected === '/app/my-jobs' ? selectedClass : idleClass)"
+    >
+      My Jobs
+    </a>
+    <a routerLink="/app/my-tasks"
+       [ngClass]="(selected === '/app/my-tasks' ? selectedClass : idleClass)"
+    >
+      My Tasks
+    </a>
+    <a routerLink="/app/chat"
+       [ngClass]="(selected === '/app/chat' ? selectedClass : idleClass)"
+    >
+      Chat
+    </a>
+  </favr-nav>
+  <router-outlet></router-outlet>
+</div>
