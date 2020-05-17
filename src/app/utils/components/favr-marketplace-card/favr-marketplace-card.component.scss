@@ -1,3 +1,17 @@
+.marketplace-slide-image {
+  max-height: 250px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+header {
+  ion-item {
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --inner-border-width: 0;
+  }
+}
+
 .scroll {
   background: #ededed;
 }
@@ -34,14 +48,6 @@ ion-slides {
   width: -webkit-fill-available;
 }
 
-ion-card-header {
-  ion-item {
-    --padding-start: 0;
-    --inner-padding-end: 0;
-    --inner-border-width: 0;
-  }
-}
-
 .posted-time {
   display: block;
   float: left;
@@ -66,11 +72,11 @@ ion-card-header {
   }
 }
 
-.marketplace-card ion-card-header {
+.marketplace-card header {
   padding: 0;
 }
 
-.marketplace-card ion-card-header .item {
+.marketplace-card header .item {
   padding: 4px 16px;
 }
 
@@ -78,3 +84,4 @@ ion-card-header {
   flex: 1 1 auto;
   padding: 0;
 }
+

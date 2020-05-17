@@ -1,4 +1,3 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FavrMarketplaceCardComponent } from './favr-marketplace-card.component';
@@ -9,8 +8,7 @@ describe('FavrMarketplaceCardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FavrMarketplaceCardComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [ FavrMarketplaceCardComponent ]
     })
     .compileComponents();
   }));

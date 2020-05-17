@@ -12,13 +12,15 @@ import {SearchPage} from './layout/app-layout/pages/search/search.page';
 import {CustomerTutorialPage} from './layout/app-layout/pages/customer-tutorial/customer-tutorial.page';
 import {Subscription} from 'rxjs';
 
-import {Device} from '@capacitor/core';
+import {Capacitor, Device, Plugins, StatusBarStyle} from '@capacitor/core';
 import {filter, pairwise} from 'rxjs/operators';
 import {PreviousRouteService} from './providers/previous-route.service';
 
 export function toggleDarkTheme(shouldAdd) {
   document.body.classList.toggle('dark', shouldAdd);
 }
+
+const {StatusBar, SplashScreen} = Plugins;
 
 @Component({
   selector: 'app-root',
@@ -28,6 +30,10 @@ export function toggleDarkTheme(shouldAdd) {
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit, OnDestroy {
+
+  statusBarAvailable = Capacitor.isPluginAvailable('StatusBar');
+  splashScreenAvailable = Capacitor.isPluginAvailable('SplashScreen');
+
   profileId: number;
   profileImage: string;
   swUpdateSub: Subscription;
@@ -87,6 +93,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   initializeApp() {
+    if (this.splashScreenAvailable) {
+      SplashScreen.hide();
+    }
+
     Device.getInfo()
       .then(device => {
         console.log(device);
@@ -106,6 +116,30 @@ export class AppComponent implements OnInit, OnDestroy {
       })
       .then((platformIsMobile: boolean) => {
         if (platformIsMobile) {
+          this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
+
+          this.storage.get(StorageKeys.THEME_PREFERENCE)
+            .then((prefersDark: boolean) => {
+              if (prefersDark == null) {
+                if (this.statusBarAvailable) {
+                  StatusBar.setStyle({style: StatusBarStyle.Light});
+                }
+                this.storage.set(StorageKeys.THEME_PREFERENCE, false)
+                  .then(() => toggleDarkTheme(false));
+              } else {
+                if (prefersDark) {
+                  if (this.statusBarAvailable) {
+                    StatusBar.setStyle({style: StatusBarStyle.Dark});
+                  }
+                  toggleDarkTheme(prefersDark);
+                } else {
+                  if (this.statusBarAvailable) {
+                    StatusBar.setStyle({style: StatusBarStyle.Light});
+                  }
+                  toggleDarkTheme(false);
+                }
+              }
+            });
           this.router.navigate(['/app']);
         } else {
           document.body.classList.add('web-body-layout');
