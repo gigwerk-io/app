@@ -85,12 +85,7 @@ export class SignupPage {
 
     if (form.valid) {
       this.authService.register(this.signup)
-        .then(() => {
-          this.authService.login({username: this.signup.username, password: this.signup.password}).then(() => {
-            this.pushNotificationService.registerPushNotifications();
-            this.router.navigateByUrl('/app/tabs/marketplace');
-          });
-        })
+        .then(() => this.authService.login({username: this.signup.username, password: this.signup.password}))
         .catch(error => {
           this.utils.presentToast(error.error.message, 'danger');
         });

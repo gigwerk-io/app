@@ -9,6 +9,7 @@ import {API_ADDRESS, StorageKeys} from '../../providers/constants';
 import {RESTService} from './rest.service';
 import {UtilsService} from './utils.service';
 import {NavController} from '@ionic/angular';
+import {PushNotificationService} from './push-notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,9 @@ export class AuthService extends RESTService {
   constructor(
     public httpClient: HttpClient,
     public storage: Storage,
-    public utils: UtilsService,
-    public navCtrl: NavController
+    private utils: UtilsService,
+    private navCtrl: NavController,
+    private pushNotificationService: PushNotificationService
   ) {
     super(httpClient, storage);
   }
@@ -38,15 +40,20 @@ export class AuthService extends RESTService {
   }
 
   login(user: UserOptions): Promise<AuthResponse> {
-    return this.httpClient.post<AuthResponse>(`${API_ADDRESS}/login`, user).pipe(
-      tap(async (res: AuthResponse) => {
-        if (res) {
-          await this.storage.set(StorageKeys.ACCESS_TOKEN, res.data.token);
-          await this.storage.set(StorageKeys.PROFILE, res.data.profile);
-          this.authSubject.next(true);
-        }
+    return this.httpClient.post<AuthResponse>(`${API_ADDRESS}/login`, user)
+      .toPromise()
+      .then((res: AuthResponse) => {
+        this.storage.set(StorageKeys.ACCESS_TOKEN, res.data.token);
+        this.storage.set(StorageKeys.PROFILE, res.data.profile)
+          .then(() => {
+            if (res.success) {
+              this.pushNotificationService.registerPushNotifications();
+              this.navCtrl.navigateRoot('/app/tabs/marketplace');
+            }
+          });
+        this.authSubject.next(true);
+        return res;
       })
-    ).toPromise()
       .catch((error: HttpErrorResponse) => {
         console.log(error);
         if (error.error) {

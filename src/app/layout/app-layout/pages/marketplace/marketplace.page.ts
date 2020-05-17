@@ -41,10 +41,11 @@ export class MarketplacePage implements OnInit, OnDestroy {
     public routerOutlet: IonRouterOutlet
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.events.subscribe('scroll-top-marketplace', () => this.ionContent.scrollToTop(500));
-    this.storage.get(StorageKeys.PROFILE)
+    await this.storage.get(StorageKeys.PROFILE)
       .then(prof => {
+        console.log(prof);
         this.userRole = prof.user.role;
         switch (this.userRole) {
           case Role.VERIFIED_FREELANCER:
@@ -59,7 +60,7 @@ export class MarketplacePage implements OnInit, OnDestroy {
         }
         this.segmentChanged();
       });
-    this.pusher.listenToMarketplaceFeed().then(marketplaceChannel => {
+    await this.pusher.listenToMarketplaceFeed().then(marketplaceChannel => {
       console.log(marketplaceChannel);
       marketplaceChannel.bind('new-request', data => {
         console.log(data);
