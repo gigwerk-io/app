@@ -13,7 +13,7 @@ export class AppCheckAuth implements CanActivate {
   constructor(
     private storage: Storage,
     private navCtrl: NavController,
-    private auth: AuthService
+    private authService: AuthService
   ) {
   }
 
@@ -21,7 +21,7 @@ export class AppCheckAuth implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Promise<boolean> {
-    return this.auth.isValidToken()
+    return this.authService.isValidToken()
       .then(token => {
         console.log(token);
         console.log(state.url);

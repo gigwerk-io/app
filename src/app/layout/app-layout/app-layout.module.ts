@@ -5,10 +5,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {CheckTutorial} from '../../providers/check-tutorial.service';
 import {AppCheckAuth} from '../../providers/app-check-auth.service';
 import {IonicModule} from '@ionic/angular';
-import {TabsModule} from './pages/tabs-page/tabs-page.module';
-import {RequestPageModule} from './pages/request/request.module';
-import {SearchPageModule} from './pages/search/search.module';
-import {CustomerTutorialPageModule} from './pages/customer-tutorial/customer-tutorial.module';
 
 const routes: Routes = [
   {
@@ -20,7 +16,8 @@ const routes: Routes = [
       },
       {
         path: 'login',
-        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
+        loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
+        canActivate: [AppCheckAuth]
       },
       {
         path: 'signup',
@@ -177,12 +174,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     IonicModule,
-    TabsModule,
-    CustomerTutorialPageModule,
-    RequestPageModule,
-    SearchPageModule,
   ],
-  exports: [RouterModule],
-  providers: [AppCheckAuth]
+  exports: [RouterModule]
 })
 export class AppLayoutModule { }

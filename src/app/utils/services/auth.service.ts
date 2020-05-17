@@ -10,6 +10,8 @@ import {RESTService} from './rest.service';
 import {UtilsService} from './utils.service';
 import {NavController} from '@ionic/angular';
 import {PushNotificationService} from './push-notification.service';
+import {Device, DeviceInfo} from '@capacitor/core';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,7 @@ export class AuthService extends RESTService {
     public storage: Storage,
     private utils: UtilsService,
     private navCtrl: NavController,
+    private router: Router,
     private pushNotificationService: PushNotificationService
   ) {
     super(httpClient, storage);
@@ -48,7 +51,14 @@ export class AuthService extends RESTService {
           .then(() => {
             if (res.success) {
               this.pushNotificationService.registerPushNotifications();
-              this.navCtrl.navigateRoot('/app/tabs/marketplace');
+              Device.getInfo().then((device: DeviceInfo) => {
+                if (device.operatingSystem === 'ios'
+                  || device.operatingSystem === 'android') {
+                  this.navCtrl.navigateRoot('/app/tabs/marketplace');
+                } else {
+                  this.router.navigateByUrl('/web/main/marketplace');
+                }
+              });
             }
           });
         this.authSubject.next(true);

@@ -3,22 +3,39 @@ import { CommonModule } from '@angular/common';
 import {RouterModule, Routes} from '@angular/router';
 import {WebLayoutComponent} from './web-layout.component';
 import {CommonComponentsModule} from '../../utils/components/common-components.module';
+import {LoginComponent} from './pages/login/login.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {WebCheckAuth} from '../../providers/web-check-auth.service';
 
 const routes: Routes = [
   {
     path: '',
-    component: WebLayoutComponent,
-    children: []
+    children: [
+      {
+        path: 'main',
+        loadChildren: () => import('./web-main/web-main.module').then(m => m.WebMainModule)
+      },
+      {
+        path: 'login',
+        component: LoginComponent,
+        canActivate: [WebCheckAuth]
+      }
+    ]
   }
 ];
 
 @NgModule({
-  declarations: [WebLayoutComponent],
+  declarations: [
+    WebLayoutComponent,
+    LoginComponent
+  ],
   imports: [
     CommonModule,
     CommonComponentsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [WebCheckAuth]
 })
 export class WebLayoutModule { }

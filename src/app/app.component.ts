@@ -109,6 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
           this.router.navigate(['/app']);
         } else {
           this.router.navigate(['/web']);
+          document.body.classList.add('web-body-layout');
         }
       });
   }

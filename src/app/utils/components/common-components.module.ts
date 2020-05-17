@@ -8,9 +8,9 @@ import {RouterModule} from '@angular/router';
 import {FavrCategoryCardButtonsComponent} from './favr-category-card-buttons/favr-category-card-buttons.component';
 import {MomentModule} from 'ngx-moment';
 import {NgbRatingModule} from '@ng-bootstrap/ng-bootstrap';
-import {ImagePreloaderDirective} from '../directives/image-preloader.directive';
 import {FavrImgComponent} from './favr-img/favr-img.component';
 import {FavrNavComponent} from './favr-nav/favr-nav.component';
+import {FavrInputComponent} from './favr-input/favr-input.component';
 
 const COMPONENTS = [
   FavrCategoryCardButtonsComponent,
@@ -18,7 +18,7 @@ const COMPONENTS = [
   FavrPageHeaderComponent,
   FavrImgComponent,
   FavrNavComponent,
-  ImagePreloaderDirective,
+  FavrInputComponent,
 ];
 
 const MODULES = [

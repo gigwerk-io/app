@@ -5,6 +5,7 @@ import {AppCheckAuth} from './providers/app-check-auth.service';
 import {AppComponent} from './app.component';
 import {AppLayoutModule} from './layout/app-layout/app-layout.module';
 import {WebLayoutModule} from './layout/web-layout/web-layout.module';
+import {WebCheckAuth} from './providers/web-check-auth.service';
 
 const routes: Routes = [
   {
@@ -18,14 +19,13 @@ const routes: Routes = [
   },
   {
     path: 'web',
-    loadChildren: () => import('./layout/web-layout/web-layout.module').then(m => m.WebLayoutModule)
+    loadChildren: () => import('./layout/web-layout/web-layout.module').then(m => m.WebLayoutModule),
+    canActivate: [WebCheckAuth]
   }
 ];
 
 @NgModule({
   imports: [
-    AppLayoutModule,
-    WebLayoutModule,
     RouterModule.forRoot(routes)
   ],
   exports: [RouterModule]
