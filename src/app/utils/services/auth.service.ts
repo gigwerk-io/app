@@ -56,7 +56,7 @@ export class AuthService extends RESTService {
                   || device.operatingSystem === 'android') {
                   this.navCtrl.navigateRoot('/app/tabs/marketplace');
                 } else {
-                  this.router.navigateByUrl('/web/main/marketplace');
+                  this.router.navigateByUrl('/main/marketplace');
                 }
               });
             }
@@ -74,19 +74,20 @@ export class AuthService extends RESTService {
       });
   }
 
-  logout(token: AuthorizationToken): Promise<SignOutResponse> {
-    return this.httpClient.get<SignOutResponse>(`${API_ADDRESS}/logout`, token).pipe(
-      tap(async (res: SignOutResponse) => {
-        console.log(res);
-        if (res.success) {
-          this.utils.presentToast('You have been logged out.', 'success');
-          this.storage.remove(StorageKeys.PROFILE);
-          this.storage.remove(StorageKeys.ACCESS_TOKEN);
-          this.authSubject.next(false);
-          this.navCtrl.navigateRoot('/app/welcome');
-        }
-      })
-    ).toPromise();
+  logout(): Promise<SignOutResponse> {
+    return this.makeHttpRequest<SignOutResponse>(`/logout`, 'GET')
+      .then(httpRes => httpRes
+        .toPromise()
+        .then((res: SignOutResponse) => {
+          console.log(res);
+          if (res.success) {
+            this.utils.presentToast('You have been logged out.', 'success');
+            this.storage.remove(StorageKeys.PROFILE);
+            this.storage.remove(StorageKeys.ACCESS_TOKEN);
+            this.authSubject.next(false);
+          }
+          return res;
+        }));
   }
 
   isLoggedIn() {
@@ -100,8 +101,19 @@ export class AuthService extends RESTService {
       .then(httpRes => httpRes.toPromise().then(res => {
         if (!res.data.validToken) {
           this.authSubject.next(false);
-          this.storage.get(StorageKeys.ACCESS_TOKEN)
-            .then(token => this.logout(token));
+          this.logout()
+            .then(logOutRes => {
+              if (logOutRes.success) {
+                Device.getInfo().then((device: DeviceInfo) => {
+                  if (device.operatingSystem === 'ios'
+                    || device.operatingSystem === 'android') {
+                    this.navCtrl.navigateRoot('/app/login');
+                  } else {
+                    this.router.navigateByUrl('/login');
+                  }
+                });
+              }
+            });
         }
 
         return res;

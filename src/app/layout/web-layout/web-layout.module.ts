@@ -9,18 +9,14 @@ import {WebCheckAuth} from '../../providers/web-check-auth.service';
 
 const routes: Routes = [
   {
-    path: '',
-    children: [
-      {
-        path: 'main',
-        loadChildren: () => import('./web-main/web-main.module').then(m => m.WebMainModule)
-      },
-      {
-        path: 'login',
-        component: LoginComponent,
-        canActivate: [WebCheckAuth]
-      }
-    ]
+    path: 'main',
+    loadChildren: () => import('./web-main/web-main.module').then(m => m.WebMainModule),
+    canActivate: [WebCheckAuth]
+  },
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [WebCheckAuth]
   }
 ];
 
@@ -35,7 +31,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ReactiveFormsModule,
   ],
-  exports: [RouterModule],
-  providers: [WebCheckAuth]
+  exports: [RouterModule]
 })
 export class WebLayoutModule { }

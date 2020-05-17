@@ -12,7 +12,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/web/main/marketplace',
+        redirectTo: '/main/marketplace',
         pathMatch: 'full'
       },
       {

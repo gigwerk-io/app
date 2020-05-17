@@ -1,3 +1,40 @@
-<p>
-  marketplace works!
-</p>
+<div class="py-20">
+  <header>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Request card goes here -->
+      <div class="bg-white overflow-hidden shadow rounded-lg w-max-600">
+        <div class="border-b border-gray-200 px-4 py-5 sm:px-6">
+          <!-- Content goes here -->
+          <!-- We use less vertical padding on card headers on desktop than on body sections -->
+        </div>
+        <div class="px-4 py-5 sm:p-6">
+          <!-- Content goes here -->
+        </div>
+        <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
+          <!-- Content goes here -->
+          <!-- We use less vertical padding on card footers at all sizes than on headers or body sections -->
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="relative w-max-600 mt-3 mb-3 pl-4 sm:pl-6">
+    <div class="absolute inset-0 flex items-center">
+      <div class="w-full border-t border-gray-300"></div>
+    </div>
+    <div class="relative flex justify-end text-sm leading-5">
+            <span class="px-2 bg-gray-100 text-gray-500">
+              Sort by
+            </span>
+    </div>
+  </div>
+  <main>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <favr-marketplace-card
+        *ngFor="let task of marketplaceTasks"
+        [mainMarketplaceTask]="task"
+      ></favr-marketplace-card>
+
+    </div>
+  </main>
+</div>

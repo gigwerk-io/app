@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {Storage} from '@ionic/storage';
 import {StorageKeys} from '../../../providers/constants';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'favr-nav',
@@ -14,7 +15,7 @@ export class FavrNavComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private storage: Storage
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -25,6 +26,11 @@ export class FavrNavComponent implements OnInit {
   }
 
   signOut() {
-    // this.authService.logout();
+    this.authService.logout()
+      .then(res => {
+        if (res.success) {
+          this.router.navigateByUrl('/login');
+        }
+      });
   }
 }

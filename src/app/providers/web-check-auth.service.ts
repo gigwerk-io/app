@@ -23,35 +23,35 @@ export class WebCheckAuth implements CanActivate {
       .then(token => {
         console.log(token);
         console.log(state.url);
-        if (state.url !== '/web') {
+        if (state.url !== '/') {
           if (token.data.validToken) {
-            if (state.url !== '/web/main/marketplace') {
-              this.navCtrl.navigateRoot('/web/main/marketplace');
+            if (state.url !== '/main/marketplace') {
+              this.navCtrl.navigateRoot('/main/marketplace');
             }
           } else {
-            if (!(state.url === '/web/login'
-              || state.url === '/web/signup'
-              || state.url === '/web/forgot-password')) {
+            if (!(state.url === '/login'
+              || state.url === '/signup'
+              || state.url === '/forgot-password')) {
               this.storage.get(StorageKeys.PLATFORM_TUTORIAL)
                 .then(res => {
                   if (res) {
-                    this.navCtrl.navigateRoot('/web/login');
+                    this.navCtrl.navigateRoot('/login');
                   } else {
-                    if (state.url !== '/web/login') {
-                      this.navCtrl.navigateRoot('/web/login');
+                    if (state.url !== '/login') {
+                      this.navCtrl.navigateRoot('/login');
                     }
                   }
                 });
             }
           }
         } else {
-          this.navCtrl.navigateRoot('/web/login');
+          this.navCtrl.navigateRoot('/login');
         }
         return true;
       })
       .catch(error => {
-        if (!(state.url === '/web/login')) {
-          this.navCtrl.navigateRoot('/web/login');
+        if (!(state.url === '/login')) {
+          this.navCtrl.navigateRoot('/login');
         }
         return false;
       });

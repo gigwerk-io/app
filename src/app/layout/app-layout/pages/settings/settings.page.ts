@@ -54,23 +54,15 @@ export class SettingsPage implements OnInit {
   }
 
   onLogout() {
-    this.storage.get(StorageKeys.ACCESS_TOKEN)
-      .then(token => {
-        const authHeaders: AuthorizationToken = {
-          headers: {
-            Authorization: token
-          }
-        };
-        this.authService.logout(authHeaders)
-          .then(res => {
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.storage.remove(StorageKeys.PROFILE);
-            this.navCtrl.navigateRoot('/app/welcome');
-          })
-          .catch(error => {
-            this.storage.remove(StorageKeys.ACCESS_TOKEN);
-            this.storage.remove(StorageKeys.PROFILE);
-          });
+    this.authService.logout()
+      .then(() => {
+        this.storage.remove(StorageKeys.ACCESS_TOKEN);
+        this.storage.remove(StorageKeys.PROFILE);
+        this.navCtrl.navigateRoot('/app/welcome');
+      })
+      .catch(() => {
+        this.storage.remove(StorageKeys.ACCESS_TOKEN);
+        this.storage.remove(StorageKeys.PROFILE);
       });
   }
 

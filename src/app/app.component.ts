@@ -108,7 +108,6 @@ export class AppComponent implements OnInit, OnDestroy {
         if (platformIsMobile) {
           this.router.navigate(['/app']);
         } else {
-          this.router.navigate(['/web']);
           document.body.classList.add('web-body-layout');
         }
       });
