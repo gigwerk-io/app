@@ -165,7 +165,7 @@
         </ion-item>
       </ion-list>
 
-      <div class="ion-padding-start form-submit-button">
+      <div class="ion-padding-start ion-margin-top form-submit-button">
         <ion-button *ngIf="taskRequest.description && taskRequest.date"
                     (click)="openSubPage('location')" expand="block">
           Tap to Continue
@@ -250,7 +250,7 @@
         </div>
       </ion-list>
 
-      <div class="ion-padding-start form-submit-button">
+      <div class="ion-padding-start ion-margin-top form-submit-button">
         <ion-button *ngIf="taskRequest.street_address
                         && taskRequest.city
                         && taskRequest.state
@@ -264,7 +264,7 @@
 
     <div *ngSwitchCase="'task-intensity'" [ngClass]="(backPage == 'task-intensity') ? 'sub-page animated faster slideInLeft' : 'sub-page animated faster slideInRight'">
       <ion-list>
-        <ul>
+        <ul class="ion-padding">
           <li><b>Easy</b> tasks take 1 hour or less to complete.</li>
           <li><b>Medium</b> tasks take about 2 - 3 hours to complete.</li>
           <li><b>Hard</b> tasks take more than 3 hours to complete.</li>
@@ -288,7 +288,7 @@
         </div>
       </ion-list>
 
-      <div class="ion-padding-start form-submit-button">
+      <div class="ion-padding-start ion-margin-top form-submit-button">
         <ion-button *ngIf="taskRequest.intensity && !isTaskEdit; else taskEditSubmit"
                     (click)="openSubPage('set-price')" expand="block">
           Tap to Continue
@@ -351,7 +351,8 @@
         </ng-template>
       </div>
 
-      <div *ngIf="!isTaskEdit; else taskEditSubmit" class="ion-padding-start form-submit-button">
+      <div *ngIf="!isTaskEdit; else taskEditSubmit"
+           class="ion-padding-start ion-margin-top form-submit-button">
         <ion-button *ngIf="taskRequest.price"
                     (click)="openSubPage('attach-images')" expand="block">
           Tap to Continue
