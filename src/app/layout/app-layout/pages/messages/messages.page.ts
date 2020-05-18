@@ -5,9 +5,10 @@ import {Room} from '../../../../utils/interfaces/chat/room';
 import {StorageKeys} from '../../../../providers/constants';
 import {Storage} from '@ionic/storage';
 import {PusherServiceProvider} from '../../../../providers/pusher.service';
-import {ActionSheetController, IonContent, IonTextarea} from '@ionic/angular';
+import {ActionSheetController, IonContent, IonTextarea, NavController} from '@ionic/angular';
 import {Subscription} from 'rxjs';
-import { Response } from '../../../../utils/interfaces/response';
+import {Response} from '../../../../utils/interfaces/response';
+import {PreviousRouteService} from '../../../../providers/previous-route.service';
 
 
 @Component({
@@ -35,14 +36,17 @@ export class MessagesPage implements OnInit, OnDestroy {
   activatedRouteSub: Subscription;
   footerHeight = '61px';
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private chatService: ChatService,
-              private storage: Storage,
-              private pusher: PusherServiceProvider,
-              private actionSheetCtrl: ActionSheetController,
-              private router: Router,
-              private changeRef: ChangeDetectorRef
-  ) {}
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private chatService: ChatService,
+    private storage: Storage,
+    private pusher: PusherServiceProvider,
+    private actionSheetCtrl: ActionSheetController,
+    private router: Router,
+    private changeRef: ChangeDetectorRef,
+    private navCtrl: NavController,
+    private previousRoute: PreviousRouteService
+  ) {  }
 
   ngOnInit() {
     this.getRooms();
@@ -76,7 +80,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   getUserProfileImage(members?: Room[]) {
     if (members) {
       // tslint:disable-next-line
-      for(let member of members) {
+      for (let member of members) {
         if (member.id !== this.userId) {
           return member.profile.image;
         }
@@ -92,7 +96,7 @@ export class MessagesPage implements OnInit, OnDestroy {
 
   public getUserName(members) {
     // tslint:disable-next-line
-    for(let member of members) {
+    for (let member of members) {
       if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
@@ -102,7 +106,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   public getLastMessage(room: Room) {
     if (room.last_message != null) {
       return room.last_message.text;
-    }  else {
+    } else {
       return 'Say Hello!';
     }
   }
@@ -114,7 +118,7 @@ export class MessagesPage implements OnInit, OnDestroy {
   getToUser() {
     const members = this.room.members;
     // tslint:disable-next-line
-    for(let member of members) {
+    for (let member of members) {
       if (member.id !== this.userId) {
         return member.first_name + ' ' + member.last_name;
       }
@@ -199,5 +203,10 @@ export class MessagesPage implements OnInit, OnDestroy {
   setFooterHeight() {
     console.log(this.footerHeight);
     this.textarea.getInputElement().then(el => this.footerHeight = `${el.clientHeight + 5}px`);
+  }
+
+  navigateBack() {
+    const prevRoute = this.previousRoute.getPreviousUrl();
+    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/marketplace');
   }
 }

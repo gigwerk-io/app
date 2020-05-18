@@ -1,42 +1,193 @@
-<div class="overflow-hidden shadow rounded-lg w-max-600 m-6" *ngIf="mainMarketTask; else freelancerPastJob">
-  <div class="border-b border-gray-200">
-    <!-- Content goes here -->
-    <!-- We use less vertical padding on card headers on desktop than on body sections -->
+<ion-card class="marketplace-card" *ngIf="mainMarketTask; else freelancerPastJob">
+
+  <ion-slides [pager]="true">
+    <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 1')" class="marketplace-slide-image"
+               *ngIf="mainMarketTask.image_one">
+      <favr-img [src]="mainMarketTask.image_one" loaderClass="favr-card-img" alt="Task image one"></favr-img>
+    </ion-slide>
+
+    <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_two, 'Image 2')" class="marketplace-slide-image"
+               *ngIf="mainMarketTask.image_two">
+      <favr-img [src]="mainMarketTask.image_two" loaderClass="favr-card-img" alt="Task image two"></favr-img>
+    </ion-slide>
+
+    <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 3')" class="marketplace-slide-image"
+               *ngIf="mainMarketTask.image_three">
+      <favr-img [src]="mainMarketTask.image_three" loaderClass="favr-card-img" alt="Task image three"></favr-img>
+    </ion-slide>
+  </ion-slides>
+
+  <ion-card-header>
+    <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{mainMarketTask.customer.id}}"
+              routerDirection="forward">
+      <ion-avatar slot="start">
+        <favr-img
+          [src]="mainMarketplaceTask.customer.profile.image"
+          spinnerSrc="assets/img/user.png"
+          imgClass="rounded-circle"
+          loaderClass="rounded-circle"
+          alt="profile picture"></favr-img>
+      </ion-avatar>
+      {{mainMarketTask.customer.first_name}} {{mainMarketTask.customer.last_name}}
+      <div slot="end">
+        <div class="marketplace-card-price-area">
+          <div class="marketplace-card-price-tag">
+            {{mainMarketTask.price | currency:'USD'}}
+          </div>
+        </div>
+      </div>
+    </ion-item>
+
+    <ion-item detail="false" lines="isNone">
+      <div slot="start">
+        <small>
+          <ng-container *ngIf="mainMarketTask.status !== TaskStatus.COMPLETE; else completedTime">
+            <div class="complete-by-time">Needs Complete by {{mainMarketTask.isoFormat | date}}</div>
+          </ng-container>
+
+          <ng-template #completedTime>
+            <div class="complete-by-time">Completed
+              on {{mainMarketTask.proposals[0].complete_at | amFromUtc | amLocal | date}}</div>
+          </ng-template>
+          <ion-note class="note posted-time">
+            Posted {{mainMarketTask.postedFormat | date}}
+          </ion-note>
+        </small>
+      </div>
+      <small slot="end" class="marketplace-card-distance-away">
+        <ion-note
+          *ngIf="mainMarketTask.distance_away != undefined && mainMarketTask.status != TaskStatus.COMPLETE">{{mainMarketTask.distance_away}}
+          Miles
+        </ion-note>
+        <small *ngIf="mainMarketTask.status == TaskStatus.COMPLETE">
+          <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+        </small>
+      </small>
+    </ion-item>
+  </ion-card-header>
+
+  <ion-card-content>
+    <div id="taskDescription" [innerHTML]="mainMarketplaceTask.description.length > 100 ? mainMarketTask.description.slice(0, 100) + '...' : mainMarketplaceTask.description"></div>
+  </ion-card-content>
+
+<!-- begin task actions -->
+
+  <ion-row *ngIf="mainMarketTask.action == 2 || mainMarketTask.action == 3"
+           class="ion-no-padding ion-justify-content-center">
+    <ion-col class="ion-text-center" *ngIf="userProfile.user.role == Role.VERIFIED_FREELANCER && userProfile.user_id != mainMarketTask.customer_id">
+      <ion-button *ngIf="mainMarketTask.action == 2"
+                  (click)="freelancerAcceptTask()"
+                  fill="outline"
+                  size="small"
+                  color="primary">
+        <ion-icon name="thumbs-up" slot="start"></ion-icon>
+        Accept
+      </ion-button>
+
+      <ion-button *ngIf="mainMarketTask.action == 3"
+                  (click)="alertConfirmFreelancerWithdrawal()"
+                  fill="outline"
+                  size="small"
+                  color="primary">
+        <ion-icon name="thumbs-down" slot="start"></ion-icon>
+        Withdraw
+      </ion-button>
+    </ion-col>
+
+    <ion-col class="ion-text-center">
+      <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
+                  routerDirection="forward">
+        <ion-icon name="eye" slot="start"></ion-icon>
+        View
+      </ion-button>
+    </ion-col>
+
+    <!--<ion-col *ngIf="mainMarketTask.status != TaskStatus.REQUESTED-->
+    <!--&& mainMarketTask.status != TaskStatus.PENDING_APPROVAL-->
+    <!--&& isFreelancer"-->
+    <!--class="ion-text-center">-->
+    <!--<ion-button fill="outline" size="small" color="primary" (click)="startChat(mainMarketTask.customer.username)">-->
+    <!--<ion-icon name="chatbubbles" slot="start"></ion-icon>-->
+    <!--Chat-->
+    <!--</ion-button>-->
+    <!--</ion-col>-->
+  </ion-row>
+
+  <ion-row *ngIf="mainMarketTask.action == 1"
+           class="ion-no-padding ion-justify-content-center">
+    <ion-col class="ion-text-center">
+      <ion-button (click)="customerEditTask(mainMarketTask)" fill="outline" size="small" color="primary">
+        <ion-icon name="create" slot="start"></ion-icon>
+        Edit
+      </ion-button>
+    </ion-col>
+    <ion-col class="ion-text-center">
+      <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
+                  routerDirection="forward">
+        <ion-icon name="eye" slot="start"></ion-icon>
+        View
+      </ion-button>
+    </ion-col>
+    <ion-col class="ion-text-center">
+      <ion-button (click)="alertConfirmCustomerCancel()"
+                  fill="outline" size="small" color="primary">
+        <ion-icon name="close" mode="md" slot="start"></ion-icon>
+        Cancel
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+  <ion-row
+    *ngIf="mainMarketTask.action == 4 || mainMarketTask.action == 8 || mainMarketTask.action == undefined || mainMarketTask.action == 9 || mainMarketTask.action == 11"
+    class="ion-no-padding ion-justify-content-center">
+    <ion-col size="12" class="ion-text-center">
+      <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
+                  routerDirection="forward">
+        <ion-icon name="eye" slot="start"></ion-icon>
+        View
+      </ion-button>
+    </ion-col>
+  </ion-row>
+
+<!--  end task actions-->
+</ion-card>
+
+<ng-template #freelancerPastJob>
+  <ion-card *ngIf="pastJob && pastJob.marketplace.customer; else skeletonCard" class="marketplace-card">
+
     <ion-slides [pager]="true">
-      <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 1')" class="marketplace-slide-image"
-                 *ngIf="mainMarketTask.image_one">
-        <favr-img [src]="mainMarketTask.image_one" loaderClass="favr-card-img" alt="Task image one"></favr-img>
+      <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 1')" class="marketplace-slide-image"
+                 *ngIf="pastJob.marketplace.image_one">
+        <favr-img [src]="pastJob.marketplace.image_one" loaderClass="favr-card-img" alt="Task image one"></favr-img>
       </ion-slide>
 
-      <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_two, 'Image 2')" class="marketplace-slide-image"
-                 *ngIf="mainMarketTask.image_two">
-        <favr-img [src]="mainMarketTask.image_two" loaderClass="favr-card-img" alt="Task image two"></favr-img>
+      <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_two, 'Image 2')" class="marketplace-slide-image"
+                 *ngIf="pastJob.marketplace.image_two">
+        <favr-img [src]="pastJob.marketplace.image_two" loaderClass="favr-card-img" alt="Task image two"></favr-img>
       </ion-slide>
 
-      <ion-slide (click)="viewAttachedPhoto(mainMarketTask.image_one, 'Image 3')" class="marketplace-slide-image"
-                 *ngIf="mainMarketTask.image_three">
-        <favr-img [src]="mainMarketTask.image_three" loaderClass="favr-card-img" alt="Task image three"></favr-img>
+      <ion-slide (click)="viewAttachedPhoto(pastJob.marketplace.image_one, 'Image 3')" class="marketplace-slide-image"
+                 *ngIf="pastJob.marketplace.image_three">
+        <favr-img [src]="pastJob.marketplace.image_three" loaderClass="favr-card-img" alt="Task image three"></favr-img>
       </ion-slide>
     </ion-slides>
-  </div>
-  <div class="px-4 py-5 sm:p-6">
-    <!-- Content goes here -->
-    <header>
-      <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{mainMarketTask.customer.id}}"
+
+    <ion-card-header>
+      <ion-item detail="false" lines="isNone" routerLink="/app/profile/{{pastJob.marketplace.customer_id}}"
                 routerDirection="forward">
         <ion-avatar slot="start">
           <favr-img
-            [src]="mainMarketplaceTask.customer.profile.image"
+            [src]="pastJob.marketplace.customer.profile.image"
             spinnerSrc="assets/img/user.png"
             imgClass="rounded-circle"
             loaderClass="rounded-circle"
             alt="profile picture"></favr-img>
         </ion-avatar>
-        {{mainMarketTask.customer.first_name}} {{mainMarketTask.customer.last_name}}
+        {{pastJob.marketplace.customer.first_name}} {{pastJob.marketplace.customer.last_name}}
         <div slot="end">
           <div class="marketplace-card-price-area">
             <div class="marketplace-card-price-tag">
-              {{mainMarketTask.price | currency:'USD'}}
+              {{pastJob.price | currency:'USD'}}
             </div>
           </div>
         </div>
@@ -45,165 +196,72 @@
       <ion-item detail="false" lines="isNone">
         <div slot="start">
           <small>
-            <ng-container *ngIf="mainMarketTask.status !== TaskStatus.COMPLETE; else completedTime">
-              <div class="complete-by-time">Needs Complete by {{mainMarketTask.isoFormat | date}}</div>
+            <ng-container *ngIf="pastJob.complete_at; else completeOnTime">
+              <div class="complete-by-time">Completed
+                on {{pastJob.complete_at | amFromUtc | amLocal | date}}</div>
             </ng-container>
 
-            <ng-template #completedTime>
-              <div class="complete-by-time">Completed
-                on {{mainMarketTask.proposals[0].complete_at | amFromUtc | amLocal | date}}</div>
+            <ng-template #completeOnTime>
+              <div class="complete-by-time">Needs Complete by {{pastJob.marketplace.isoFormat | date}}</div>
             </ng-template>
+
             <ion-note class="note posted-time">
-              Posted {{mainMarketTask.postedFormat | date}}
+              Posted {{pastJob.marketplace.postedFormat | date}}
             </ion-note>
           </small>
         </div>
-        <small slot="end" class="marketplace-card-distance-away">
-          <ion-note
-            *ngIf="mainMarketTask.distance_away != undefined && mainMarketTask.status != TaskStatus.COMPLETE">{{mainMarketTask.distance_away}}
-            Miles
-          </ion-note>
-          <small *ngIf="mainMarketTask.status == TaskStatus.COMPLETE">
-            <ion-icon size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
-          </small>
-        </small>
+        <div slot="end" class="marketplace-card-distance-away">
+          <ion-icon *ngIf="pastJob.complete_at; else inProgress" size="large" color="success" name="checkmark-circle" ariaLabel="task completed"></ion-icon>
+          <ng-template #inProgress>
+            <ion-icon size="large" color="warning" name="time" ariaLabel="task in progress"></ion-icon>
+          </ng-template>
+        </div>
       </ion-item>
-    </header>
+    </ion-card-header>
 
-    <div id="taskDescription"
-         [innerHTML]="mainMarketplaceTask.description.length > 100 ? mainMarketTask.description.slice(0, 100) + '...' : mainMarketplaceTask.description"></div>
-  </div>
-  <div class=" px-4 py-4 sm:px-6">
-    <!-- Content goes here -->
-    <!-- We use less vertical padding on card footers at all sizes than on headers or body sections -->
-    <!-- begin task actions -->
+    <ng-container *ngIf="pastJob.rating; else taskDescription">
+      <ion-card-content class="ion-text-center">
+        <ng-template #star let-fill="fill">
+        <span class="star" [class.full]="fill === 100">
+          <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+        </span>
+        </ng-template>
 
-    <ion-row
-      *ngIf="mainMarketTask.action == TaskAction.JOB_CAN_BE_ACCEPTED || mainMarketTask.action == TaskAction.WORKER_IS_WAITING_FOR_CUSTOMER"
-      class="ion-no-padding ion-justify-content-center">
-      <ion-col class="ion-text-left"
-               *ngIf="userProfile.user.role == Role.VERIFIED_FREELANCER && userProfile.user_id != mainMarketTask.customer_id">
-        <button
-          *ngIf="mainMarketTask.action == TaskAction.JOB_CAN_BE_ACCEPTED"
-          (click)="freelancerAcceptTask()"
-          type="button"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
-          <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-            <path
-              d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clip-rule="evenodd" fill-rule="evenodd"></path>
-          </svg>
-          Accept
-        </button>
+        <ngb-rating [(rate)]="pastJob.rating" [starTemplate]="star" [readonly]="true" max="5"></ngb-rating>
+        <h1 *ngIf="pastJob.review"
+            [style.font-size.%]="pastJob.review.length > 1000 ? 50 : ((pastJob.review.length > 100) ? 100 : 150)">
+          <i>"{{pastJob.review}}"</i>
+        </h1>
+      </ion-card-content>
+    </ng-container>
 
-        <button
-          *ngIf="mainMarketTask.action == TaskAction.WORKER_IS_WAITING_FOR_CUSTOMER"
-          (click)="alertConfirmFreelancerWithdrawal()"
-          type="button"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
-          <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
-              clip-rule="evenodd" fill-rule="evenodd"></path>
-          </svg>
-          Withdraw
-        </button>
-      </ion-col>
+    <ng-template #taskDescription>
+      <ion-card-content>
+        <div [innerHTML]="pastJob.marketplace.description.length > 100 ? pastJob.marketplace.description.slice(0, 100) + '...' : pastJob.marketplace.description"></div>
+      </ion-card-content>
+    </ng-template>
 
-      <ion-col [ngClass]="(mainMarketTask.action == TaskAction.NO_PERFORMABLE_ACTION) ? 'text-center' : 'text-right'">
-        <button
-          type="button"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
-          <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-            <path
-              d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-              clip-rule="evenodd" fill-rule="evenodd"></path>
-          </svg>
-          View
-        </button>
-      </ion-col>
+<!--   begin task actions-->
 
-      <!--<ion-col *ngIf="mainMarketTask.status != TaskStatus.REQUESTED-->
-      <!--&& mainMarketTask.status != TaskStatus.PENDING_APPROVAL-->
-      <!--&& isFreelancer"-->
-      <!--class="ion-text-center">-->
-      <!--<ion-button fill="outline" size="small" color="primary" (click)="startChat(mainMarketTask.customer.username)">-->
-      <!--<ion-icon name="chatbubbles" slot="start"></ion-icon>-->
-      <!--Chat-->
-      <!--</ion-button>-->
-      <!--</ion-col>-->
-    </ion-row>
-
-    <ion-row *ngIf="mainMarketTask.action == TaskAction.JOB_IS_EDITABLE"
-             class="ion-no-padding ion-justify-content-center">
-      <ion-col class="ion-text-left">
-        <ion-button (click)="customerEditTask(mainMarketTask)" fill="outline" size="small" color="primary">
-          <ion-icon name="create" slot="start"></ion-icon>
-          Edit
-        </ion-button>
-      </ion-col>
+    <ion-row>
       <ion-col class="ion-text-center">
-        <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(mainMarketTask.id)"
+        <ion-button fill="outline" size="small" color="primary" (click)="openMarketplaceDetail(pastJob.marketplace.id)"
                     routerDirection="forward">
           <ion-icon name="eye" slot="start"></ion-icon>
           View
         </ion-button>
       </ion-col>
-      <ion-col class="ion-text-right">
-        <ion-button (click)="alertConfirmCustomerCancel()"
-                    fill="outline" size="small" color="primary">
-          <ion-icon name="close" mode="md" slot="start"></ion-icon>
-          Cancel
-        </ion-button>
-      </ion-col>
     </ion-row>
 
-    <ion-row
-      *ngIf="mainMarketTask.action == TaskAction.NO_PERFORMABLE_ACTION
-            || mainMarketTask.action == TaskAction.CUSTOMER_WAITING_FOR_WORKER_ARRIVAL
-            || mainMarketTask.action == TaskAction.CUSTOMER_WAITING_FOR_WORKER_REVIEW
-            || mainMarketTask.action == TaskAction.JOB_IS_COMPLETE
-            || mainMarketTask.action == undefined"
-      class="ion-no-padding ion-justify-content-center">
-      <ion-col class="text-center">
-        <button
-          type="button"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
-          <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-            <path
-              d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-              clip-rule="evenodd" fill-rule="evenodd"></path>
-          </svg>
-          View
-        </button>
-      </ion-col>
-    </ion-row>
-
-    <!--  end task actions-->
-  </div>
-</div>
-
-<ng-template #freelancerPastJob>
-  <div *ngIf="pastJob; else skeletonCard" class="overflow-hidden shadow rounded-lg w-max-600 m-6">
-    <div class="border-b border-gray-200"></div>
-    <div class="px-4 py-5 sm:p-6">
-      <!-- Content goes here -->
-    </div>
-    <div class="px-4 py-4 sm:px-6">
-      <!-- Content goes here -->
-      <!-- We use less vertical padding on card footers at all sizes than on headers or body sections -->
-    </div>
-  </div>
+<!--    end task actions-->
+  </ion-card>
 </ng-template>
 
 <ng-template #skeletonCard>
-  <div class="overflow-hidden shadow rounded-lg w-max-600 m-6">
+  <ion-card class="marketplace-card">
     <ion-slides pager="true">
       <ion-slide class="marketplace-slide-image">
-        <ion-skeleton-text animated style="height: 250px;width: 100%"></ion-skeleton-text>
+        <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
       </ion-slide>
     </ion-slides>
 
@@ -220,5 +278,6 @@
       <ion-skeleton-text animated style="width: 70%;"></ion-skeleton-text>
       <ion-skeleton-text animated style="width: 60%;"></ion-skeleton-text>
     </ion-card-content>
-  </div>
+  </ion-card>
 </ng-template>
+

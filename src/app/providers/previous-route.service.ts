@@ -20,6 +20,8 @@ export class PreviousRouteService {
   }
 
   public getPreviousUrl() {
+    console.log(this.previousUrl);
+    console.log(this.currentUrl);
     return this.previousUrl;
   }
 

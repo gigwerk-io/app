@@ -103,15 +103,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.platformIsMobile = device.operatingSystem === 'ios'
           || device.operatingSystem === 'android';
 
-        this.previousRouteSub = this.router.events
-          .pipe(filter((evt: any) => evt instanceof RoutesRecognized), pairwise())
-          .subscribe((events: RoutesRecognized[]) => {
-            // console.log('previous url', events[0].urlAfterRedirects);
-            // console.log('current url', events[1].urlAfterRedirects);
-            this.previousRouteService.setPreviousUrl(events[0].urlAfterRedirects);
-            this.previousRouteService.setCurrentUrl(events[1].urlAfterRedirects);
-          });
-
         return this.platformIsMobile;
       })
       .then((platformIsMobile: boolean) => {
@@ -140,7 +131,18 @@ export class AppComponent implements OnInit, OnDestroy {
                 }
               }
             });
-          this.router.navigate(['/app']);
+          this.router.navigate(['/app'])
+            .then(() => {
+              this.previousRouteSub = this.router.events
+                .pipe(filter((evt: any) => evt instanceof RoutesRecognized), pairwise())
+                .subscribe((events: RoutesRecognized[]) => {
+                  console.log(events);
+                  console.log('previous url', events[0].urlAfterRedirects);
+                  console.log('current url', events[1].urlAfterRedirects);
+                  this.previousRouteService.setPreviousUrl(events[0].urlAfterRedirects);
+                  this.previousRouteService.setCurrentUrl(events[1].urlAfterRedirects);
+                });
+            });
         } else {
           document.body.classList.add('web-body-layout');
         }
