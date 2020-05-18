@@ -24,12 +24,7 @@ import {Keyboard} from '@ionic-native/keyboard/ngx';
 import { Angulartics2Module } from 'angulartics2';
 import {SocialSharing} from '@ionic-native/social-sharing/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import {RequestPageModule} from './layout/app-layout/pages/request/request.module';
-import {SearchPageModule} from './layout/app-layout/pages/search/search.module';
-import {CustomerTutorialPageModule} from './layout/app-layout/pages/customer-tutorial/customer-tutorial.module';
 import { PushNotificationsModule } from 'ng-push';
-import {AppLayoutModule} from './layout/app-layout/app-layout.module';
-import {WebLayoutModule} from './layout/web-layout/web-layout.module';
 
 @NgModule({
   imports: [

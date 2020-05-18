@@ -5,6 +5,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {CheckTutorial} from '../../providers/check-tutorial.service';
 import {AppCheckAuth} from '../../providers/app-check-auth.service';
 import {IonicModule} from '@ionic/angular';
+import {CustomerTutorialPageModule} from './pages/customer-tutorial/customer-tutorial.module';
+import {RequestPageModule} from './pages/request/request.module';
 
 const routes: Routes = [
   {
@@ -174,6 +176,8 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     IonicModule,
+    CustomerTutorialPageModule,
+    RequestPageModule
   ],
   exports: [RouterModule]
 })
