@@ -207,6 +207,6 @@ export class MessagesPage implements OnInit, OnDestroy {
 
   navigateBack() {
     const prevRoute = this.previousRoute.getPreviousUrl();
-    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/marketplace');
+    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/chat');
   }
 }

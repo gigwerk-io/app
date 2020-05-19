@@ -8,24 +8,35 @@ import {filter, pairwise} from 'rxjs/operators';
 })
 export class PreviousRouteService {
 
-  private previousUrl: string;
   private currentUrl: string;
-
-  public setPreviousUrl(url: string) {
-    this.previousUrl = url;
-  }
+  private history: string[] = [];
 
   public setCurrentUrl(url: string) {
+    if (!this.history.includes(url)) {
+      this.history.push(url);
+    }
+    /**
+     * if a base route is found going back is impossible
+     * therefore remove any routes below the base routes
+     */
+    this.history.find((route, i) => {
+      if (route.includes('/app/tabs')) {
+        for (let j = 0; j < i; j++) {
+          this.history.shift();
+        }
+      }
+    });
     this.currentUrl = url;
+    console.log(this.history);
   }
 
-  public getPreviousUrl() {
-    console.log(this.previousUrl);
-    console.log(this.currentUrl);
-    return this.previousUrl;
+  public getPreviousUrl(): string {
+    this.currentUrl = this.history.pop();
+    console.log(this.history);
+    return this.currentUrl;
   }
 
-  public getCurrentUrl() {
+  public getCurrentUrl(): string {
     return this.currentUrl;
   }
 }

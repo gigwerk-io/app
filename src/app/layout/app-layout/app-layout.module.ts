@@ -7,6 +7,9 @@ import {AppCheckAuth} from '../../providers/app-check-auth.service';
 import {IonicModule} from '@ionic/angular';
 import {CustomerTutorialPageModule} from './pages/customer-tutorial/customer-tutorial.module';
 import {RequestPageModule} from './pages/request/request.module';
+import {SearchPageModule} from './pages/search/search.module';
+import {ReportPageModule} from './pages/report/report.module';
+import {CompleteTaskPageModule} from './pages/complete-task/complete-task.module';
 
 const routes: Routes = [
   {
@@ -177,7 +180,10 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     IonicModule,
     CustomerTutorialPageModule,
-    RequestPageModule
+    CompleteTaskPageModule,
+    RequestPageModule,
+    SearchPageModule,
+    ReportPageModule,
   ],
   exports: [RouterModule]
 })

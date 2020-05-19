@@ -136,11 +136,7 @@ export class AppComponent implements OnInit, OnDestroy {
               this.previousRouteSub = this.router.events
                 .pipe(filter((evt: any) => evt instanceof RoutesRecognized), pairwise())
                 .subscribe((events: RoutesRecognized[]) => {
-                  console.log(events);
-                  console.log('previous url', events[0].urlAfterRedirects);
-                  console.log('current url', events[1].urlAfterRedirects);
-                  this.previousRouteService.setPreviousUrl(events[0].urlAfterRedirects);
-                  this.previousRouteService.setCurrentUrl(events[1].urlAfterRedirects);
+                  this.previousRouteService.setCurrentUrl(window.location.pathname);
                 });
             });
         } else {
