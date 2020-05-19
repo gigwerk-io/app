@@ -24,7 +24,6 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import {MainCategory} from '../../../../utils/interfaces/main-marketplace/main-category';
 import {Subscription} from 'rxjs';
 import {UtilsService} from '../../../../utils/services/utils.service';
-import {PreviousRouteService} from '../../../../providers/previous-route.service';
 import {GenericResponse} from '../../../../utils/interfaces/searchable';
 
 @Component({
@@ -58,7 +57,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private router: Router,
               private photoViewer: PhotoViewer,
               private activatedRoute: ActivatedRoute,
-              private navCtrl: NavController,
+              public navCtrl: NavController,
               private marketplaceService: MarketplaceService,
               private actionSheetCtrl: ActionSheetController,
               private alertCtrl: AlertController,
@@ -68,7 +67,6 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
               private financeService: FinanceService,
               private geolocation: Geolocation,
               public routerOutlet: IonRouterOutlet,
-              private previousRoute: PreviousRouteService,
               private utils: UtilsService) { }
 
   ngOnInit() {
@@ -230,7 +228,7 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  async editTaskRequest(task: MainMarketplaceTask) {
+  async customerEditTask(task: MainMarketplaceTask) {
     const requestPageModal = await this.modalCtrl.create({
       component: RequestPage,
       componentProps: {isModal: true},
@@ -265,10 +263,5 @@ export class MarketplaceDetailPage implements OnInit, OnDestroy {
 
    this.launchNavigator.navigate(locationAddress, options)
       .catch(error => window.open('https://maps.google.com/?q=' + locationAddress));
-  }
-
-  navigateBack() {
-    const prevRoute = this.previousRoute.getPreviousUrl();
-    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/marketplace');
   }
 }

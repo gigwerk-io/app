@@ -8,8 +8,6 @@ import {PusherServiceProvider} from '../../../../providers/pusher.service';
 import {ActionSheetController, IonContent, IonTextarea, NavController} from '@ionic/angular';
 import {Subscription} from 'rxjs';
 import {Response} from '../../../../utils/interfaces/response';
-import {PreviousRouteService} from '../../../../providers/previous-route.service';
-
 
 @Component({
   selector: 'messages',
@@ -44,8 +42,7 @@ export class MessagesPage implements OnInit, OnDestroy {
     private actionSheetCtrl: ActionSheetController,
     private router: Router,
     private changeRef: ChangeDetectorRef,
-    private navCtrl: NavController,
-    private previousRoute: PreviousRouteService
+    public navCtrl: NavController
   ) {  }
 
   ngOnInit() {
@@ -203,10 +200,5 @@ export class MessagesPage implements OnInit, OnDestroy {
   setFooterHeight() {
     console.log(this.footerHeight);
     this.textarea.getInputElement().then(el => this.footerHeight = `${el.clientHeight + 5}px`);
-  }
-
-  navigateBack() {
-    const prevRoute = this.previousRoute.getPreviousUrl();
-    this.navCtrl.navigateBack((prevRoute) ? prevRoute : 'app/tabs/chat');
   }
 }

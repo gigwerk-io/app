@@ -14,13 +14,12 @@ export class CompleteTaskPage {
   @Input() taskID: number;
   @Input() isFreelancer: boolean;
   rate: number;
-  description: string;
+  description = '';
 
-  constructor(private modalCtrl: ModalController,
-              private marketplaceService: MarketplaceService,
-              private toastCtrl: ToastController,
-              private utils: UtilsService,
-              private events: Events) { }
+  constructor(
+    private modalCtrl: ModalController,
+    private marketplaceService: MarketplaceService
+  ) { }
 
   freelancerCompleteTask() {
     this.marketplaceService.freelancerCompleteTask(this.taskID, {rating: this.rate, review: this.description})

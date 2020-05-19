@@ -41,7 +41,7 @@ export class ProfilePage implements OnInit, OnDestroy {
               private photoViewer: PhotoViewer,
               private actionSheetCtrl: ActionSheetController,
               private modalCtrl: ModalController,
-              private navCtrl: NavController,
+              public navCtrl: NavController,
               private authService: AuthService,
               public routerOutlet: IonRouterOutlet,
               private utils: UtilsService) {}

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="arrow-back"  mode="md" defaultHref></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back" (click)="navCtrl.pop()"  mode="md" defaultHref="/app/tabs/marketplace"></ion-back-button>
     </ion-buttons>
     <ion-title *ngIf="profile">
       {{profile.user.first_name}} {{profile.user.last_name}}

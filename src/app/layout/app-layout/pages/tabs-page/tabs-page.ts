@@ -18,7 +18,6 @@ import {PusherNotification} from '../../../../utils/interfaces/notification/Push
 })
 export class TabsPage implements OnInit, OnDestroy {
   @Input() not: string;
-  tabSlot: string;
   notificationCount = 0;
   friendCount = 0;
   profileImage: string;
@@ -37,11 +36,6 @@ export class TabsPage implements OnInit, OnDestroy {
               public routerOutlet: IonRouterOutlet,
               private changeDetectorRef: ChangeDetectorRef,
               private angulartics2GoogleAnalytics: Angulartics2GoogleAnalytics) {
-    if (window.innerWidth >= 1025) {
-      this.tabSlot = 'top';
-    } else {
-      this.tabSlot = 'bottom';
-    }
     this.events.subscribe('prefersDark', (prefDark: boolean) => {
       if (prefDark) {
         this.requestButtonIcon = 'assets/brand/favr_logo_blk.png';

@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons class="mobile-only" slot="start">
-      <ion-back-button color="primary" icon="arrow-back" mode="md" defaultHref="/app/tabs/marketplace"></ion-back-button>
+      <ion-back-button color="primary" icon="arrow-back" mode="md" (click)="navCtrl.pop()" defaultHref="/app/tabs/marketplace"></ion-back-button>
     </ion-buttons>
     <ion-title>Task Details</ion-title>
     <ion-buttons slot="end">
@@ -116,14 +116,18 @@
       <!-- begin task actions-->
       <ion-row *ngIf="!isOwner && userRole == Role.VERIFIED_FREELANCER">
         <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_CAN_BE_ACCEPTED" class="ion-text-center">
-          <ion-button
+          <button
             (click)="freelancerAcceptTask()"
-            fill="outline"
-            size="small"
-            color="primary">
-            <ion-icon name="thumbs-up" slot="start"></ion-icon>
+            type="button"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
+            <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+              <path
+                d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd" fill-rule="evenodd"></path>
+            </svg>
             Accept
-          </ion-button>
+          </button>
         </ion-col>
       </ion-row>
 
@@ -132,43 +136,45 @@
         <ng-container *ngIf="isFreelancer">
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.WORKER_IS_WAITING_FOR_CUSTOMER
            || mainMarketplaceTask.action == TaskAction.WORKER_HAS_BEEN_APPROVED" class="ion-text-center">
-            <ion-button (click)="alertConfirmFreelancerWithdrawal()"
-                        fill="outline"
-                        size="small"
-                        color="primary">
-              <ion-icon name="thumbs-down" slot="start"></ion-icon>
+            <button
+              (click)="alertConfirmFreelancerWithdrawal()"
+              type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
+              <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd" fill-rule="evenodd"></path>
+              </svg>
               Withdraw
-            </ion-button>
+            </button>
           </ion-col>
 
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.WORKER_HAS_BEEN_APPROVED" class="ion-text-center">
-            <ion-button (click)="freelancerArriveTask()"
-                        fill="outline"
-                        size="small"
-                        color="primary">
-              <ion-icon mode="md" name="hand-right" slot="start"></ion-icon>
+            <button
+              (click)="freelancerArriveTask()"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-teal-600 hover:bg-teal-500 focus:outline-none focus:border-teal-700 focus:shadow-outline-teal active:bg-teal-700 transition ease-in-out duration-150">
+            <ion-icon mode="md" name="hand-right" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
               Arrive
-            </ion-button>
+            </button>
           </ion-col>
 
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.WORKER_IS_IN_PROGRESS" class="ion-text-center">
-            <ion-button (click)="openCompleteTaskModal(true)"
-                        fill="outline"
-                        size="small"
-                        color="primary">
-              <ion-icon name="checkmark" slot="start"></ion-icon>
-              Complete Task
-            </ion-button>
+            <button
+              (click)="openCompleteTaskModal(true)"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
+              <ion-icon name="checkmark-circle" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
+              Complete
+            </button>
           </ion-col>
 
           <ion-col class="ion-text-center">
-            <ion-button fill="outline"
-                        size="small"
-                        color="primary"
-                        (click)="startChat(mainMarketplaceTask.customer.username)">
-              <ion-icon name="chatbubble" slot="start"></ion-icon>
+            <button
+              (click)="startChat(mainMarketplaceTask.customer.username)"
+              type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+              <ion-icon name="chatbubble" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
               Chat
-            </ion-button>
+            </button>
           </ion-col>
         </ng-container>
         <!-- End freelancer task actions-->
@@ -176,53 +182,73 @@
         <!-- Start task owner actions -->
         <ng-container *ngIf="isOwner">
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_IS_EDITABLE" class="ion-text-center">
-            <ion-button (click)="editTaskRequest(mainMarketplaceTask)" fill="outline" size="small" color="primary">
-              <ion-icon name="create" slot="start"></ion-icon>
+            <button
+              (click)="customerEditTask(mainMarketplaceTask)"
+              type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
+              <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                <path d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                      clip-rule="evenodd" fill-rule="evenodd"></path>
+              </svg>
+
               Edit
-            </ion-button>
+            </button>
           </ion-col>
 
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
             <!--TODO: work on approval system instead of this work around-->
-            <ion-button (click)="customerAcceptFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
-                        size="small" color="primary">
-              <ion-icon name="thumbs-up" slot="start"></ion-icon>
+            <button
+              (click)="customerAcceptFreelancer(mainMarketplaceTask.proposals[0].user_id)"
+              type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
+              <ion-icon name="thumbs-up" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
               Approve
-            </ion-button>
+            </button>
           </ion-col>
 
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
-            <ion-button (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)" fill="outline"
-                        size="small" color="primary">
-              <ion-icon name="thumbs-down" slot="start"></ion-icon>
+            <button
+              (click)="customerRejectFreelancer(mainMarketplaceTask.proposals[0].user_id)"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-600 hover:bg-orange-500 focus:outline-none focus:border-orange-700 focus:shadow-outline-orange active:bg-orange-700 transition ease-in-out duration-150">
+            <ion-icon name="thumbs-down" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
               Reject
-            </ion-button>
+            </button>
           </ion-col>
 
           <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_REVIEW" class="ion-text-center">
-            <ion-button (click)="openCompleteTaskModal(false)" fill="outline" size="small" color="primary">
-              <ion-icon name="checkmark" slot="start"></ion-icon>
-              Complete My Task
-            </ion-button>
-          </ion-col>
-
-          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_IS_EDITABLE || mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
-            <ion-button (click)="alertConfirmCustomerCancel()"
-                        fill="outline" size="small" color="primary">
-              <ion-icon name="close" mode="md" slot="start"></ion-icon>
-              Cancel
-            </ion-button>
+            <button
+              (click)="openCompleteTaskModal(false)"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 focus:outline-none focus:border-green-700 focus:shadow-outline-green active:bg-green-700 transition ease-in-out duration-150">
+              <ion-icon name="checkmark-circle" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
+              Complete
+            </button>
           </ion-col>
 
           <ion-col *ngIf="mainMarketplaceTask.proposals.length > 0" class="ion-text-center">
-            <ion-button fill="outline"
-                        size="small"
-                        color="primary"
-                        (click)="startChat(mainMarketplaceTask.proposals[0].user.username)">
-              <ion-icon name="chatbubble" slot="start"></ion-icon>
+            <button
+              (click)="startChat(mainMarketplaceTask.proposals[0].user.username)"
+              type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+              <ion-icon name="chatbubble" class="-ml-1 mr-3 h-5 w-5" slot="start"></ion-icon>
               Chat
-            </ion-button>
+            </button>
           </ion-col>
+
+          <ion-col *ngIf="mainMarketplaceTask.action == TaskAction.JOB_IS_EDITABLE || mainMarketplaceTask.action == TaskAction.CUSTOMER_NEEDS_TO_RESPOND" class="ion-text-center">
+            <button
+              (click)="alertConfirmCustomerCancel()"
+              type="button"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
+              <svg class="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clip-rule="evenodd" fill-rule="evenodd"></path>
+              </svg>
+              Cancel
+            </button>
+          </ion-col>
+
         </ng-container>
         <!-- End task owner actions -->
       </ion-row>
@@ -373,7 +399,7 @@
   </ion-list>
 
   <ng-template #skeletonList>
-    <ion-list>
+    <ion-list class="ion-no-padding">
       <ion-slides pager="true">
         <ion-slide class="marketplace-slide-image">
           <ion-skeleton-text animated style="height: 200px;width: 100%"></ion-skeleton-text>
