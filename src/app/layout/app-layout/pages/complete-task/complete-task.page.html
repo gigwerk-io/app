@@ -26,12 +26,12 @@
     </ion-item>
 
     <div *ngIf="isFreelancer; else customerComplete" class="ion-padding form-submit-button">
-      <ion-button expand="block" type="submit" (click)="freelancerCompleteTask()">Complete Task</ion-button>
+      <ion-button expand="block"  (click)="freelancerCompleteTask()">Complete Task</ion-button>
     </div>
 
     <ng-template #customerComplete>
       <div class="ion-padding form-submit-button">
-        <ion-button expand="block" type="submit" (click)="customerCompleteTask()">Complete My Task</ion-button>
+        <ion-button expand="block"  (click)="customerCompleteTask()">Complete My Task</ion-button>
       </div>
     </ng-template>
   </ion-list>
